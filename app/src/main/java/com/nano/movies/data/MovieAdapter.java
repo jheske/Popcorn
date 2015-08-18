@@ -56,7 +56,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         final String movieImageUrl = Tmdb.getMovieImageUrl(movie.getPosterPath(),
                 Tmdb.IMAGE_POSTER_MED);
         Picasso.with(mContext).load(movieImageUrl)
-                .placeholder(R.drawable.no_poster_w185)
+                .placeholder(R.drawable.placeholder_poster_w185)
                 .error(R.drawable.no_poster_w185)
                 .into(holder.imgPoster);
         holder.imgPoster.setContentDescription(movie.getTitle());
