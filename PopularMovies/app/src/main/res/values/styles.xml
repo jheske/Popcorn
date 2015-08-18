@@ -1,0 +1,29 @@
+<resources>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- colorAccent is used as the default value for colorControlActivated
+             which is used to tint widgets -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Text colors (use android: prefix because these
+             are built in to older versions. -->
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="android:textColorHint">@color/textColorHint</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <!-- Default style for this theme's buttons -->
+    <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+</resources>

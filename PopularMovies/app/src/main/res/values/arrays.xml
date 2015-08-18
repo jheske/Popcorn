@@ -1,0 +1,8 @@
+<resources>
+    <!-- favorites will be added P2 -->
+    <string-array name="sort_by_array">
+        <item>@string/option_most_popular</item>
+        <item>@string/option_highest_rated</item>
+        <item>@string/option_favorites</item>
+    </string-array>
+</resources>

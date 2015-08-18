@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- This is all of Google's color palettes.  I use only a couple of them,
+         but it's very convenient to have them all available.
+         SEE BELOW for my selections for this app -->
+    <!-- google's material design (md_) colours from
+    http://www.google.com/design/spec/style/color.html#color-ui-color-palette -->
+
+    <color name="md_black_1000">#000000</color>
+    <color name="md_white_1000">#ffffff</color>
+    <color name="md_white_1000_70">#B3ffffff</color>
+    <color name="md_white_1000_30">#4Dffffff</color>
+    <color name="md_black_1000_26">#43000000</color>
+
+
+    <!-- Custom colors -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryLight">#C5CAE9</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#727272</color>
+    <color name="colorHighlight">#B6B6B6</color>
+    <color name="colorDivider">#B6B6B6</color>
+
+    <!-- Used by this app, values and opacities as recommended by Material spec -->
+    <!-- Hint and disabled text and icons -->
+    <color name="textColorHint">@color/md_black_1000_26</color>
+    <!-- Toolbar Main text and icons  -->
+    <color name="toolbarTextColorPrimary">@color/md_white_1000</color>
+    <!-- Toolbar Secondary text -->
+    <color name="toolbarTextColorSecondary">@color/md_white_1000_70</color>
+    <!-- Toolbar Hint and disabled text and icons -->
+    <color name="toolbarTextColorHint">@color/md_white_1000_30</color>
+</resources>

@@ -1,0 +1,49 @@
+<!--This layout will be called from
+    values-large-land/layouts.xml when app is run on a tablet
+    in landscape mode.
+    If the user rotates the tablet, then
+    values-large-port/layout.xml will be
+    load the one_pane version instead.
+
+    This layout is based on Android's News Reader Sample,
+    wrapped in a RelativeLayout to
+    android:name means the same thing as android:class -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
+
+    <Spinner
+        android:id="@+id/spinner_sort_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:entries="@array/sort_by_array"/>
+
+    <LinearLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <fragment
+            android:id="@+id/fragment_movie_grid"
+            android:name="com.nano.movies.activities.MovieGridFragment"
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_movies" />
+
+        <fragment
+            android:id="@+id/fragment_movie_detail"
+            android:name="com.nano.movies.activities.MovieDetailFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/activity_main_one_pane" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Pop Movies</string>
+    <!-- Menu actions (to be integrated in P2 -->
+    <string name="action_settings">Settings</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_movie_detail">Movie Details</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Text and label constants, some include test placeholders (like test_release_year) -->
+    <string name="text_release_year"  translatable="false">2015</string>
+    <string name="text_runtime">{runtime}min</string>
+    <string name="text_viewer_rating"  translatable="false">7.2/10</string>
+    <string name="text_overview">Your movie synopsis goes here.</string>
+    <string name="label_mark_fav">Mark as Favorite</string>
+    <string name="label_trailers">Trailers</string>
+    <string name="label_reviews">Reviews</string>
+    <!-- Sort order spinner strings -->
+    <string name="option_most_popular">Most popular</string>
+    <string name="option_highest_rated">Highest rated</string>
+    <string name="option_favorites">Favorites</string>
+    <!-- Error messages -->
+    <string name="error_download_movies_failed">Error downloading movies</string>
+    <string name="error_download_movie_failed">Error downloading movie</string>
+    <string name="error_implement_method">You must implement method</string>
+    <!-- Image contentDescription -->
+    <string name="desc_title">Movie title</string>
+    <!-- ContentAuthority (to be integrated in P2) -->
+    <string name="content_authority"  translatable="false">com.nano.movies.app</string>
+</resources>

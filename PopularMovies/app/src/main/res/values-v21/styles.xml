@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="android:textColorHint">@color/textColorHint</item>
+        <!--Default styles for un-styled buttons -->
+        <item name="android:colorButtonNormal">@color/colorAccent</item>
+    </style>
+
+    <!-- Default style for this theme's buttons -->
+    <style name="AppTheme.Button" parent="android:Widget.Material.Button">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+</resources>
