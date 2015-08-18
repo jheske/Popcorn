@@ -26,15 +26,16 @@ This project has been tested on:
 			
 ## Installation
 
-You can fork this repo or clone it: `git clone https://github.com/jheske/udacity.git`
-Note that all of my projects are stored in this repo, so you will have to clone the entire repo to get this project.
+You can fork this repo or clone it using `git clone https://github.com/jheske/popular-movies.git`
 
-## themoviedb.org api key
 
-###themoviedb.org api keys may not be shared publicly.
+## Required api key
 
-In order to compile and run thia app, you will need to acquire a valid api key from www.themoviedb.org.
-Browse to [https://www.themoviedb.org/faq/api?language=en](https://www.themoviedb.org/faq/api?language=en) to find instructions for obtaining your own key.  
+All calls to api.themoviedb.org require a valid api key.  
+
+###themoviedb.org api keys may not be shared publicly so I have removed my key from this app
+In order to compile and run the app, you will need to acquire your own api key.  See [https://www.themoviedb.org/faq/api?language=en](https://www.themoviedb.org/faq/api?language=en) for instructions.
+
     
 Once you have your key, you must edit `tmdb.java` and replace the line:
 
@@ -44,6 +45,8 @@ with
 
     requestFacade.addQueryParam(PARAM_API_KEY, "your api key");
     
+####REMEMBER to remove your api key before sharing your app.
+
 Alternatively, you may provide your own ApiKey.java class as follows:
     
     public class ApiKey {
@@ -57,7 +60,7 @@ Alternatively, you may provide your own ApiKey.java class as follows:
 
     }
 
-#REMEMBER to .gitignore ApiKey.java to keep it out of your repo.
+####REMEMBER to .gitignore ApiKey.java to keep it out of your repo.
 
 
 ## Contributors
