@@ -45,6 +45,10 @@ Once you have your key, you must edit `tmdb.java` and replace the line:
 with
 
     requestFacade.addQueryParam(PARAM_API_KEY, "your api key");
+
+and remove the ApiKey class reference by commenting out
+
+	import com.nano.movies.utils.ApiKey;
     
 **REMEMBER to remove your api key before sharing your app.**
 
