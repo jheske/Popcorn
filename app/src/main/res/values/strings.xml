@@ -12,6 +12,8 @@
     <string name="text_runtime">{runtime}min</string>
     <string name="text_viewer_rating"  translatable="false">7.2/10</string>
     <string name="text_overview">Your movie synopsis goes here.</string>
+    <string name="text_vote">1 vote</string>
+    <string name="text_votes">{votes} votes</string>
     <string name="label_mark_fav">Mark as Favorite</string>
     <string name="label_trailers">Trailers</string>
     <string name="label_reviews">Reviews</string>

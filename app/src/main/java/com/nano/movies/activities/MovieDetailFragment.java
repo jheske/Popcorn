@@ -1,6 +1,6 @@
 /**
  * Created by Jill Heske
- *
+ * <p/>
  * Copyright(c) 2015
  */
 package com.nano.movies.activities;
@@ -39,6 +39,7 @@ public class MovieDetailFragment extends Fragment {
     private TextView mTextViewReleaseDate;
     private TextView mTextViewRuntime;
     private TextView mTextViewOverview;
+    private TextView mTextViewVoteAverage;
     private RatingBar mRatingVoteAverage;
 
     /* @TODO hook up Favorites button
@@ -69,6 +70,7 @@ public class MovieDetailFragment extends Fragment {
         mRatingVoteAverage = (RatingBar) rootView.findViewById(R.id.rating_bar_vote_average);
         mButtonFavorite = (Button) rootView.findViewById(R.id.btn_mark_fav);
         mTextViewOverview = (TextView) rootView.findViewById(R.id.tv_overview);
+        mTextViewVoteAverage = (TextView) rootView.findViewById(R.id.tv_vote_average);
         return rootView;
     }
 
@@ -82,7 +84,7 @@ public class MovieDetailFragment extends Fragment {
         //Member var so it's available in
         //callback for error handling
         mMovieId = movieId;
-        tmdbManager.setIsDebug(true);
+        tmdbManager.setIsDebug(false);
         tmdbManager.moviesServiceProxy().summary(movieId,
                 MovieServiceProxy.REVIEWS_AND_TRAILERS,
                 new Callback<Movie>() {
@@ -98,7 +100,7 @@ public class MovieDetailFragment extends Fragment {
                     @Override
                     public void failure(RetrofitError error) {
                         // Handle errors here.
-                        Utils.showToast(getActivity(),"Failed to download movie " + mMovieId);
+                        Utils.showToast(getActivity(), "Failed to download movie " + mMovieId);
                     }
                 });
     }
@@ -113,10 +115,27 @@ public class MovieDetailFragment extends Fragment {
         mTextViewRuntime.setText(runtime);
         mRatingVoteAverage.setRating(movie.getVoteAverage().floatValue());
         mTextViewOverview.setText(movie.getOverview());
+        mTextViewVoteAverage.setText(movie.getVoteAverage().toString()
+                + "/10 "
+                + getVoteCountStr(movie.getVoteCount()));
         String movieImageUrl = Tmdb.getMovieImageUrl(movie.getPosterPath(),
                 Tmdb.IMAGE_POSTER_SMALL);
         Picasso.with(getActivity()).load(movieImageUrl)
                 .into(mImageViewThumbnail);
+    }
+
+    private CharSequence getVoteCountStr(int voteCount) {
+        CharSequence voteStr;
+
+        if (voteCount == 1) {
+            voteStr = "(" + Phrase.from(getActivity(), R.string.text_vote)
+                    .format() + ")";
+        }
+        else
+            voteStr = "(" + Phrase.from(getActivity(), R.string.text_votes)
+                    .put("votes", voteCount)
+                    .format() + ")";
+        return voteStr;
     }
 
 }
