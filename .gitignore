@@ -1,2 +1,10 @@
 ApiKey.java
-nano_readme.odt
+nano-readme.odt
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+
