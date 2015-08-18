@@ -1,6 +1,6 @@
 ## Synopsis
 
-This repository contains my Udacity Android Developer Nanodegree Project 1: Popular Movies, Stage 1
+This repository contains my Udacity Android Developer Project 1: Popular Movies, Stage 1
 
 Udacity's description of the project is as follows:
 
@@ -31,9 +31,10 @@ You can fork this repo or clone it using `git clone https://github.com/jheske/po
 
 ## Required api key
 
-All calls to api.themoviedb.org require a valid api key.  
+All calls to api.themoviedb.org require a valid api key. 
+ 
+**themoviedb.org api keys may not be shared publicly so I have removed my key from this app**
 
-###themoviedb.org api keys may not be shared publicly so I have removed my key from this app
 In order to compile and run the app, you will need to acquire your own api key.  See [https://www.themoviedb.org/faq/api?language=en](https://www.themoviedb.org/faq/api?language=en) for instructions.
 
     
@@ -45,7 +46,7 @@ with
 
     requestFacade.addQueryParam(PARAM_API_KEY, "your api key");
     
-####REMEMBER to remove your api key before sharing your app.
+**REMEMBER to remove your api key before sharing your app.**
 
 Alternatively, you may provide your own ApiKey.java class as follows:
     
@@ -60,7 +61,7 @@ Alternatively, you may provide your own ApiKey.java class as follows:
 
     }
 
-####REMEMBER to .gitignore ApiKey.java to keep it out of your repo.
+**REMEMBER to .gitignore ApiKey.java to keep it out of your repo.**
 
 
 ## Contributors
