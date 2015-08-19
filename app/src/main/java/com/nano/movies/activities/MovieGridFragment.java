@@ -1,6 +1,6 @@
 /**
  * Created by Jill Heske
- *
+ * <p/>
  * Copyright(c) 2015
  */
 package com.nano.movies.activities;
@@ -29,6 +29,7 @@ import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Tmdb;
 import com.nano.movies.web.TmdbResults;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -51,11 +52,13 @@ public class MovieGridFragment extends Fragment {
     private Parcelable mLayoutManagerSavedState;
     private int mLastPosition = 0;
     private String mSortBy = MovieServiceProxy.POPULARITY_DESC;
+    private List<Movie> mMovies = null;
 
     //Tags for storing/retrieving state on config change.
     private final String BUNDLE_RECYCLER_LAYOUT = "SaveLayoutState";
     private final String BUNDLE_LAST_POSITION = "SaveLastPosition";
     private final String BUNDLE_SORT_BY = "SaveSortBy";
+    private final String BUNDLE_MOVIES = "SaveMovies";
 
     // Android recommends Fragments always communicate with each other
     // via the container Activity
@@ -120,10 +123,13 @@ public class MovieGridFragment extends Fragment {
             mSortBy = savedInstanceState.getString(BUNDLE_SORT_BY);
             mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
-        }
-        downloadMovies();
+            mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES);
+            //@TODO replace this with database persistence
+            //Already have the movies, so skip the downloadMovies api call
+            displayPosters();
+        } else
+            downloadMovies();
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -132,6 +138,8 @@ public class MovieGridFragment extends Fragment {
         outState.putInt(BUNDLE_LAST_POSITION, mLastPosition);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT,
                 mRecyclerView.getLayoutManager().onSaveInstanceState());
+        //@TODO replace this with database persistence
+        outState.putParcelableArrayList(BUNDLE_MOVIES, (ArrayList) mMovies);
     }
 
     /**
@@ -153,17 +161,20 @@ public class MovieGridFragment extends Fragment {
     }
 
     public void downloadMovies() {
-        tmdbManager.setIsDebug(false);
+        tmdbManager.setIsDebug(true);
         tmdbManager.moviesServiceProxy().discoverMovies(1, mSortBy, new Callback<TmdbResults>() {
             @Override
             public void success(TmdbResults results, Response response) {
-                displayPosters(results.results);
-                //Tell main Activity it can display the first movie in the list
+                //Save movies and stash/restore then on
+                //config changes so we can avoid a needless api call.
+                mMovies = results.results;
+                displayPosters();
+          /*      //Tell main Activity it can display the first movie in the list
                 //if MovieDetailFragment exists (two-pane mode).
-                //False = Movie not selected by user
                 restoreLayoutManagerPosition();
                 Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
-                mCallback.onMovieSelected(movie.getId(), false);
+                //false = Movie not selected by user
+                mCallback.onMovieSelected(movie.getId(), false); */
             }
 
             @Override
@@ -191,9 +202,15 @@ public class MovieGridFragment extends Fragment {
         }
     }
 
-    private void displayPosters(List<Movie> movies) {
+    private void displayPosters() {
         mMovieAdapter.clear();
-        mMovieAdapter.addAll(movies);
+        mMovieAdapter.addAll(mMovies);
+        //Tell main Activity it can display the first movie in the list
+        //if MovieDetailFragment exists (two-pane mode).
+        restoreLayoutManagerPosition();
+        Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
+        //false = Movie not selected by user
+        mCallback.onMovieSelected(movie.getId(), false);
     }
 
     public void setSortBy(String sortBy) {
@@ -207,7 +224,7 @@ public class MovieGridFragment extends Fragment {
      * onLongPress, or other gestures.
      */
     public interface ClickListener {
-         void onClick(View view, int position);
+        void onClick(View view, int position);
     }
 
 

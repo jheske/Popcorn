@@ -1,6 +1,6 @@
 /**
  * Created by Jill Heske
- *
+ * <p/>
  * Copyright(c) 2015
  */
 package com.nano.movies.web;
@@ -116,7 +116,7 @@ public class Trailers implements Parcelable {
     }
 
     private Trailers(Parcel in) {
-       mYoutube.add(new Trailer(in.readString(),
+        mYoutube.add(new Trailer(in.readString(),
                 in.readString(),
                 in.readString(),
                 in.readString()));

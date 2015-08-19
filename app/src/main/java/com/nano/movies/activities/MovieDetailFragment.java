@@ -25,6 +25,7 @@ import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import retrofit.Callback;
@@ -47,8 +48,11 @@ public class MovieDetailFragment extends Fragment {
      */
     private Button mButtonFavorite;
     private int mMovieId;
+    private Movie mMovie;
     private final Tmdb tmdbManager = new Tmdb();
 
+    // Tag for saving movie so it doesn't have to be re-downloaded on config change
+    private final String BUNDLE_MOVIE = "SaveMovie";
 
     public MovieDetailFragment() {
         setRetainInstance(true);
@@ -74,6 +78,23 @@ public class MovieDetailFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //@TODO replace this with database persistence
+        if (savedInstanceState != null) {
+            mMovie = savedInstanceState.getParcelable(BUNDLE_MOVIE);
+            mMovieId = mMovie.getId();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //@TODO replace this with database persistence
+        outState.putParcelable(BUNDLE_MOVIE, mMovie);
+    }
+
     /**
      * Called by MainActivity if Fragment already exists (two-pane mode),
      * or when the Fragment is created by its own separate activity
@@ -81,6 +102,14 @@ public class MovieDetailFragment extends Fragment {
      *
      */
     public void downloadMovie(int movieId) {
+        // If user is displaying the same movie,
+        // then don't download it again.
+        if (mMovie != null) {
+         if (mMovie.getId() == movieId){
+                displayMovieDetails(mMovie);
+                return;
+            }
+        }
         //Member var so it's available in
         //callback for error handling
         mMovieId = movieId;
@@ -90,6 +119,7 @@ public class MovieDetailFragment extends Fragment {
                 new Callback<Movie>() {
                     @Override
                     public void success(Movie movie, Response response) {
+                        mMovie = movie;
                         displayMovieDetails(movie);
                         Log.i(TAG, "Success!! Movie title = " + movie.getOriginalTitle());
                         Log.i(TAG, "There are "

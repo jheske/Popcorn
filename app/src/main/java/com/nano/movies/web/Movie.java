@@ -199,7 +199,11 @@ public class Movie implements Parcelable {
         mPopularity = in.readDouble();
         mPosterPath = in.readString();
         mReleaseDate = new Date(in.readLong());
-        mRuntime = in.readInt();
+        try {
+            mRuntime = in.readInt();
+        } catch (IllegalArgumentException x) {
+            mRuntime = 0;
+        }
         mTagline = in.readString();
         mTitle = in.readString();
         mVoteAverage = in.readDouble();
@@ -226,7 +230,7 @@ public class Movie implements Parcelable {
         dest.writeDouble(mPopularity);
         dest.writeString(mPosterPath);
         dest.writeLong(mReleaseDate.getTime());
-        dest.writeInt(mRuntime);
+        dest.writeInt((mRuntime == null) ? 0 : mRuntime);
         dest.writeString(mTagline);
         dest.writeString(mTitle);
         dest.writeDouble(mVoteAverage);
