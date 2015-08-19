@@ -39,7 +39,7 @@ public class Reviews implements Parcelable {
      * a Review object
      *
      */
-    public static class Review {
+    public static class Review implements Parcelable {
         @SerializedName("id")
         public String mId;
         @SerializedName("author")
@@ -91,22 +91,45 @@ public class Reviews implements Parcelable {
             this.mUrl = url;
         }
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(mId);
+            dest.writeString(mAuthor);
+            dest.writeString(mContent);
+            dest.writeString(mUrl);
+        }
+
+        private Review(Parcel in) {
+            in.readString();
+            in.readString();
+            in.readString();
+            in.readString();
+        }
+
+        public static final Parcelable.Creator<Review> CREATOR =
+                new Parcelable.Creator<Review>() {
+                    public Review createFromParcel(Parcel in) {
+                        return new Review(in);
+                    }
+
+                    public Review[] newArray(int size) {
+                        return new Review[size];
+                    }
+                };
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        final Review review = mResults.get(0);
-        dest.writeString(review.getId());
-        dest.writeString(review.getAuthor());
-        dest.writeString(review.getContent());
-        dest.writeString(review.getUrl());
+        dest.writeTypedList(mResults);
     }
 
     private Reviews(Parcel in) {
-        mResults.add(new Review(in.readString(),
-                in.readString(),
-                in.readString(),
-                in.readString()));
+        in.readTypedList(mResults, Review.CREATOR);
     }
 
     /**

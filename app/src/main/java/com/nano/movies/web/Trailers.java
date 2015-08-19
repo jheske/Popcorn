@@ -15,9 +15,9 @@ import java.util.List;
 
 public class Trailers implements Parcelable {
     @SerializedName("quicktime")
-    private List<Trailer> mQuicktime = new ArrayList<Trailer>();
+    private List<Trailer> mQuicktime;
     @SerializedName("youtube")
-    private List<Trailer> mYoutube = new ArrayList<Trailer>();
+    private List<Trailer> mYoutube;
 
     public List<Trailer> getQuicktime() {
         return mQuicktime;
@@ -48,7 +48,7 @@ public class Trailers implements Parcelable {
      * INNER CLASS for marshalling/de-marshalling
      * a Trailer object
      */
-    public static class Trailer {
+    public static class Trailer implements Parcelable {
         @SerializedName("name")
         public String mName;
         @SerializedName("size")
@@ -99,32 +99,49 @@ public class Trailers implements Parcelable {
         public void setType(String type) {
             this.mType = type;
         }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(mName);
+            dest.writeString(mSize);
+            dest.writeString(mSource);
+            dest.writeString(mType);
+        }
+
+        private Trailer(Parcel in) {
+            in.readString();
+            in.readString();
+            in.readString();
+            in.readString();
+        }
+
+        public static final Parcelable.Creator<Trailer> CREATOR =
+                new Parcelable.Creator<Trailer>() {
+                    public Trailer createFromParcel(Parcel in) {
+                        return new Trailer(in);
+                    }
+
+                    public Trailer[] newArray(int size) {
+                        return new Trailer[size];
+                    }
+                };
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        final Trailer quickTime = mQuicktime.get(0);
-        dest.writeString(quickTime.getName());
-        dest.writeString(quickTime.getSize());
-        dest.writeString(quickTime.getSource());
-        dest.writeString(quickTime.getType());
-        final Trailer youtube = mYoutube.get(0);
-        dest.writeString(youtube.getName());
-        dest.writeString(youtube.getSize());
-        dest.writeString(youtube.getSource());
-        dest.writeString(youtube.getType());
+        dest.writeTypedList(mQuicktime);
+        dest.writeTypedList(mYoutube);
     }
 
     private Trailers(Parcel in) {
-        mYoutube.add(new Trailer(in.readString(),
-                in.readString(),
-                in.readString(),
-                in.readString()));
-
-        mQuicktime.add(new Trailer(in.readString(),
-                in.readString(),
-                in.readString(),
-                in.readString()));
+        in.readTypedList(mQuicktime,Trailer.CREATOR);
+        in.readTypedList(mYoutube,Trailer.CREATOR);
     }
 
     /**
