@@ -210,8 +210,6 @@ public class Movie implements Parcelable {
         mVoteCount = in.readInt();
         mTrailers = in.readParcelable(Trailers.class.getClassLoader());
         mReviews = in.readParcelable(Reviews.class.getClassLoader());
-        //mTrailers = Trailers.CREATOR.createFromParcel(in);
-        //mReviews = Reviews.CREATOR.createFromParcel(in);
     }
 
     /**
@@ -229,12 +227,12 @@ public class Movie implements Parcelable {
         dest.writeString(mOverview);
         dest.writeDouble(mPopularity);
         dest.writeString(mPosterPath);
-        dest.writeLong(mReleaseDate.getTime());
+        dest.writeLong((mReleaseDate == null) ? 0 : mReleaseDate.getTime());
         dest.writeInt((mRuntime == null) ? 0 : mRuntime);
         dest.writeString(mTagline);
         dest.writeString(mTitle);
-        dest.writeDouble(mVoteAverage);
-        dest.writeInt(mVoteCount);
+        dest.writeDouble((mVoteAverage == null) ? 0 : mVoteAverage);
+        dest.writeInt((mVoteCount == null) ? 0 : mVoteCount);
         dest.writeParcelable(mTrailers, flags);
         dest.writeParcelable(mReviews, flags);
     }
