@@ -107,7 +107,7 @@ public class MovieDetailFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Utils.showToast(getActivity(), "Click!!!");
-            DatabaseUtils.insertFavoriteMovie(getActivity(),mMovie);
+            DatabaseUtils.insertFavoriteMovie(getActivity(), mMovie);
         }
     };
 

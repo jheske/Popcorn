@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nano.movies.R;
-import com.nano.movies.data.MovieAdapter;
+import com.nano.movies.adapters.MovieAdapter;
 import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
@@ -43,6 +42,10 @@ public class MovieGridFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
+   // private MovieRecyclerAdapter mMovieRVAdapter;
+    // The MovieRecyclerAdapter will take data from a source and
+    // use it to populate the RecyclerView it's attached to.
+ //   mMovieAdapter = new MovieRecyclerAdapter(getActivity(), null, 0);
 
     //Manages communication between activities
     //and themoviedb.org service proxies

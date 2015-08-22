@@ -3,7 +3,7 @@
  *
  * Copyright(c) 2015
  */
-package com.nano.movies.data;
+package com.nano.movies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +28,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private final List<Movie> mMovies;
     private Context mContext;
 
+    public MovieAdapter(Context context) {
+        super();
+        mContext = context;
+        mMovies = new ArrayList<>();
+    }
+
     public class MovieViewHolder extends RecyclerView.ViewHolder {
         public ImageView imgPoster;
 
@@ -35,12 +41,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             super(itemView);
             imgPoster = (ImageView) itemView.findViewById(R.id.img_poster);
         }
-    }
-
-    public MovieAdapter(Context context) {
-        super();
-        mContext = context;
-        mMovies = new ArrayList<>();
     }
 
     @Override
