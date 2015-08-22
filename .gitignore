@@ -8,4 +8,5 @@ nano-readme.odt
 .DS_Store
 /build
 /captures
+/json
 

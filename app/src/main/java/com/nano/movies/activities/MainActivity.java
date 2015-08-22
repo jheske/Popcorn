@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.facebook.stetho.Stetho;
 import com.nano.movies.R;
 import com.nano.movies.web.MovieServiceProxy;
 
@@ -92,6 +93,21 @@ public class MainActivity extends AppCompatActivity
         setupFragments();
         setupSpinner();
         mIsTwoPane = checkForDualPane();
+        setupStethoLibrary();
+    }
+
+    /**
+     * A very useful library for Chrome-based debugging,
+     * and especially for database inspection.
+     */
+    private void setupStethoLibrary() {
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
     }
 
     /**

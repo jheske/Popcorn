@@ -33,4 +33,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.4.0'
     //GSON JSON parsing
     compile 'com.google.code.gson:gson:2.3'
+    //Chrome debugging library
+    compile 'com.facebook.stetho:stetho:1.1.1'
 }
