@@ -1,6 +1,6 @@
 /**
  * Created by Jill Heske
- *
+ * <p/>
  * Copyright(c) 2015
  */
 package com.nano.movies.activities;
@@ -33,11 +33,11 @@ import com.nano.movies.web.MovieServiceProxy;
  * Layout.xml will direct Android to the correct one-pane or two-pane layout
  * in the res/layouts directory.
  * <p/>
- *
+ * <p/>
  * Organization:
- *
+ * <p/>
  * MainActivity contains 2 Fragments:
- *
+ * <p/>
  * MovieGridFragment handles the
  * Main UI and maintains the list of
  * downloaded movies and corresponding view (in the adapter).
@@ -50,7 +50,7 @@ import com.nano.movies.web.MovieServiceProxy;
  * which will the pass it on to either
  * MovieDetailFragment (in two-pane layout) or MovieViewActivity
  * (one-pane layout)
- *
+ * <p/>
  * MovieDetailFragment displays movie details when
  * user selects a poster from the grid.
  * The fragment is only available in a two-pane layout,
@@ -58,7 +58,6 @@ import com.nano.movies.web.MovieServiceProxy;
  * of MovieGridFragment, so it is not used at all on a phone or on a
  * tablet in portrait mode.  I one-pane layout, we use MovieDetailActivity
  * to load its fragment show the details on a separate screen instead.
- *
  */
 public class MainActivity extends AppCompatActivity
         implements MovieGridFragment.MovieSelectionListener {
@@ -67,6 +66,8 @@ public class MainActivity extends AppCompatActivity
     private MovieGridFragment mMovieGridFragment;
     private MovieDetailFragment mMovieDetailFragment;
     private boolean mIsTwoPane = false;
+    private static final String MOVIEFRAGMENT_TAG = "MOVIEFRAGMENT_TAG";
+
 
     /**
      * Android will load either
@@ -100,8 +101,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * A very useful library for Chrome-based debugging,
-     * and especially for database inspection.
+     * A very useful library for debugging Android apps
+     * using Chrome, even has a database inspector!
      */
     private void setupStethoLibrary() {
         Stetho.initialize(
@@ -125,12 +126,33 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Retrieve Fragments
-     * If we are in a one-pane layout, mMovieDetailFragment
-     * will not be in the layout and will be null.
+     * If we are in a one-pane layout,
+     * mMovieDetailFragment will be null because it is not
+     * defined in the one-pane layout.
+     * <p/>
+     * Static and Dynamic Fragments
+     * http://stackoverflow.com/questions/21816650/activity-layout-with-static-and-dynamic-fragments
+     * FrameLayout vs Fragment
+     * http://stackoverflow.com/questions/19453530/android-when-why-should-i-use-framelayout-instead-of-fragment
      */
     private void setupFragments() {
-        mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager().findFragmentById(
-                R.id.fragment_movie_grid);
+        /*mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager().findFragmentById(
+                R.id.fragment_movie_grid);*/
+        /**
+         *  The main grid container has to be a DYNAMIC FRAGMENT because the app has two different
+         *  ones: one for Movies, which are stored in a List and displayed
+         *  using a regular Adapter; and another for Favorite Movies, which need to persist
+         *  and are stored in a database and loaded using a Loader and viewed using an
+         *  Adapter with a Cursor.
+         *
+         *  @TODO select MovieGridFragment or FavoritesGridFragment based on user's current Spinner
+         *  selection (Movies vs Favorites)
+         */
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_movie_grid_container, new MovieGridFragment(), MOVIEFRAGMENT_TAG)
+                .commit();
+        // This is a STATIC FRAGMENT because it never needs to be
+        // swapped with a different fragment.
         mMovieDetailFragment = (MovieDetailFragment) getSupportFragmentManager().findFragmentById(
                 R.id.fragment_movie_detail);
     }
@@ -153,9 +175,9 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Set up spinner for selecting
-     *  sort by Most Popular
-     *  sort by Highest Rated
-     *  show Favorites (NOT IMPLEMENTED YET)
+     * sort by Most Popular
+     * sort by Highest Rated
+     * show Favorites (NOT IMPLEMENTED YET)
      */
     private void setupSpinner() {
         Spinner spinner = (Spinner) findViewById(R.id.spinner_sort_by);
@@ -189,6 +211,9 @@ public class MainActivity extends AppCompatActivity
                 String sortBy = (String) parent.getItemAtPosition(position);
                 if (sortBy.equals(getString(R.string.option_most_popular)))
                     mMovieGridFragment.setSortBy(MovieServiceProxy.POPULARITY_DESC);
+                else if (sortBy.equals(getString(R.string.option_highest_rated)))
+                    mMovieGridFragment.setSortBy(MovieServiceProxy.VOTE_AVERAGE_DESC);
+                    //@TODO Show favorites in its own fragment
                 else
                     mMovieGridFragment.setSortBy(MovieServiceProxy.VOTE_AVERAGE_DESC);
                 mMovieGridFragment.downloadMovies();
@@ -207,7 +232,6 @@ public class MainActivity extends AppCompatActivity
      * to download details for the selected movie.
      * If one-pane, then start a new Activity tod
      * display the movie on its own screen.
-     *
      */
     public void onMovieSelected(int movieId, boolean isUserSelected) {
         if (mIsTwoPane) {

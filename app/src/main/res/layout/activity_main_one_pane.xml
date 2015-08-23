@@ -1,3 +1,6 @@
+<!--
+    See activity_main_two_panes for large-screen version of this activity.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_containers"
@@ -16,10 +19,19 @@
         android:layout_margin="20dp"
         android:entries="@array/sort_by_array"/>
 
+    <!--
+    Layout will be assigned by the fragment's its activity.
+    -->
+    <FrameLayout
+        android:id="@+id/fragment_movie_grid_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+<!--
     <fragment
         android:id="@+id/fragment_movie_grid"
         android:name="com.nano.movies.activities.MovieGridFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_movies" />
+-->
 </LinearLayout>
