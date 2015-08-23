@@ -32,7 +32,6 @@ import com.nano.movies.adapters.MovieAdapterWithCursor;
 import com.nano.movies.data.movie.MovieColumns;
 import com.nano.movies.data.movie.MovieCursor;
 import com.nano.movies.data.movie.MovieSelection;
-import com.nano.movies.data.trailer.TrailerContentValues;
 import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
@@ -60,12 +59,6 @@ public class MovieGridFragment extends Fragment implements LoaderManager.LoaderC
     //Cursor loader variables
     private static final int MOVIE_LOADER = 0;
     private int mPosition = RecyclerView.NO_POSITION;
-
-
-    // private MovieRecyclerAdapter mMovieRVAdapter;
-    // The MovieRecyclerAdapter will take data from a source and
-    // use it to populate the RecyclerView it's attached to.
- //   mMovieAdapter = new MovieRecyclerAdapter(getActivity(), null, 0);
 
     //Manages communication between activities
     //and themoviedb.org service proxies
@@ -275,13 +268,13 @@ public class MovieGridFragment extends Fragment implements LoaderManager.LoaderC
         // Sort order:  Ascending, by title.
         String sortOrder = MovieColumns.ORIGINAL_TITLE + " ASC";
         MovieSelection movieSelection = new MovieSelection();
-        String[] projection = MovieColumns.ALL_COLUMNS;
-        MovieCursor cursor = movieSelection.query(getActivity().getContentResolver(), projection);
-        cursor.moveToPosition(0);
-        int count = cursor.getCount();
-        Movie movie = new Movie(cursor);
-        Log.d(TAG,cursor.getOriginalTitle());
-        Uri uri = movieSelection.uri();
+        //String[] projection = MovieColumns.ALL_COLUMNS;
+        //MovieCursor cursor = movieSelection.query(getActivity().getContentResolver(), projection);
+        //cursor.moveToPosition(0);
+        //int count = cursor.getCount();
+        //Movie movie = new Movie(cursor);
+        //Log.d(TAG,cursor.getOriginalTitle());
+        //Uri uri = movieSelection.uri();
 
         Loader<Cursor> loader = new CursorLoader(getActivity(),
                 movieSelection.uri(),
@@ -311,7 +304,6 @@ public class MovieGridFragment extends Fragment implements LoaderManager.LoaderC
             // to, do so now.
             mRecyclerView.smoothScrollToPosition(mPosition);
         }
- //       downloadMovies();
     }
 
     /**

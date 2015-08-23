@@ -9,13 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.nano.movies.R;
-import com.nano.movies.data.movie.MovieCursor;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.Tmdb;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Adapter for connecting the RecyclerView with
@@ -25,7 +21,6 @@ import java.util.List;
  * https://github.com/udacity/Advanced_Android_Development/blob/6.18_Bonus_RecyclerView_Code/app/src/main/java/com/example/android/sunshine/app/ForecastAdapter.java
  */
 public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWithCursor.MovieViewHolder> {
-//    private final List<Movie> mMovies;
     private Context mContext;
     private Cursor mCursor;
    // final private View mEmptyView;
@@ -33,7 +28,6 @@ public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWit
     public MovieAdapterWithCursor(Context context) {
         super();
         mContext = context;
-//        mMovies = new ArrayList<>();
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -54,7 +48,6 @@ public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWit
 
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position) {
-//Movie movie = mMovies.get(holder.getAdapterPosition());
         mCursor.moveToPosition(position);
         Movie movie = new Movie(mCursor);
         final String movieImageUrl = Tmdb.getMovieImageUrl(movie.getPosterPath(),
@@ -77,19 +70,6 @@ public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWit
         mCursor.getCount();
         return (new Movie(mCursor));
     }
-
-/** Replaced with database inserts in MovieGridFragment
-    public void addAll(List<Movie> movies) {
-        for (int position = 0; position < movies.size(); position++) {
-            addItem(movies.get(position), position);
-        }
-    }
-
-    private void addItem(Movie movie, int position) {
-        mMovies.add(position, movie);
-        notifyItemInserted(position);
-    }
-*/
 
     /**
      * Clear all the movies from the RecyclerView,
