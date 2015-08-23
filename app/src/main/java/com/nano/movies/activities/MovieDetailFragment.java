@@ -25,6 +25,7 @@ import com.nano.movies.data.movie.MovieContentValues;
 import com.nano.movies.data.review.ReviewContentValues;
 import com.nano.movies.data.trailer.TrailerColumns;
 import com.nano.movies.data.trailer.TrailerContentValues;
+import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
@@ -56,13 +57,6 @@ public class MovieDetailFragment extends Fragment {
     private TextView mTextViewVoteAverage;
     private RatingBar mRatingVoteAverage;
 
-    private final static String TRAILER_ORIGIN_YOUTUBE="youtube";
-    private final static String TRAILER_ORIGIN_QUICKTIME="quicktime";
-
-    /* @TODO hook up Favorites button
-     * for P1, Stage 2
-     */
-    private Button mButtonFavorite;
     private int mMovieId;
     private Movie mMovie;
     private final Tmdb tmdbManager = new Tmdb();
@@ -113,128 +107,9 @@ public class MovieDetailFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Utils.showToast(getActivity(), "Click!!!");
-            dbInsertFavoriteMovie();
+            DatabaseUtils.insertMovie(getActivity(), mMovie);
         }
     };
-
-    /**
-     *
-     * Insert movie first, which returns its primary key
-     * to use as the movie_id foreign key when inserting trailers and reviews.
-     *
-     * Then insert Reviews and Trailers.  A movie has one list of reviews and
-     * two lists of trailers (Youtube and Quicktime).
-     * Reviews and/or trailers may be empty.
-     */
-    private void dbInsertFavoriteMovie() {
-        long movieId = dbInsertMovie();
-        insertTrailers(mMovie.getTrailers().getQuicktime(), TRAILER_ORIGIN_QUICKTIME,movieId);
-        insertTrailers(mMovie.getTrailers().getYoutube(),TRAILER_ORIGIN_YOUTUBE , movieId);
-        insertReviews(mMovie.getReviews().getResults(),movieId);
-    }
-
-    /**
-     * Insert a movie.
-     *
-     * @return the id of the created movie. It will be used as
-     * foreign key when inserting reviews and trailers
-     */
-    private long dbInsertMovie() {
-        MovieContentValues values = new MovieContentValues();
-        values.putTmdbId(mMovie.getId());
-        values.putHomepage(mMovie.getHomePage());
-        values.putOriginalTitle(mMovie.getOriginalTitle());
-        values.putOverview(mMovie.getOverview());
-        values.putPopularity(mMovie.getPopularity());
-        values.putPosterPath(mMovie.getOverview());
-        values.putReleaseDate(mMovie.getReleaseDate());
-        values.putRuntime(mMovie.getRuntime());
-        values.putTagline(mMovie.getTagline());
-        values.putTitle(mMovie.getTitle());
-        values.putVoteAverage(mMovie.getVoteAverage());
-        values.putVoteCount(mMovie.getVoteCount());
-
-        Uri uri = values.insert(getActivity().getContentResolver());
-        return ContentUris.parseId(uri);
-    }
-
-    /**
-     *
-     * @param movieId The primary key of the movie in Movie table. It's
-     *                a foreign key in Reviews and Trailers tables (column = tmdb_id).
-     */
-    private void insertTrailers(Long movieId) {
-    }
-
-    /**
-     * Insert reviews into Trailers table. This table has
-     * foreign key movieId, (table column = tmdb_id) into the Movie table.
-     *
-     * @param trailers Will be empty if movie has no trailers.
-     * @param movieId
-     * @param origin Trailer is on either Youtube or Quicktime
-     */
-    private void insertTrailers(List<Trailer> trailers,String origin, Long movieId) {
-        Trailer trailer;
-
-        if (trailers.size() == 0)
-            return;
-        for (int i = 0; i < trailers.size(); i++) {
-            trailer = trailers.get(i);
-            dbInsertTrailer(trailer,origin,movieId);
-        }
-    }
-
-    private long dbInsertTrailer(Trailer trailer, String origin, Long movieId) {
-        TrailerContentValues values = new TrailerContentValues();
-        values.putMovieId(movieId);
-        values.putName(trailer.getName());
-        values.putSize(trailer.getSize());
-        values.putSource(trailer.getSource());
-        values.putType(trailer.getType());
-        values.putOrigin(origin);
-
-        Uri uri = values.insert(getActivity().getContentResolver());
-        return ContentUris.parseId(uri);
-    }
-
-    /**
-     * Insert reviews into Reviews table. This table has
-     * foreign key movieId, (table column = tmdb_id) into the Movie table.
-     *
-     * @param reviews Will be empty if movie has no reviews.
-     * @param movieId
-     */
-    private void insertReviews(List<Reviews.Review> reviews,Long movieId) {
-        Review review;
-
-        if (reviews.size() == 0)
-            return;
-        for (int i = 0; i < reviews.size(); i++) {
-            review = reviews.get(i);
-            dbInsertReview(review,movieId);
-        }
-    }
-
-    /**
-     *
-     * @param trailer
-     * @param movieId
-     * @return
-     */
-    private long dbInsertReview(Review trailer,Long movieId) {
-        ReviewContentValues values = new ReviewContentValues();
-
-        values.putMovieId(movieId);
-        values.putReviewId(trailer.getId());
-        values.putAuthor(trailer.getAuthor());
-        values.putContent(trailer.getContent());
-        values.putUrl(trailer.getUrl());
-        values.putMovieId(movieId);
-
-        Uri uri = values.insert(getActivity().getContentResolver());
-        return ContentUris.parseId(uri);
-    }
 
     /**
      * Called by MainActivity if Fragment already exists (two-pane mode),

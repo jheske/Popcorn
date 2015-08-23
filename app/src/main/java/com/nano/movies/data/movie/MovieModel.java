@@ -15,7 +15,7 @@ public interface MovieModel extends BaseModel {
     /**
      * Movie's unique tmdb.org id, used to identify the movie in api calls.
      */
-    long getTmdbId();
+    int getTmdbId();
 
     /**
      * Movie's homepage url

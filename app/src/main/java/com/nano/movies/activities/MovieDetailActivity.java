@@ -8,14 +8,11 @@ package com.nano.movies.activities;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.nano.movies.R;
-import com.nano.movies.data.MovieAdapter;
-import com.nano.movies.web.Tmdb;
 
 public class MovieDetailActivity extends AppCompatActivity {
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";

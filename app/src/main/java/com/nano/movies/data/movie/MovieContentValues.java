@@ -42,7 +42,7 @@ public class MovieContentValues extends AbstractContentValues {
     /**
      * Movie's unique tmdb.org id, used to identify the movie in api calls.
      */
-    public MovieContentValues putTmdbId(long value) {
+    public MovieContentValues putTmdbId(int value) {
         mContentValues.put(MovieColumns.TMDB_ID, value);
         return this;
     }

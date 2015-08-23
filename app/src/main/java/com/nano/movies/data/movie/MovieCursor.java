@@ -29,8 +29,8 @@ public class MovieCursor extends AbstractCursor implements MovieModel {
     /**
      * Movie's unique tmdb.org id, used to identify the movie in api calls.
      */
-    public long getTmdbId() {
-        Long res = getLongOrNull(MovieColumns.TMDB_ID);
+    public int getTmdbId() {
+        Integer res = getIntegerOrNull(MovieColumns.TMDB_ID);
         if (res == null)
             throw new NullPointerException("The value of 'tmdb_id' in the database was null, which is not allowed according to the model definition");
         return res;

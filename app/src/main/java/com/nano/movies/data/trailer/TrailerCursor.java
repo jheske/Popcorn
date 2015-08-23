@@ -40,8 +40,8 @@ public class TrailerCursor extends AbstractCursor implements TrailerModel {
     /**
      * Movie's unique tmdb.org id, used to identify the movie in api calls.
      */
-    public long getMovieTmdbId() {
-        Long res = getLongOrNull(MovieColumns.TMDB_ID);
+    public int getMovieTmdbId() {
+        Integer res = getIntegerOrNull(MovieColumns.TMDB_ID);
         if (res == null)
             throw new NullPointerException("The value of 'tmdb_id' in the database was null, which is not allowed according to the model definition");
         return res;
