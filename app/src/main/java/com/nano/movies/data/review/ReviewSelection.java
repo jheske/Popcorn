@@ -119,32 +119,32 @@ public class ReviewSelection extends AbstractSelection<ReviewSelection> {
         return this;
     }
 
-    public ReviewSelection movieTmdbId(long... value) {
+    public ReviewSelection movieTmdbId(int... value) {
         addEquals(MovieColumns.TMDB_ID, toObjectArray(value));
         return this;
     }
 
-    public ReviewSelection movieTmdbIdNot(long... value) {
+    public ReviewSelection movieTmdbIdNot(int... value) {
         addNotEquals(MovieColumns.TMDB_ID, toObjectArray(value));
         return this;
     }
 
-    public ReviewSelection movieTmdbIdGt(long value) {
+    public ReviewSelection movieTmdbIdGt(int value) {
         addGreaterThan(MovieColumns.TMDB_ID, value);
         return this;
     }
 
-    public ReviewSelection movieTmdbIdGtEq(long value) {
+    public ReviewSelection movieTmdbIdGtEq(int value) {
         addGreaterThanOrEquals(MovieColumns.TMDB_ID, value);
         return this;
     }
 
-    public ReviewSelection movieTmdbIdLt(long value) {
+    public ReviewSelection movieTmdbIdLt(int value) {
         addLessThan(MovieColumns.TMDB_ID, value);
         return this;
     }
 
-    public ReviewSelection movieTmdbIdLtEq(long value) {
+    public ReviewSelection movieTmdbIdLtEq(int value) {
         addLessThanOrEquals(MovieColumns.TMDB_ID, value);
         return this;
     }

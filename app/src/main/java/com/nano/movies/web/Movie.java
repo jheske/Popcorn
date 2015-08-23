@@ -5,10 +5,12 @@
  */
 package com.nano.movies.web;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.nano.movies.data.movie.MovieCursor;
 import com.nano.movies.web.Trailers;
 import com.nano.movies.web.Trailers.Trailer;
 import com.nano.movies.web.Reviews;
@@ -62,8 +64,51 @@ public class Movie implements Parcelable {
     @SerializedName("reviews")
     private Reviews mReviews;
 
-    public Movie(String originalTitle) {
-        mOriginalTitle = originalTitle;
+
+    /**
+     * Instantiate a movie from a database row.
+     *
+     * @param cursor
+     */
+    public Movie (Cursor cursor) {
+        MovieCursor movieCursor = new MovieCursor(cursor);
+        id = movieCursor.getTmdbId();
+        mHomePage = movieCursor.getHomepage();
+        mOriginalTitle = movieCursor.getOriginalTitle();
+        mOverview = movieCursor.getOverview();
+        mPopularity = movieCursor.getPopularity();
+        mPosterPath = movieCursor.getPosterPath();
+        mReleaseDate = movieCursor.getReleaseDate();
+        mRuntime = movieCursor.getRuntime();
+        mTagline = movieCursor.getTagline();
+        mTitle = movieCursor.getTitle();
+        mVoteAverage = movieCursor.getVoteAverage();
+        mVoteCount = movieCursor.getVoteCount();
+    }
+
+    public Movie(Integer id, String homePage,
+                 String originalTitle,
+                 String overview,
+                 Double popularity,
+                 String posterPath,
+                 Date releaseDate,
+                 Integer runtime,
+                 String tagline,
+                 String title,
+                 Double voteAverage,
+                 Integer voteCount) {
+        this.id = id;
+        this.mHomePage = homePage;
+        this.mOriginalTitle = originalTitle;
+        this.mOverview = overview;
+        this.mPopularity = popularity;
+        this.mPosterPath = posterPath;
+        this.mReleaseDate = releaseDate;
+        this.mRuntime = runtime;
+        this.mTagline = tagline;
+        this.mTitle = title;
+        this.mVoteAverage = voteAverage;
+        this.mVoteCount = voteCount;
     }
 
     /**

@@ -119,32 +119,32 @@ public class TrailerSelection extends AbstractSelection<TrailerSelection> {
         return this;
     }
 
-    public TrailerSelection movieTmdbId(long... value) {
+    public TrailerSelection movieTmdbId(int... value) {
         addEquals(MovieColumns.TMDB_ID, toObjectArray(value));
         return this;
     }
 
-    public TrailerSelection movieTmdbIdNot(long... value) {
+    public TrailerSelection movieTmdbIdNot(int... value) {
         addNotEquals(MovieColumns.TMDB_ID, toObjectArray(value));
         return this;
     }
 
-    public TrailerSelection movieTmdbIdGt(long value) {
+    public TrailerSelection movieTmdbIdGt(int value) {
         addGreaterThan(MovieColumns.TMDB_ID, value);
         return this;
     }
 
-    public TrailerSelection movieTmdbIdGtEq(long value) {
+    public TrailerSelection movieTmdbIdGtEq(int value) {
         addGreaterThanOrEquals(MovieColumns.TMDB_ID, value);
         return this;
     }
 
-    public TrailerSelection movieTmdbIdLt(long value) {
+    public TrailerSelection movieTmdbIdLt(int value) {
         addLessThan(MovieColumns.TMDB_ID, value);
         return this;
     }
 
-    public TrailerSelection movieTmdbIdLtEq(long value) {
+    public TrailerSelection movieTmdbIdLtEq(int value) {
         addLessThanOrEquals(MovieColumns.TMDB_ID, value);
         return this;
     }

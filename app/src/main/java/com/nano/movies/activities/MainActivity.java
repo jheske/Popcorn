@@ -18,6 +18,7 @@ import android.widget.Spinner;
 
 import com.facebook.stetho.Stetho;
 import com.nano.movies.R;
+import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.web.MovieServiceProxy;
 
 /**
@@ -94,6 +95,8 @@ public class MainActivity extends AppCompatActivity
         setupSpinner();
         mIsTwoPane = checkForDualPane();
         setupStethoLibrary();
+        //@TODO take this out once app is working so data can persist
+        //DatabaseUtils.clearDatabase(this);
     }
 
     /**

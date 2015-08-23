@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.nano.movies.data.movie.MovieContentValues;
+import com.nano.movies.data.movie.MovieSelection;
 import com.nano.movies.data.review.ReviewContentValues;
 import com.nano.movies.data.trailer.TrailerContentValues;
 import com.nano.movies.web.Movie;
@@ -18,22 +19,38 @@ public class DatabaseUtils {
     private final static String TRAILER_ORIGIN_YOUTUBE="youtube";
     private final static String TRAILER_ORIGIN_QUICKTIME="quicktime";
 
+    public static void clearDatabase(Context context) {
+        // Delete movies ((which should also delete Reviews and Trailers because
+        // of the "on delete cascade" constraint)
+        MovieSelection movieSelection = new MovieSelection();
+        movieSelection.delete(context.getContentResolver());
+    }
+
+    public static void insertMovies(Context context, List<Movie> movies) {
+        for (int position = 0; position < movies.size(); position++) {
+            insertMovie(context,movies.get(position));
+        }
+    }
+
     /**
      *
      * Insert movie first, which returns its primary key
      * to use as the movie_id foreign key when inserting trailers and reviews.
      *
+     * Don't try to insert Reviews and Trailers. They
      * Then insert Reviews and Trailers.  A movie has one list of reviews and
      * two lists of trailers (Youtube and Quicktime).
      * Reviews and/or trailers may be empty.
      */
-    public static void insertFavoriteMovie(Context context, Movie movie) {
+    public static void insertMovie(Context context, Movie movie) {
         long movieId = dbInsertMovie(context,movie);
-        insertTrailers(context,movie.getTrailers().getQuicktime(), TRAILER_ORIGIN_QUICKTIME,movieId);
-        insertTrailers(context,movie.getTrailers().getYoutube(),TRAILER_ORIGIN_YOUTUBE , movieId);
-        insertReviews(context, movie.getReviews().getResults(),movieId);
+        if (movie.getTrailers() != null) {
+            insertTrailers(context, movie.getTrailers().getQuicktime(), TRAILER_ORIGIN_QUICKTIME, movieId);
+            insertTrailers(context, movie.getTrailers().getYoutube(), TRAILER_ORIGIN_YOUTUBE, movieId);
+        }
+        if (movie.getReviews() != null)
+          insertReviews(context, movie.getReviews().getResults(), movieId);
     }
-
 
     /**
      * Insert a movie.
@@ -48,7 +65,7 @@ public class DatabaseUtils {
         values.putOriginalTitle(movie.getOriginalTitle());
         values.putOverview(movie.getOverview());
         values.putPopularity(movie.getPopularity());
-        values.putPosterPath(movie.getOverview());
+        values.putPosterPath(movie.getPosterPath());
         values.putReleaseDate(movie.getReleaseDate());
         values.putRuntime(movie.getRuntime());
         values.putTagline(movie.getTagline());
@@ -75,6 +92,8 @@ public class DatabaseUtils {
                                 String origin, Long movieId) {
         Trailers.Trailer trailer;
 
+        if (trailers == null)
+            return;
         if (trailers.size() == 0)
             return;
         for (int i = 0; i < trailers.size(); i++) {
@@ -110,9 +129,6 @@ public class DatabaseUtils {
         return ContentUris.parseId(uri);
     }
 
-
-
-
     /**
      * Insert reviews into Review table. This table has
      * foreign key movieId, (table column = tmdb_id) into the Movie table.
@@ -123,6 +139,8 @@ public class DatabaseUtils {
     private static void insertReviews(Context context, List<Reviews.Review> reviews,Long movieId) {
         Reviews.Review review;
 
+        if (reviews == null)
+            return;
         if (reviews.size() == 0)
             return;
         for (int i = 0; i < reviews.size(); i++) {
