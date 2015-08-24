@@ -21,7 +21,9 @@ public class FavoritesRecyclerTouchListener implements RecyclerView.OnItemTouchL
      * Set up Simple listener to detect singleTapUp .  I can add
      * additional gestures later, like onLongPress, if I want.
      */
-    public FavoritesRecyclerTouchListener(Context context, RecyclerView recyclerView, FavoritesGridFragment.ClickListener clickListener) {
+    public FavoritesRecyclerTouchListener(Context context,
+                                          RecyclerView recyclerView,
+                                          FavoritesGridFragment.ClickListener clickListener) {
         mClickListener = clickListener;
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override

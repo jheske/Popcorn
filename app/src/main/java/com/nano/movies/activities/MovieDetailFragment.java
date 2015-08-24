@@ -5,41 +5,27 @@
  */
 package com.nano.movies.activities;
 
-import android.content.ContentUris;
-import android.database.SQLException;
-import android.net.Uri;
-import android.support.annotation.NonNull;
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nano.movies.R;
-import com.nano.movies.data.movie.MovieContentValues;
-import com.nano.movies.data.review.ReviewContentValues;
-import com.nano.movies.data.trailer.TrailerColumns;
-import com.nano.movies.data.trailer.TrailerContentValues;
 import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
-import com.nano.movies.web.Reviews;
-import com.nano.movies.web.Reviews.Review;
 import com.nano.movies.web.Tmdb;
-import com.nano.movies.web.Trailers;
-import com.nano.movies.web.Trailers.Trailer;
 import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit.Callback;
@@ -47,7 +33,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MovieDetailFragment extends Fragment {
-    private final String TAG = "[MovieDetailFragment]";
+    private final String TAG =  MovieDetailFragment.class.getSimpleName();
 
     private ImageView mImageViewThumbnail;
     private TextView mTextViewTitle;
@@ -60,6 +46,8 @@ public class MovieDetailFragment extends Fragment {
     private int mMovieId;
     private Movie mMovie;
     private final Tmdb tmdbManager = new Tmdb();
+private boolean mOnActivityCreatedCalled=false;
+private boolean mOnAttachCalled=false;
 
     // Tag for saving movie so it doesn't have to be re-downloaded on config change
     private final String BUNDLE_MOVIE = "SaveMovie";
@@ -92,8 +80,16 @@ public class MovieDetailFragment extends Fragment {
         //@TODO replace this with database persistence
         if (savedInstanceState != null) {
             mMovie = savedInstanceState.getParcelable(BUNDLE_MOVIE);
-            mMovieId = mMovie.getId();
+            if (mMovie != null)
+              mMovieId = mMovie.getId();
         }
+mOnActivityCreatedCalled=true;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+mOnAttachCalled=true;
     }
 
     @Override
@@ -106,7 +102,6 @@ public class MovieDetailFragment extends Fragment {
     private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Utils.showToast(getActivity(), "Click!!!");
             DatabaseUtils.insertMovie(getActivity(), mMovie);
         }
     };
@@ -154,6 +149,7 @@ public class MovieDetailFragment extends Fragment {
         mTextViewTitle.setText(movie.getOriginalTitle());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
         mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
+        Activity activity = getActivity();
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
                 .put("runtime", movie.getRuntime().toString())
                 .format();

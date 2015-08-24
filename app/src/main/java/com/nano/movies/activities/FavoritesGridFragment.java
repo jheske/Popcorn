@@ -64,7 +64,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     private final String BUNDLE_RECYCLER_LAYOUT = "SaveLayoutState";
     private final String BUNDLE_LAST_POSITION = "SaveLastPosition";
     private final String BUNDLE_SORT_BY = "SaveSortBy";
-    private final String BUNDLE_MOVIES = "SaveMovies";
 
     // Android recommends Fragments always communicate with each other
     // via the container Activity
@@ -87,6 +86,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
         mActivityContext = getActivity();
     }
 
@@ -94,11 +94,10 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-        // Grid with 2 columns
+        //The adapter has a cursor for linking the RecyclerView with the database
         mMovieAdapter = new MovieAdapterWithCursor(mActivityContext);
-        //mMovieAdapter = new MovieAdapter(mActivityContext);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        //Show two columns or three, depending device orientation.
+        //Layout is a grid with two columns or three, depending device orientation.
         if (getActivity().getResources()
                 .getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -111,11 +110,14 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
                 mRecyclerView, new ClickListener() {
             /**
              * onClick called back from the GestureDetector
+             * mCallback calls into MainActivity which
+             * implements this fragment's MovieSelectionListener
+             * Note that MovieGridFragment works the same way.
              */
             @Override
             public void onClick(View view, int position) {
                 //Move database cursor to new position
-                //mMovieAdapter.moveCursorToPosition(position);
+                mMovieAdapter.moveCursorToPosition(position);
                 //Get latest movie info from the database
                 Movie movie = mMovieAdapter.getItemAtPosition(position);
                 //Call back to MainActivity to handle the click event
@@ -130,8 +132,8 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     /**
      * Will probably also need to add something like
      * onMoviesChanged() {
-     *     updateMovies();
-     *     getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+     * updateMovies();
+     * getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
      * }
      * but that might just be if I'm using SyncAdapter
      *
@@ -141,30 +143,21 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         if (savedInstanceState != null) {
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             mSortBy = savedInstanceState.getString(BUNDLE_SORT_BY);
             mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
-            mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES);
-            //@TODO replace this with database persistence
-            //Already have the movies, so skip the downloadMovies api call
-            displayPosters();
-        } else
-            //@TODO Do this after loaderManager is fully initialized or else BIG TROUBLE
-            downloadMovies();
+            //    mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES);
+        } //else
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(BUNDLE_SORT_BY, mSortBy);
         outState.putInt(BUNDLE_LAST_POSITION, mLastPosition);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT,
                 mRecyclerView.getLayoutManager().onSaveInstanceState());
-        //@TODO replace this with database persistence
-        outState.putParcelableArrayList(BUNDLE_MOVIES, (ArrayList) mMovies);
     }
 
     /**
@@ -172,7 +165,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
      * mLayoutManagerSavedState will hold pre-config state,
      * including the most recently viewed movie position
      * and the LayoutManager's state.
-     *
+     * <p/>
      * Retrieve that information and reinitialize the
      * saved states.
      */
@@ -183,29 +176,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
             mLastPosition = 0;
             mLayoutManagerSavedState = null;
         }
-    }
-
-    public void downloadMovies() {
-        tmdbManager.setIsDebug(true);
-        tmdbManager.moviesServiceProxy().discoverMovies(1, mSortBy, new Callback<TmdbResults>() {
-            @Override
-            public void success(TmdbResults results, Response response) {
-                //Save movies and stash/restore then on
-                //config changes so we can avoid a needless api call.
-                mMovies = results.results;
-                //Put them all the the database
-                displayPosters();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                // Handle errors here
-                String errorMsg = getResources()
-                        .getString(R.string.error_download_movies_failed);
-                Utils.showToast(getActivity(), errorMsg);
-                Log.i(TAG, errorMsg);
-            }
-        });
     }
 
     @Override
@@ -220,27 +190,23 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
             throw new ClassCastException(activity.toString()
                     + getResources().getString(R.string.error_implement_method) + " MovieSelectionListener");
         }
+        //Favorite movies are in the database so no download needed.
+        //They should display automatically once Loader initializes.
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
     }
 
-    private void displayPosters() {
-//    mMovieAdapter.clear();
-//    mMovieAdapter.addAll(mMovies);
-        //Tell main Activity it can display the first movie in the list
-        //if MovieDetailFragment exists (two-pane mode).
-        restoreLayoutManagerPosition();
+    public void displayMovieDetails() {
+        //Tell main Activity that if it is in two-pane mode
+        //it can display the movie at
+        //mLastPosition, which will be 0 (first movie in the list)
+        //if this is first time through.
         Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
         //false = Movie not selected by user
         mCallback.onMovieSelected(movie.getId(), false);
     }
 
-    public void setSortBy(String sortBy) {
-        mSortBy = sortBy;
-        mLastPosition = 0;
-    }
-
-
     /**
-     * JEH The CursorLoader derives from AsyncTaskLoader so it is
+     * The CursorLoader derives from AsyncTaskLoader so it is
      * executed in a background thread.
      *
      * @param i
@@ -264,7 +230,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
         //Movie movie = new Movie(cursor);
         //Log.d(TAG,cursor.getOriginalTitle());
         //Uri uri = movieSelection.uri();
-
         Loader<Cursor> loader = new CursorLoader(getActivity(),
                 movieSelection.uri(),
                 MovieColumns.ALL_COLUMNS,
@@ -276,8 +241,11 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
 
     /**
      * Called when the loader completes and the data is ready.
-     *** Call swapCursor to use the data in mForecastAdapter
-     *** Do any other UI updates based on the data.
+     * ** Call swapCursor to use the data in mForecastAdapter
+     * ** Do any other UI updates based on the data.
+     * <p/>
+     * RecyclerView.NO_POSITION
+     * http://stackoverflow.com/questions/29684154/recyclerview-viewholder-getlayoutposition-vs-getadapterposition
      *
      * @param loader
      * @param {data}
@@ -285,14 +253,12 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         int count = cursor.getCount();
-        Log.d(TAG,"MovieCount = " + count);
+        Log.d(TAG, "MovieCount = " + count);
 
         mMovieAdapter.swapCursor(cursor);
-        if (mPosition != ListView.INVALID_POSITION) {
-            // If we don't need to restart the loader, and there's a desired position to restore
-            // to, do so now.
-            mRecyclerView.smoothScrollToPosition(mPosition);
-        }
+        mRecyclerView.smoothScrollToPosition(mLastPosition);
+        mMovieAdapter.moveCursorToPosition(mLastPosition);
+        displayMovieDetails();
     }
 
     /**
@@ -304,8 +270,9 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        //mMovieAdapter.swapCursor(null);
+        mMovieAdapter.swapCursor(null);
     }
+
     /**
      * Set up interface to handle onClick
      * This could also handle have methods to handle

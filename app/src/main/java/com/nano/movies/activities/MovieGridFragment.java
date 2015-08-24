@@ -8,7 +8,6 @@ package com.nano.movies.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -36,7 +35,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MovieGridFragment extends Fragment {
-    private final String TAG = "[MovieGridFragment]";
+    private final String TAG = MovieGridFragment.class.getSimpleName();
 
     private Context mActivityContext;
 
@@ -108,9 +107,7 @@ public class MovieGridFragment extends Fragment {
              */
             @Override
             public void onClick(View view, int position) {
-                //Move database cursor to new position
-                //mMovieAdapter.moveCursorToPosition(position);
-                //Get latest movie info from the database
+                //Get movie info from the adapter
                 Movie movie = mMovieAdapter.getItemAtPosition(position);
                 //Call back to MainActivity to handle the click event
                 //true = Movie selected by user
@@ -122,7 +119,6 @@ public class MovieGridFragment extends Fragment {
     }
 
     /**
-     *
      * @param savedInstanceState
      */
     @Override
@@ -135,9 +131,9 @@ public class MovieGridFragment extends Fragment {
             mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
             mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES);
-            displayPosters();
-        } else
-            downloadMovies();
+//            displayPosters();
+        }// else
+          //  downloadMovies();
     }
 
     @Override
@@ -168,6 +164,11 @@ public class MovieGridFragment extends Fragment {
         }
     }
 
+    /**
+     * Called after parent Activity is created,
+     * or after when changes Spinner selection
+     * to either Popular or Highest-rated movies
+     */
     public void downloadMovies() {
         tmdbManager.setIsDebug(true);
         tmdbManager.moviesServiceProxy().discoverMovies(1, mSortBy, new Callback<TmdbResults>() {
@@ -203,21 +204,27 @@ public class MovieGridFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + getResources().getString(R.string.error_implement_method) + " MovieSelectionListener");
         }
+//        downloadMovies();
     }
 
     private void displayPosters() {
         mMovieAdapter.clear();
         mMovieAdapter.addAll(mMovies);
-        //Tell main Activity it can display the first movie in the list
-        //if MovieDetailFragment exists (two-pane mode).
+        //Tell main Activity that if it is in two-pane mode
+        //it can display the movie at
+        //mLastPosition, which will be 0 (first movie in the list)
+        //if this is first time through.
         restoreLayoutManagerPosition();
         Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
         //false = Movie not selected by user
         mCallback.onMovieSelected(movie.getId(), false);
     }
 
-    public void setSortBy(String sortBy) {
-        mSortBy = sortBy;
+    public void setSortBy(MainActivity.SpinnerSelection sortBy) {
+        if (sortBy == MainActivity.SpinnerSelection.HIGHEST_RATED)
+            mSortBy = MovieServiceProxy.VOTE_AVERAGE_DESC;
+        else
+            mSortBy = MovieServiceProxy.POPULARITY_DESC;
         mLastPosition = 0;
     }
 
