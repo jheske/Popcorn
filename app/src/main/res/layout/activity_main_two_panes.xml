@@ -31,14 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-
-        <fragment
-            android:id="@+id/fragment_movie_grid"
-            android:name="com.nano.movies.activities.MovieGridFragment"
+        <!--
+         Dynamic Fragment's layout will be loaded by the fragment's activity.
+        -->
+        <FrameLayout
+            android:id="@+id/fragment_movie_grid_container"
             android:layout_width="400dp"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_movies" />
-
+            android:layout_height="match_parent" />
         <fragment
             android:id="@+id/fragment_movie_detail"
             android:name="com.nano.movies.activities.MovieDetailFragment"

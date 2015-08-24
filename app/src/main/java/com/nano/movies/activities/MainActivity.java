@@ -7,6 +7,8 @@ package com.nano.movies.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,7 +20,6 @@ import android.widget.Spinner;
 
 import com.facebook.stetho.Stetho;
 import com.nano.movies.R;
-import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.web.MovieServiceProxy;
 
 /**
@@ -63,10 +64,16 @@ public class MainActivity extends AppCompatActivity
         implements MovieGridFragment.MovieSelectionListener {
     private final String TAG = getClass().getSimpleName();
 
-    private MovieGridFragment mMovieGridFragment;
-    private MovieDetailFragment mMovieDetailFragment;
     private boolean mIsTwoPane = false;
-    private static final String MOVIEFRAGMENT_TAG = "MOVIEFRAGMENT_TAG";
+
+    private enum SpinnerSelection {POPULARITY, HIGHEST_RATED, FAVORITES}
+
+    private SpinnerSelection spinnerSelection = SpinnerSelection.POPULARITY;
+
+    private MovieDetailFragment mMovieDetailFragment;
+    private MovieGridFragment mMovieGridFragment;
+    private FavoritesGridFragment mFavoritesGridFragment;
+    private static final String GRIDFRAGMENT_TAG = "GRIDFRAGMENT_TAG";
 
 
     /**
@@ -92,7 +99,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.layout_main);
         setupToolbar();
-        setupFragments();
+        setupFragments(savedInstanceState);
         setupSpinner();
         mIsTwoPane = checkForDualPane();
         setupStethoLibrary();
@@ -135,9 +142,23 @@ public class MainActivity extends AppCompatActivity
      * FrameLayout vs Fragment
      * http://stackoverflow.com/questions/19453530/android-when-why-should-i-use-framelayout-instead-of-fragment
      */
-    private void setupFragments() {
+    private void setupFragments(Bundle savedInstanceState) {
         /*mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager().findFragmentById(
                 R.id.fragment_movie_grid);*/
+        SetupMovieGridFragment(savedInstanceState);
+        // This is a STATIC FRAGMENT because it never needs to be
+        // swapped with a different fragment.
+        mMovieDetailFragment = (MovieDetailFragment) getSupportFragmentManager().findFragmentById(
+                R.id.fragment_movie_detail);
+    }
+
+
+    /**
+     * http://developer.android.com/guide/topics/resources/runtime-changes.html#RetainingAnObject
+     *
+     * @param savedInstanceState
+     */
+    private void SetupMovieGridFragment(Bundle savedInstanceState) {
         /**
          *  The main grid container has to be a DYNAMIC FRAGMENT because the app has two different
          *  ones: one for Movies, which are stored in a List and displayed
@@ -148,15 +169,32 @@ public class MainActivity extends AppCompatActivity
          *  @TODO select MovieGridFragment or FavoritesGridFragment based on user's current Spinner
          *  selection (Movies vs Favorites)
          */
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_movie_grid_container, new MovieGridFragment(), MOVIEFRAGMENT_TAG)
-                .commit();
-        // This is a STATIC FRAGMENT because it never needs to be
-        // swapped with a different fragment.
-        mMovieDetailFragment = (MovieDetailFragment) getSupportFragmentManager().findFragmentById(
-                R.id.fragment_movie_detail);
-    }
 
+   /*     if (savedInstanceState == null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            MovieGridFragment fragment = new MovieGridFragment();
+            fragmentTransaction.add(R.id.fragment_movie_grid_container, fragment);
+            fragmentTransaction.commit();
+        }  */
+
+        // find the retained fragment on activity restarts
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        mMovieGridFragment = (MovieGridFragment) fragmentManager.findFragmentByTag(GRIDFRAGMENT_TAG);
+        if (mMovieGridFragment == null)
+            mMovieGridFragment = new MovieGridFragment();
+        if (mFavoritesGridFragment == null)
+            mFavoritesGridFragment = new FavoritesGridFragment();
+
+        if (spinnerSelection == SpinnerSelection.FAVORITES)
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_movie_grid_container, mFavoritesGridFragment, GRIDFRAGMENT_TAG)
+                    .commit();
+        else
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_movie_grid_container, mMovieGridFragment, GRIDFRAGMENT_TAG)
+                    .commit();
+    }
 
     /**
      * Determine whether we are in two-pane mode, based
@@ -209,13 +247,19 @@ public class MainActivity extends AppCompatActivity
                                    View view, int position, long id) {
             if (isUserSelected) {
                 String sortBy = (String) parent.getItemAtPosition(position);
-                if (sortBy.equals(getString(R.string.option_most_popular)))
+                if (sortBy.equals(getString(R.string.option_most_popular))) {
                     mMovieGridFragment.setSortBy(MovieServiceProxy.POPULARITY_DESC);
-                else if (sortBy.equals(getString(R.string.option_highest_rated)))
+                    spinnerSelection = SpinnerSelection.POPULARITY;
+                } else if (sortBy.equals(getString(R.string.option_highest_rated))) {
                     mMovieGridFragment.setSortBy(MovieServiceProxy.VOTE_AVERAGE_DESC);
-                    //@TODO Show favorites in its own fragment
-                else
+                    spinnerSelection = SpinnerSelection.HIGHEST_RATED;
+                }
+
+                //@TODO Show favorites in its own fragment
+                else {
                     mMovieGridFragment.setSortBy(MovieServiceProxy.VOTE_AVERAGE_DESC);
+                    spinnerSelection = SpinnerSelection.FAVORITES;
+                }
                 mMovieGridFragment.downloadMovies();
                 isUserSelected = false;
             }

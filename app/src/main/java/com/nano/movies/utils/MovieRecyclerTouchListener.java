@@ -9,10 +9,10 @@ import android.view.View;
 import com.nano.movies.activities.MovieGridFragment;
 
 /****************************************************************************
- * The RecyclerTouchListener class sets up the RecyclerView's gesture
+ * The MovieRecyclerTouchListener class sets up the RecyclerView's gesture
  * management. It intercepts and handles user clicks on grid items
  */
-public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+public class MovieRecyclerTouchListener implements RecyclerView.OnItemTouchListener {
     private GestureDetector mGestureDetector;
     private MovieGridFragment.ClickListener mClickListener;
 
@@ -20,7 +20,7 @@ public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
      * Set up Simple listener to detect singleTapUp .  I can add
      * additional gestures later, like onLongPress, if I want.
      */
-    public RecyclerTouchListener(Context context, RecyclerView recyclerView, MovieGridFragment.ClickListener clickListener) {
+    public MovieRecyclerTouchListener(Context context, RecyclerView recyclerView, MovieGridFragment.ClickListener clickListener) {
         mClickListener = clickListener;
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override

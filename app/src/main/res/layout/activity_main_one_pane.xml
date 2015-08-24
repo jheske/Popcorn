@@ -20,7 +20,7 @@
         android:entries="@array/sort_by_array"/>
 
     <!--
-    Layout will be assigned by the fragment's its activity.
+    Layout will be assigned by the fragment's activity.
     -->
     <FrameLayout
         android:id="@+id/fragment_movie_grid_container"
