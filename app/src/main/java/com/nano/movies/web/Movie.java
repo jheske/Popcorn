@@ -8,13 +8,10 @@ package com.nano.movies.web;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 import com.nano.movies.data.movie.MovieCursor;
-import com.nano.movies.web.Trailers;
-import com.nano.movies.web.Trailers.Trailer;
-import com.nano.movies.web.Reviews;
-import com.nano.movies.web.Reviews.Review;
 
 import java.util.Date;
 import java.util.List;
@@ -63,6 +60,7 @@ public class Movie implements Parcelable {
     // Used with append_to_response=reviews
     @SerializedName("reviews")
     private Reviews mReviews;
+    private final String TAG=getClass().getSimpleName();
 
 
     /**

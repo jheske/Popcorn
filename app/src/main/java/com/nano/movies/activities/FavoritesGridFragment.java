@@ -1,7 +1,6 @@
 package com.nano.movies.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Parcelable;
@@ -16,39 +15,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.nano.movies.R;
 import com.nano.movies.adapters.MovieAdapterWithCursor;
 import com.nano.movies.data.movie.MovieColumns;
 import com.nano.movies.data.movie.MovieSelection;
-import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.utils.FavoritesRecyclerTouchListener;
-import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Tmdb;
-import com.nano.movies.web.TmdbResults;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class FavoritesGridFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private final String TAG = FavoritesGridFragment.class.getSimpleName();
 
-    private Context mActivityContext;
-
     private RecyclerView mRecyclerView;
     private MovieAdapterWithCursor mMovieAdapter;
-    //private MovieAdapter mMovieAdapter;
 
     //Cursor loader variables
     private static final int MOVIE_LOADER = 0;
-    private int mPosition = RecyclerView.NO_POSITION;
 
     //Manages communication between activities
     //and themoviedb.org service proxies
@@ -80,30 +66,30 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     private MovieSelectionListener mCallback = null;
 
     public FavoritesGridFragment() {
+        setHasOptionsMenu(true);
     }
 
-    @Override
+/*    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        mActivityContext = getActivity();
-    }
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         //The adapter has a cursor for linking the RecyclerView with the database
-        mMovieAdapter = new MovieAdapterWithCursor(mActivityContext);
+        mMovieAdapter = new MovieAdapterWithCursor(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         //Layout is a grid with two columns or three, depending device orientation.
         if (getActivity().getResources()
                 .getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT)
-            mRecyclerView.setLayoutManager(new GridLayoutManager(mActivityContext, 2));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         else
-            mRecyclerView.setLayoutManager(new GridLayoutManager(mActivityContext, 3));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mMovieAdapter);
         mRecyclerView.addOnItemTouchListener(new FavoritesRecyclerTouchListener(getActivity(),

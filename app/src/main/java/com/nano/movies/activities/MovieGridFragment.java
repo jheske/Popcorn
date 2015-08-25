@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.annotations.SerializedName;
 import com.nano.movies.R;
 import com.nano.movies.adapters.MovieAdapter;
 import com.nano.movies.utils.MovieRecyclerTouchListener;
@@ -33,6 +34,7 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 public class MovieGridFragment extends Fragment {
     private final String TAG = MovieGridFragment.class.getSimpleName();
@@ -163,6 +165,13 @@ public class MovieGridFragment extends Fragment {
         }
     }
 
+    class RestError {
+        @SerializedName("code")
+        public int code;
+        @SerializedName("error")
+        public String errorDetails;
+    }
+
     /**
      * Called after parent Activity is created,
      * or after when changes Spinner selection
@@ -184,13 +193,20 @@ public class MovieGridFragment extends Fragment {
                 displayPosters();
             }
 
+            /**
+             * A Json Syntax error can be a HUGE PAIN to debug.
+             * Set a breakpoint in Gson.java fromJSon. When error occurs
+             * look at the Variables trace for the "throwable.cause"
+             *
+             * @param error
+             */
             @Override
             public void failure(RetrofitError error) {
                 // Handle errors here
                 String errorMsg = getResources()
                         .getString(R.string.error_download_movies_failed);
                 Utils.showToast(getActivity(), errorMsg);
-                Log.i(TAG, errorMsg);
+                Log.i(TAG, error.getMessage() + " kind = " + error.getKind());
             }
         });
     }

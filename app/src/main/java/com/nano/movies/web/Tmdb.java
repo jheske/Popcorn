@@ -1,18 +1,43 @@
 /**
  * Created by Jill Heske
- *
+ * <p/>
  * Copyright(c) 2015
  */
 package com.nano.movies.web;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.nano.movies.utils.ApiKey;
+
+import java.io.IOException;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.converter.ConversionException;
 import retrofit.converter.GsonConverter;
+import retrofit.mime.TypedInput;
 
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonDeserializationContext;
 /**
  * This class serves as a connection between the UI and
  * the themoviedb service api proxies . At present I'm supporting only
@@ -25,6 +50,10 @@ public class Tmdb {
      * Tmdb API URL.
      */
     private static final String MOVIE_SERVICE_URL = "https://api.themoviedb.org/3";
+    /**
+     * Format for decoding JSON dates in string format.
+     */
+    private static final SimpleDateFormat JSON_STRING_DATE = new SimpleDateFormat("yyy-MM-dd");
 
     /**
      * API key query parameter name.
@@ -36,7 +65,7 @@ public class Tmdb {
     private static final String PARAM_API_KEY = "api_key";
     private boolean isDebug;
     private RestAdapter restAdapter;
-
+    private final String TAG = getClass().getSimpleName();
 
     /**
      * A few image size constants selected from
@@ -76,6 +105,25 @@ public class Tmdb {
     }
 
     /**
+     * Gson does a terrible job handling dates!!!  It especially hates
+     * if date is an empty string "".
+     */
+    private class JsonDateDeserializer implements JsonDeserializer<Date> {
+        @Override
+        public Date deserialize(JsonElement json, Type typeOfT,
+                                JsonDeserializationContext context) throws JsonParseException {
+
+            Date today = new Date(System.currentTimeMillis());
+            try {
+                return JSON_STRING_DATE.parse(json.getAsString());
+            } catch (ParseException e) {
+                //Log.d(TAG,"Error parsing date " + e.getMessage() + " returning " + today.toString());
+                return null;
+            }
+        }
+    }
+
+    /**
      * Create a RestAdapterBuilder to help build the adapter
      */
     private RestAdapter.Builder restAdapterBuilder() {
@@ -88,10 +136,25 @@ public class Tmdb {
     private RestAdapter getRestAdapter() {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd")
+                .registerTypeAdapter(Date.class, new JsonDateDeserializer())
                 .create();
+
         if (restAdapter == null) {
             RestAdapter.Builder builder = restAdapterBuilder();
-            builder.setConverter(new GsonConverter(gson));
+            //builder.setConverter(new GsonConverter(gson));
+            builder.setConverter(new GsonConverter(gson) {
+                @Override
+                public Object fromBody(TypedInput body, Type type) throws ConversionException {
+                    try {
+                        byte[] buffer = new byte[(int) body.length()];
+                        body.in().read(buffer);
+                        body.in().reset();
+                    } catch (IOException e) {
+                        throw new ConversionException(e);
+                    }
+                    return super.fromBody(body, type);
+                }
+            });
             builder.setEndpoint(MOVIE_SERVICE_URL);
             builder.setRequestInterceptor(new RequestInterceptor() {
                 // Add API_KEY to every API request
@@ -142,9 +205,9 @@ public class Tmdb {
     }
 
     /**
-     *  Proxy to the Tmdb Movie service.
-     *  There are other proxies I can add later,
-     *  like Search and TV.
+     * Proxy to the Tmdb Movie service.
+     * There are other proxies I can add later,
+     * like Search and TV.
      */
     public MovieServiceProxy moviesServiceProxy() {
         return getRestAdapter().create(MovieServiceProxy.class);

@@ -5,8 +5,11 @@
  */
 package com.nano.movies.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -67,15 +70,17 @@ public class MainActivity extends AppCompatActivity
 
     private MovieDetailFragment mMovieDetailFragment;
     private MovieGridFragment mMovieGridFragment;
-    private FavoritesGridFragment mFavoritesGridFragment;
     private static final String MOVIE_FRAGMENT_TAG = "MOVIE_FRAGMENT_TAG";
     private static final String FAVORITES_FRAGMENT_TAG = "FAVORITES_FRAGMENT_TAG";
+    private static final String SAVE_SPINNER_TAG = "SAVE_SPINNER_TAG";
     private Spinner mSpinner;
 
     public enum SpinnerSelection {POPULARITY, HIGHEST_RATED, FAVORITES}
 
-    private SpinnerSelection mSpinnerSelection = SpinnerSelection.FAVORITES;
-    private int mSpinnerPosition;
+    private SpinnerSelection mSpinnerSelection = SpinnerSelection.HIGHEST_RATED;
+
+    private SharedPreferences mSharedPrefs;
+    private static final String PREFS_SAVE_STATE = "save_state";
 
     /**
      * Android will load either
@@ -98,6 +103,14 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /**
+         *  Retrieve spinner position from before config change.
+         *  If not saved, initialize it to POPULARITY.
+         */
+        mSharedPrefs = getSharedPreferences(PREFS_SAVE_STATE, Context.MODE_PRIVATE);
+        int spinnerPosition = mSharedPrefs.getInt(SAVE_SPINNER_TAG, SpinnerSelection.POPULARITY.ordinal());
+        mSpinnerSelection = SpinnerSelection.values()[spinnerPosition];
+
         setupStethoLibrary();
         setContentView(R.layout.layout_main);
         setupToolbar();
@@ -109,17 +122,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * A very useful library for debugging Android apps
-     * using Chrome, even has a database inspector!
+     * Save spinner selection preference.
      */
-    private void setupStethoLibrary() {
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(
-                                Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(
-                                Stetho.defaultInspectorModulesProvider(this))
-                        .build());
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = mSharedPrefs.edit();
+        editor.putInt(SAVE_SPINNER_TAG, mSpinnerSelection.ordinal());
+        editor.commit();
     }
 
     /**
@@ -144,7 +154,7 @@ public class MainActivity extends AppCompatActivity
      * http://developer.android.com/guide/topics/resources/runtime-changes.html#RetainingAnObject
      */
     private void setupMovieGridFragment(Bundle savedInstanceState) {
-        // find the retained fragment on activity restarts
+        // find the retained fragment on activity restart
         // or swap it out on Spinner selection change
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -161,29 +171,10 @@ public class MainActivity extends AppCompatActivity
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_movie_grid_container, new MovieGridFragment(), MOVIE_FRAGMENT_TAG)
                         .commit();
-                //Otherwise findFragmentByTag will return null
+                //Otherwise findFragmentByTag will return null in initMovieGrid()
                 fragmentManager.executePendingTransactions();
             }
             initMovieGrid();
-            /*mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager()
-                    .findFragmentByTag(MOVIE_FRAGMENT_TAG);
-            mMovieGridFragment.setSortBy(mSpinnerSelection);
-            mMovieGridFragment.downloadMovies(); */
-        }
-    }
-
-    /**
-     * Determine whether we are in two-pane mode, based
-     * on layouts.xml-defined boolean value.
-     */
-    private boolean checkForDualPane() {
-        // has_two_panes is defined in values/layouts.xml
-        if (getResources().getBoolean(R.bool.has_two_panes)) {
-            Log.i(TAG, "Two-pane layout");
-            return true;
-        } else {
-            Log.i(TAG, "One-pane layout");
-            return false;
         }
     }
 
@@ -204,10 +195,6 @@ public class MainActivity extends AppCompatActivity
                     .commit();
             fragmentManager.executePendingTransactions();
             initMovieGrid();
-        /*    mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager()
-                    .findFragmentByTag(MOVIE_FRAGMENT_TAG);
-            mMovieGridFragment.setSortBy(selection);
-            mMovieGridFragment.downloadMovies();  */
         }
     }
 
@@ -216,6 +203,41 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentByTag(MOVIE_FRAGMENT_TAG);
         mMovieGridFragment.setSortBy(mSpinnerSelection);
         mMovieGridFragment.downloadMovies();
+    }
+
+
+    /**
+     * Determine whether we are in two-pane mode, based
+     * on layouts.xml-defined boolean value.
+     */
+    private boolean checkForDualPane() {
+        // has_two_panes is defined in values/layouts.xml
+        if (getResources().getBoolean(R.bool.has_two_panes)) {
+            Log.i(TAG, "Two-pane layout");
+            return true;
+        } else {
+            Log.i(TAG, "One-pane layout");
+            return false;
+        }
+    }
+
+
+    /**
+     * Set up spinner for selecting
+     * sort by Most Popular
+     * sort by Highest Rated
+     * show Favorites (NOT IMPLEMENTED YET)
+     */
+    private void setupSpinner() {
+        mSpinner = (Spinner) findViewById(R.id.spinner_sort_by);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sort_by_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setSelection(mSpinnerSelection.ordinal());
+        SpinnerInteractionListener listener = new SpinnerInteractionListener();
+        mSpinner.setOnTouchListener(listener);
+        mSpinner.setOnItemSelectedListener(listener);
     }
 
     public class SpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
@@ -264,24 +286,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Set up spinner for selecting
-     * sort by Most Popular
-     * sort by Highest Rated
-     * show Favorites (NOT IMPLEMENTED YET)
-     */
-    private void setupSpinner() {
-        mSpinner = (Spinner) findViewById(R.id.spinner_sort_by);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.sort_by_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
-        mSpinner.setSelection(mSpinnerSelection.ordinal());
-        SpinnerInteractionListener listener = new SpinnerInteractionListener();
-        mSpinner.setOnTouchListener(listener);
-        mSpinner.setOnItemSelectedListener(listener);
-    }
-
-    /**
      * Display Movie details.
      * If two-pane mode, then direct already-existing Fragment
      * to download details for the selected movie.
@@ -301,5 +305,20 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, movieId);
         this.startActivity(intent);
+    }
+
+
+    /**
+     * A very useful library for debugging Android apps
+     * using Chrome, even has a database inspector!
+     */
+    private void setupStethoLibrary() {
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
     }
 }
