@@ -148,8 +148,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
             mSortBy = savedInstanceState.getString(BUNDLE_SORT_BY);
             mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
-            //    mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES);
-        } //else
+        }
     }
 
     @Override

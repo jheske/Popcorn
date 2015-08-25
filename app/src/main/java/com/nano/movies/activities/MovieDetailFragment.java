@@ -123,7 +123,7 @@ mOnAttachCalled=true;
         //Member var so it's available in
         //callback for error handling
         mMovieId = movieId;
-        tmdbManager.setIsDebug(false);
+        tmdbManager.setIsDebug(true);
         tmdbManager.moviesServiceProxy().summary(movieId,
                 MovieServiceProxy.REVIEWS_AND_TRAILERS,
                 new Callback<Movie>() {

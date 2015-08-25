@@ -131,9 +131,8 @@ public class MovieGridFragment extends Fragment {
             mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
             mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES);
-//            displayPosters();
-        }// else
-          //  downloadMovies();
+            displayPosters();
+        }
     }
 
     @Override
@@ -170,6 +169,10 @@ public class MovieGridFragment extends Fragment {
      * to either Popular or Highest-rated movies
      */
     public void downloadMovies() {
+        //If mMovies exists, posters were already displayed
+        //do don't download them again.
+        if (mMovies != null)
+            return;
         tmdbManager.setIsDebug(true);
         tmdbManager.moviesServiceProxy().discoverMovies(1, mSortBy, new Callback<TmdbResults>() {
             @Override
@@ -204,7 +207,6 @@ public class MovieGridFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + getResources().getString(R.string.error_implement_method) + " MovieSelectionListener");
         }
-//        downloadMovies();
     }
 
     private void displayPosters() {
