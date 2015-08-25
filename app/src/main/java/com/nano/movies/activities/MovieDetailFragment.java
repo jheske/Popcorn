@@ -46,12 +46,9 @@ public class MovieDetailFragment extends Fragment {
     private int mMovieId;
     private Movie mMovie;
     private final Tmdb tmdbManager = new Tmdb();
-private boolean mOnActivityCreatedCalled=false;
-private boolean mOnAttachCalled=false;
 
     // Tag for saving movie so it doesn't have to be re-downloaded on config change
     private final String BUNDLE_MOVIE = "SaveMovie";
-
     public MovieDetailFragment() {
         setRetainInstance(true);
     }
@@ -83,13 +80,6 @@ private boolean mOnAttachCalled=false;
             if (mMovie != null)
               mMovieId = mMovie.getId();
         }
-mOnActivityCreatedCalled=true;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-mOnAttachCalled=true;
     }
 
     @Override

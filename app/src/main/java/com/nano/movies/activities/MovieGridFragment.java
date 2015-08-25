@@ -209,6 +209,12 @@ public class MovieGridFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
+    }
+
     private void displayPosters() {
         mMovieAdapter.clear();
         mMovieAdapter.addAll(mMovies);

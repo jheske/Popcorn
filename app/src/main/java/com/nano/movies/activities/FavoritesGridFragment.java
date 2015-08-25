@@ -130,13 +130,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     }
 
     /**
-     * Will probably also need to add something like
-     * onMoviesChanged() {
-     * updateMovies();
-     * getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
-     * }
-     * but that might just be if I'm using SyncAdapter
-     *
      * @param savedInstanceState
      */
     @Override
@@ -159,24 +152,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
                 mRecyclerView.getLayoutManager().onSaveInstanceState());
     }
 
-    /**
-     * If this is called after a recent config change,
-     * mLayoutManagerSavedState will hold pre-config state,
-     * including the most recently viewed movie position
-     * and the LayoutManager's state.
-     * <p/>
-     * Retrieve that information and reinitialize the
-     * saved states.
-     */
-    private void restoreLayoutManagerPosition() {
-        if (mLayoutManagerSavedState != null) {
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
-        } else {
-            mLastPosition = 0;
-            mLayoutManagerSavedState = null;
-        }
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -192,6 +167,12 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
         //Favorite movies are in the database so no download needed.
         //They should display automatically once Loader initializes.
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
     }
 
     public void displayMovieDetails() {
@@ -216,19 +197,10 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // This is called when a new Loader needs to be created.  This
         // fragment only uses one loader, so we don't care about checking the id.
-
-        // We want to get all the favorites, but the query can also be filtered.
-
+        // We want to get all the favorites, but the query could also be filtered.
         // Sort order:  Ascending, by title.
         String sortOrder = MovieColumns.ORIGINAL_TITLE + " ASC";
         MovieSelection movieSelection = new MovieSelection();
-        //String[] projection = MovieColumns.ALL_COLUMNS;
-        //MovieCursor cursor = movieSelection.query(getActivity().getContentResolver(), projection);
-        //cursor.moveToPosition(0);
-        //int count = cursor.getCount();
-        //Movie movie = new Movie(cursor);
-        //Log.d(TAG,cursor.getOriginalTitle());
-        //Uri uri = movieSelection.uri();
         Loader<Cursor> loader = new CursorLoader(getActivity(),
                 movieSelection.uri(),
                 MovieColumns.ALL_COLUMNS,

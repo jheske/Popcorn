@@ -164,10 +164,11 @@ public class MainActivity extends AppCompatActivity
                 //Otherwise findFragmentByTag will return null
                 fragmentManager.executePendingTransactions();
             }
-            mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager()
+            initMovieGrid();
+            /*mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager()
                     .findFragmentByTag(MOVIE_FRAGMENT_TAG);
             mMovieGridFragment.setSortBy(mSpinnerSelection);
-            mMovieGridFragment.downloadMovies();
+            mMovieGridFragment.downloadMovies(); */
         }
     }
 
@@ -190,10 +191,10 @@ public class MainActivity extends AppCompatActivity
      * If spinner changes, check to see whether grid_fragment has to change
      * between MovieGrid and FavoritesGrid
      */
-    private void swapGridFragments(SpinnerSelection selection) {
+    private void swapGridFragments() {
         //Swap from FavoritesGrid to MovieGrid or vice versa
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (selection == SpinnerSelection.FAVORITES) {
+        if (mSpinnerSelection == SpinnerSelection.FAVORITES) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_movie_grid_container, new FavoritesGridFragment())
                     .commit();
@@ -202,11 +203,19 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.fragment_movie_grid_container, new MovieGridFragment(), MOVIE_FRAGMENT_TAG)
                     .commit();
             fragmentManager.executePendingTransactions();
-            mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager()
+            initMovieGrid();
+        /*    mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager()
                     .findFragmentByTag(MOVIE_FRAGMENT_TAG);
             mMovieGridFragment.setSortBy(selection);
-            mMovieGridFragment.downloadMovies();
+            mMovieGridFragment.downloadMovies();  */
         }
+    }
+
+    private void initMovieGrid() {
+        mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager()
+                .findFragmentByTag(MOVIE_FRAGMENT_TAG);
+        mMovieGridFragment.setSortBy(mSpinnerSelection);
+        mMovieGridFragment.downloadMovies();
     }
 
     public class SpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
@@ -237,101 +246,60 @@ public class MainActivity extends AppCompatActivity
         public void onItemSelected(AdapterView<?> parent,
                                    View view, int position, long id) {
             //Do nothing if spinner selection hasn't changed
-            if (position == mSpinnerPosition)
+            //if (position == mSpinnerPosition)
+            if (mSpinnerSelection == SpinnerSelection.values()[position])
                 return;
             if (isUserSelected) {
-                mSpinnerPosition = position;
+                //mSpinnerPosition = position;
+                mSpinnerSelection = SpinnerSelection.values()[position];
                 isUserSelected = false;
-                swapGridFragments(SpinnerSelection.values()[position]);
-            }
-/*
-                //    String sortBy = (String) parent.getItemAtPosition(position);
-                SpinnerSelection selection = SpinnerSelection.values()[position];
-                switch (selection) {
-                    case FAVORITES:
-                        Log.d(TAG, "Swap from movies to favs");
-                        mSpinnerSelection = selection;
-                        swapGridFragments();
-                        break;
-                    case HIGHEST_RATED:
-                        //If favs grid is displaying, swap to movies
-                        if (mSpinnerSelection == SpinnerSelection.FAVORITES) {
-                            Log.d(TAG, "Swap from favs to movies");
-                            mSpinnerSelection = SpinnerSelection.HIGHEST_RATED;
-                            swapGridFragments();
-                        }
-                        break;
-                    case POPULARITY:
-                }
-            }
-
-*/
-/*                if (sortBy.equals(getString(R.string.option_favorites))) {
-                    mSpinnerSelection = SpinnerSelection.FAVORITES;
-                    swapGridFragments();
-                    //Swap to MovieGridFragment
-                } else if (sortBy.equals(getString(R.string.option_most_popular))) {
-                    //If Favorites grid is displayed, swap to MovieGrid
-                    if (mSpinnerSelection == SpinnerSelection.FAVORITES) {
-                        Log.d(TAG, "Swap fragments");
-                        mSpinnerSelection = SpinnerSelection.POPULARITY;
-                        swapGridFragments();
-                    }
-                } else if (sortBy.equals(getString(R.string.option_highest_rated))) {
-                    if (mSpinnerSelection == SpinnerSelection.FAVORITES) {
-                        Log.d(TAG, "Swap fragments");
-                        mSpinnerSelection = SpinnerSelection.HIGHEST_RATED;
-                        swapGridFragments();
-                    }
-                }
-                mSpinnerPosition = position;
-
-            }*/
-            }
-
-            @Override
-            public void onNothingSelected (AdapterView < ? > arg0){
-            }
-
-        }
-
-        /**
-         * Set up spinner for selecting
-         * sort by Most Popular
-         * sort by Highest Rated
-         * show Favorites (NOT IMPLEMENTED YET)
-         */
-        private void setupSpinner() {
-            mSpinner = (Spinner) findViewById(R.id.spinner_sort_by);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                    R.array.sort_by_array, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSpinner.setAdapter(adapter);
-            mSpinner.setSelection(mSpinnerSelection.ordinal());
-            SpinnerInteractionListener listener = new SpinnerInteractionListener();
-            mSpinner.setOnTouchListener(listener);
-            mSpinner.setOnItemSelectedListener(listener);
-        }
-
-        /**
-         * Display Movie details.
-         * If two-pane mode, then direct already-existing Fragment
-         * to download details for the selected movie.
-         * If one-pane, then start a new Activity tod
-         * display the movie on its own screen.
-         */
-        public void onMovieSelected(int movieId, boolean isUserSelected) {
-            if (mIsTwoPane) {
-                mMovieDetailFragment.downloadMovie(movieId);
-            } else {
-                if (isUserSelected)
-                    startMovieDetailActivity(movieId);
+                swapGridFragments();
             }
         }
 
-        private void startMovieDetailActivity(int movieId) {
-            Intent intent = new Intent(this, MovieDetailActivity.class);
-            intent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, movieId);
-            this.startActivity(intent);
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+        }
+
+    }
+
+    /**
+     * Set up spinner for selecting
+     * sort by Most Popular
+     * sort by Highest Rated
+     * show Favorites (NOT IMPLEMENTED YET)
+     */
+    private void setupSpinner() {
+        mSpinner = (Spinner) findViewById(R.id.spinner_sort_by);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sort_by_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setSelection(mSpinnerSelection.ordinal());
+        SpinnerInteractionListener listener = new SpinnerInteractionListener();
+        mSpinner.setOnTouchListener(listener);
+        mSpinner.setOnItemSelectedListener(listener);
+    }
+
+    /**
+     * Display Movie details.
+     * If two-pane mode, then direct already-existing Fragment
+     * to download details for the selected movie.
+     * If one-pane, then start a new Activity tod
+     * display the movie on its own screen.
+     */
+    public void onMovieSelected(int movieId, boolean isUserSelected) {
+        if (mIsTwoPane) {
+            mMovieDetailFragment.downloadMovie(movieId);
+        } else {
+            if (isUserSelected)
+                startMovieDetailActivity(movieId);
         }
     }
+
+    private void startMovieDetailActivity(int movieId) {
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, movieId);
+        this.startActivity(intent);
+    }
+}
