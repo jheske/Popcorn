@@ -100,7 +100,8 @@ public class Tmdb {
     public void setIsDebug(boolean isDebug) {
         this.isDebug = isDebug;
         if (restAdapter != null) {
-            restAdapter.setLogLevel(isDebug ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE);
+            restAdapter.setLogLevel(isDebug ? RestAdapter.LogLevel.FULL
+                    : RestAdapter.LogLevel.NONE);
         }
     }
 
@@ -112,12 +113,9 @@ public class Tmdb {
         @Override
         public Date deserialize(JsonElement json, Type typeOfT,
                                 JsonDeserializationContext context) throws JsonParseException {
-
-            Date today = new Date(System.currentTimeMillis());
             try {
                 return JSON_STRING_DATE.parse(json.getAsString());
             } catch (ParseException e) {
-                //Log.d(TAG,"Error parsing date " + e.getMessage() + " returning " + today.toString());
                 return null;
             }
         }
@@ -131,6 +129,35 @@ public class Tmdb {
     }
 
     /**
+     *  Use this class for debugging json syntax errors,
+     *  UNFORTUNATELY, calling mTmdbManager.setIsDebug(false)
+     *  causes an internal errors on Retrofit calls.
+     *
+     *  Usage in RestAdapter class below:
+     *  Replace
+     *      builder.setConverter(new GsonConverter(gson));
+     *  with
+     *      builder.setConverter(new DebugGsonConverter(gson));
+     */
+    private class DebugGsonConverter extends GsonConverter {
+        public DebugGsonConverter(Gson gson) {
+            super(gson);
+        }
+
+        @Override
+        public Object fromBody(TypedInput body, Type type) throws ConversionException {
+            try {
+                byte[] buffer = new byte[(int) body.length()];
+                body.in().read(buffer);
+                body.in().reset();
+            } catch (IOException e) {
+                throw new ConversionException(e);
+            }
+            return super.fromBody(body, type);
+        }
+    }
+
+    /**
      * Create the RestAdapter
      */
     private RestAdapter getRestAdapter() {
@@ -141,20 +168,7 @@ public class Tmdb {
 
         if (restAdapter == null) {
             RestAdapter.Builder builder = restAdapterBuilder();
-            //builder.setConverter(new GsonConverter(gson));
-            builder.setConverter(new GsonConverter(gson) {
-                @Override
-                public Object fromBody(TypedInput body, Type type) throws ConversionException {
-                    try {
-                        byte[] buffer = new byte[(int) body.length()];
-                        body.in().read(buffer);
-                        body.in().reset();
-                    } catch (IOException e) {
-                        throw new ConversionException(e);
-                    }
-                    return super.fromBody(body, type);
-                }
-            });
+            builder.setConverter(new GsonConverter(gson));
             builder.setEndpoint(MOVIE_SERVICE_URL);
             builder.setRequestInterceptor(new RequestInterceptor() {
                 // Add API_KEY to every API request

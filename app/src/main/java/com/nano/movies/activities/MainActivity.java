@@ -2,6 +2,14 @@
  * Created by Jill Heske
  * <p/>
  * Copyright(c) 2015
+ *
+ * A million thanks to Uwe Trottmann for publishing
+ * sample java code demonstrating a Retrofit/Gson
+ * interface to themoviedb.org api.
+ * Portions of this project, particularly MovieServiceProxy,
+ * are informed by that code base.
+ * @See https://gitlab.com/winiceo/tmdb-java
+ *
  */
 package com.nano.movies.activities;
 
@@ -9,7 +17,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -132,6 +139,14 @@ public class MainActivity extends AppCompatActivity
         editor.commit();
     }
 
+/*    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // store the data in the fragment
+        dataFragment.setData(collectMyLoadedData());
+    }*/
+
+
     /**
      * Replace default toolbar with custom toolbar defined
      * in layouts/app_bar.xml
@@ -163,7 +178,7 @@ public class MainActivity extends AppCompatActivity
         if (mSpinnerSelection == SpinnerSelection.FAVORITES) {
             if (savedInstanceState == null) {
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_movie_grid_container, new FavoritesGridFragment(), FAVORITES_FRAGMENT_TAG)
+                        .replace(R.id.fragment_movie_grid_container, new FavoritesGridFragment())
                         .commit();
             }
         } else {

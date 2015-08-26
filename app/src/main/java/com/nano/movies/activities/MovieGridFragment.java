@@ -39,8 +39,6 @@ import retrofit.mime.TypedByteArray;
 public class MovieGridFragment extends Fragment {
     private final String TAG = MovieGridFragment.class.getSimpleName();
 
-    private Context mActivityContext;
-
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
 
@@ -82,7 +80,6 @@ public class MovieGridFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        mActivityContext = getActivity();
     }
 
     @Override
@@ -90,16 +87,17 @@ public class MovieGridFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         // Grid with 2 columns
-        mMovieAdapter = new MovieAdapter(mActivityContext);
-        //mMovieAdapter = new MovieAdapter(mActivityContext);
+        Context activityContext = getActivity();
+
+        mMovieAdapter = new MovieAdapter(activityContext);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         //Show two columns or three, depending device orientation.
         if (getActivity().getResources()
                 .getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT)
-            mRecyclerView.setLayoutManager(new GridLayoutManager(mActivityContext, 2));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(activityContext, 2));
         else
-            mRecyclerView.setLayoutManager(new GridLayoutManager(mActivityContext, 3));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(activityContext, 3));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mMovieAdapter);
         mRecyclerView.addOnItemTouchListener(new MovieRecyclerTouchListener(getActivity(),
@@ -165,6 +163,9 @@ public class MovieGridFragment extends Fragment {
         }
     }
 
+    /**
+     * Useful for debugging
+     */
     class RestError {
         @SerializedName("code")
         public int code;
@@ -182,7 +183,7 @@ public class MovieGridFragment extends Fragment {
         //do don't download them again.
         if (mMovies != null)
             return;
-        tmdbManager.setIsDebug(true);
+        tmdbManager.setIsDebug(false);
         tmdbManager.moviesServiceProxy().discoverMovies(1, mSortBy, new Callback<TmdbResults>() {
             @Override
             public void success(TmdbResults results, Response response) {
