@@ -28,6 +28,10 @@ package com.nano.movies.adapters;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/**
+ * @TODO test this out at some point.
+ * This looks interesting.  I'll keep it around for later testing.
+ */
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;

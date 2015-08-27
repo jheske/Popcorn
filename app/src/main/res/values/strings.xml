@@ -29,4 +29,5 @@
     <string name="desc_title">Movie title</string>
     <!-- ContentAuthority (to be integrated in P2) -->
     <string name="content_authority"  translatable="false">com.nano.movies.app</string>
+    <string name="empty_list">There are no reviews for this movie.</string>
 </resources>

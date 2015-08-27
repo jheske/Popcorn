@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
     private void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     /**

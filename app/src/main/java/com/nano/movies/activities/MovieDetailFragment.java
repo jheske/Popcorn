@@ -6,8 +6,13 @@
 package com.nano.movies.activities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +22,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nano.movies.R;
+import com.nano.movies.adapters.ReviewAdapter;
 import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
@@ -42,6 +48,9 @@ public class MovieDetailFragment extends Fragment {
     private TextView mTextViewOverview;
     private TextView mTextViewVoteAverage;
     private RatingBar mRatingVoteAverage;
+    private RecyclerView mRecyclerView;
+    private ReviewAdapter mReviewAdapter;
+
 
     private int mMovieId;
     private Movie mMovie;
@@ -68,6 +77,7 @@ public class MovieDetailFragment extends Fragment {
         mTextViewOverview = (TextView) rootView.findViewById(R.id.tv_overview);
         mTextViewVoteAverage = (TextView) rootView.findViewById(R.id.tv_vote_average);
         rootView.findViewById(R.id.btn_mark_fav).setOnClickListener(mOnClickListener);
+        setupReviewRecyclerView(rootView);
         return rootView;
     }
 
@@ -96,6 +106,18 @@ public class MovieDetailFragment extends Fragment {
         }
     };
 
+    private void setupReviewRecyclerView(View rootView) {
+        Context context = getActivity();
+
+        mReviewAdapter = new ReviewAdapter();
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_reviews);
+    //    LinearLayoutManager layoutMgr = new LinearLayoutManager(context);
+    //    layoutMgr.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mReviewAdapter);
+    }
+
     /**
      * Called by MainActivity if Fragment already exists (two-pane mode),
      * or when the Fragment is created by its own separate activity
@@ -113,7 +135,7 @@ public class MovieDetailFragment extends Fragment {
         //Member var so it's available in
         //callback for error handling
         mMovieId = movieId;
-        tmdbManager.setIsDebug(true);
+        tmdbManager.setIsDebug(false);
         tmdbManager.moviesServiceProxy().summary(movieId,
                 MovieServiceProxy.REVIEWS_AND_TRAILERS,
                 new Callback<Movie>() {
@@ -136,10 +158,11 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void displayMovieDetails(Movie movie) {
+        mReviewAdapter.clear(true);
+        mReviewAdapter.addAll(movie.getReviews().getResults());
         mTextViewTitle.setText(movie.getOriginalTitle());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
         mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
-        Activity activity = getActivity();
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
                 .put("runtime", movie.getRuntime().toString())
                 .format();
@@ -147,8 +170,8 @@ public class MovieDetailFragment extends Fragment {
         mRatingVoteAverage.setRating(movie.getVoteAverage().floatValue());
         mTextViewOverview.setText(movie.getOverview());
         mTextViewVoteAverage.setText(movie.getVoteAverage().toString()
-                + "/10 "
-                + getVoteCountStr(movie.getVoteCount()));
+                + "/10 ("
+                + movie.getVoteCount() + ")");
         String movieImageUrl = Tmdb.getMovieImageUrl(movie.getPosterPath(),
                 Tmdb.IMAGE_POSTER_SMALL);
         Picasso.with(getActivity()).load(movieImageUrl)

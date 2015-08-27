@@ -6,6 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@+id/tv_overview">
+<!--
     <TextView
         android:id="@+id/lab_trailers"
         android:layout_alignParentTop="true"
@@ -20,9 +21,10 @@
         android:layout_below="@+id/lab_trailers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+        -->
     <TextView
         android:id="@+id/lab_reviews"
-        android:layout_below="@+id/recycler_view_trailers"
+        android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

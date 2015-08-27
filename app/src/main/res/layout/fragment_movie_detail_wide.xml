@@ -18,6 +18,7 @@
         android:textSize="30sp" />
     <!-- Top-level ScrollView container.  -->
     <ScrollView
+        android:id="@+id/detail_scroll_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <RelativeLayout
@@ -98,8 +99,7 @@
                         android:textSize="15sp" />
                 </LinearLayout>
             </LinearLayout>
-
-            <!-- Container holding Trailers and Reviews -->
+            <!-- Container holding Trailers and Reviews
             <include
                 layout="@layout/reviews_trailers"
                 android:layout_below="@+id/movie_details_container"
@@ -109,7 +109,12 @@
                 android:layout_marginTop="@dimen/margin_40"
                 android:layout_marginLeft="@dimen/margin_20"
                 android:layout_marginRight="@dimen/margin_20">
-            </include>
+            </include>  -->
         </RelativeLayout>
     </ScrollView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_reviews"
+        android:layout_below="@+id/detail_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
