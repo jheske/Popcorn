@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2015 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Basic Movie Details Small image, Ratings stars, Rating txt, Year, Minutes -->
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/card_margin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!-- Container holding thumbnail and play details container -->
+            <LinearLayout
+                android:id="@+id/movie_details_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="@dimen/margin_40"
+                android:orientation="horizontal">
+                <!-- Thumbnail sized image of poster -->
+                <ImageView
+                    android:id="@+id/img_thumbnail"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/desc_title" />
+                <!-- Play details container hold release year, runtime,
+                     viewer rating, and favorites button -->
+                <LinearLayout
+                    android:id="@+id/play_details"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_20"
+                    android:layout_marginStart="@dimen/margin_20"
+                    android:layout_marginTop="30dp"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
+
+                    <RatingBar
+                        android:id="@+id/rating_bar_vote_average"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:numStars="10" />
+
+                    <TextView
+                        android:id="@+id/tv_release_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_release_year"
+                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textColor="@color/textColorSecondary" />
+
+                    <TextView
+                        android:id="@+id/tv_vote_average"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_viewer_rating"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/textColorSecondary" />
+
+                    <TextView
+                        android:id="@+id/tv_runtime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_runtime"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/textColorSecondary"
+                        android:textStyle="italic" />
+
+                    <Button
+                        android:id="@+id/btn_mark_fav"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_mark_fav" />
+                </LinearLayout>
+            </LinearLayout>
+            <!-- Multi-line movie overview. -->
+            <TextView
+                android:id="@+id/tv_overview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/movie_details_container"
+                android:layout_marginLeft="@dimen/margin_20"
+                android:layout_marginStart="@dimen/margin_20"
+                android:text="@string/text_overview"
+                android:textSize="20sp" />
+            <!-- Container holding Trailers and Reviews -->
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>
+

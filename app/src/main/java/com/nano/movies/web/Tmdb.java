@@ -79,8 +79,8 @@ public class Tmdb {
     public static final String IMAGE_POSTER_XSMALL = "w92";
     public static final String IMAGE_POSTER_SMALL = "w185";
     public static final String IMAGE_POSTER_MED = "w342";
-    public final String IMAGE_POSTER_LARGE = "w500";
-    public final String IMAGE_POSTER_XLARGE = "w780";
+    public static final String IMAGE_POSTER_LARGE = "w500";
+    public static final String IMAGE_POSTER_XLARGE = "w780";
 
     /**
      * Constructor to create a new manager instance.
@@ -88,8 +88,12 @@ public class Tmdb {
     public Tmdb() {
     }
 
-    public static String getMovieImageUrl(String mImagePath, String imageSize) {
-        return ("http://image.tmdb.org/t/p/" + imageSize + "/" + mImagePath);
+    public static String getMoviePosterUrl(String mImagePath, String imageSize) {
+        return ("https://image.tmdb.org/t/p/" + imageSize + "/" + mImagePath);
+    }
+
+    public static String getMovieBackdropUrl(String mImagePath, String imageSize) {
+        return ("https://image.tmdb.org/t/p/" + imageSize + "/" + mImagePath);
     }
 
     /**

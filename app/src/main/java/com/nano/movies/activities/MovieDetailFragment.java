@@ -7,10 +7,8 @@ package com.nano.movies.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,7 +37,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MovieDetailFragment extends Fragment {
-    private final String TAG =  MovieDetailFragment.class.getSimpleName();
+
+    private final String TAG = MovieDetailFragment.class.getSimpleName();
 
     private ImageView mImageViewThumbnail;
     private TextView mTextViewTitle;
@@ -50,14 +49,24 @@ public class MovieDetailFragment extends Fragment {
     private RatingBar mRatingVoteAverage;
     private RecyclerView mRecyclerView;
     private ReviewAdapter mReviewAdapter;
-
-
     private int mMovieId;
     private Movie mMovie;
     private final Tmdb tmdbManager = new Tmdb();
 
     // Tag for saving movie so it doesn't have to be re-downloaded on config change
     private final String BUNDLE_MOVIE = "SaveMovie";
+
+
+    // This callback interface that allows this Fragment to notify MainActivity when
+    // user clicks on a List Item so MainActivity can have SelfieImageFragment
+    // show the full-sized image.
+    // DON'T FORGET TO DESTROY IT WHEN IN onDetach() OR IT WILL LEAK MEMORY
+    public interface MovieDetailChangeListener {
+        void onMovieDetailChanged(String backdropPath,String originalTitle);
+    }
+
+    private MovieDetailChangeListener mCallback = null;
+
     public MovieDetailFragment() {
         setRetainInstance(true);
     }
@@ -68,7 +77,8 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_detail_coordinated, container, false);
+    //    mImageViewBackdrop = (ImageView) rootView.findViewById(R.id.img_backdrop);
         mImageViewThumbnail = (ImageView) rootView.findViewById(R.id.img_thumbnail);
         mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_movie_title);
         mTextViewReleaseDate = (TextView) rootView.findViewById(R.id.tv_release_date);
@@ -77,25 +87,23 @@ public class MovieDetailFragment extends Fragment {
         mTextViewOverview = (TextView) rootView.findViewById(R.id.tv_overview);
         mTextViewVoteAverage = (TextView) rootView.findViewById(R.id.tv_vote_average);
         rootView.findViewById(R.id.btn_mark_fav).setOnClickListener(mOnClickListener);
-        setupReviewRecyclerView(rootView);
+//        setupReviewRecyclerView(rootView);
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //@TODO replace this with database persistence
         if (savedInstanceState != null) {
             mMovie = savedInstanceState.getParcelable(BUNDLE_MOVIE);
             if (mMovie != null)
-              mMovieId = mMovie.getId();
+                mMovieId = mMovie.getId();
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //@TODO replace this with database persistence
         outState.putParcelable(BUNDLE_MOVIE, mMovie);
     }
 
@@ -106,13 +114,33 @@ public class MovieDetailFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // The hosting Activity must implement
+        // MovieSelectionListener callback interface.
+        try {
+            mCallback = (MovieDetailChangeListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + getResources().getString(R.string.error_implement_method)
+                    + " MovieDetailChangeListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
+    }
+
+
     private void setupReviewRecyclerView(View rootView) {
         Context context = getActivity();
 
         mReviewAdapter = new ReviewAdapter();
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_reviews);
-    //    LinearLayoutManager layoutMgr = new LinearLayoutManager(context);
-    //    layoutMgr.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mReviewAdapter);
@@ -158,9 +186,9 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void displayMovieDetails(Movie movie) {
-        mReviewAdapter.clear(true);
-        mReviewAdapter.addAll(movie.getReviews().getResults());
-        mTextViewTitle.setText(movie.getOriginalTitle());
+//        mReviewAdapter.clear(true);
+//        mReviewAdapter.addAll(movie.getReviews().getResults());
+//        mTextViewTitle.setText(movie.getOriginalTitle());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
         mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
@@ -172,23 +200,25 @@ public class MovieDetailFragment extends Fragment {
         mTextViewVoteAverage.setText(movie.getVoteAverage().toString()
                 + "/10 ("
                 + movie.getVoteCount() + ")");
-        String movieImageUrl = Tmdb.getMovieImageUrl(movie.getPosterPath(),
-                Tmdb.IMAGE_POSTER_SMALL);
+        //      mCollapsingToolbar.setTitle(movie.getOriginalTitle());
+        loadPosterImage(movie);
+        //Activity displays backdrop image in the AppBar
+        mCallback.onMovieDetailChanged(movie.getBackdropPath(),movie.getOriginalTitle());
+        //       loadBackdropImage(movie);
+    }
+
+    private void loadPosterImage(Movie movie) {
+        String movieImageUrl = Tmdb.getMoviePosterUrl(movie.getPosterPath(),
+                Tmdb.IMAGE_POSTER_XSMALL);
         Picasso.with(getActivity()).load(movieImageUrl)
                 .into(mImageViewThumbnail);
     }
 
-    private CharSequence getVoteCountStr(int voteCount) {
-        CharSequence voteStr;
-
-        if (voteCount == 1) {
-            voteStr = "(" + Phrase.from(getActivity(), R.string.text_vote)
-                    .format() + ")";
-        } else
-            voteStr = "(" + Phrase.from(getActivity(), R.string.text_votes)
-                    .put("votes", voteCount)
-                    .format() + ")";
-        return voteStr;
-    }
-
+  /*  private void loadBackdropImage(Movie movie) {
+        String backdropUrl = Tmdb.getMovieBackdropUrl(movie.getBackdropPath(),
+                Tmdb.IMAGE_POSTER_LARGE);
+        Log.d(TAG, "Getting backdrop " + backdropUrl);
+        Picasso.with(getActivity()).load(backdropUrl)
+                .into(mImageViewBackdrop);
+    }*/
 }

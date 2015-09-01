@@ -26,12 +26,4 @@
         android:id="@+id/fragment_movie_grid_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-<!--
-    <fragment
-        android:id="@+id/fragment_movie_grid"
-        android:name="com.nano.movies.activities.MovieGridFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/fragment_movies" />
--->
 </LinearLayout>
