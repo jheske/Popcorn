@@ -25,6 +25,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.android.support:cardview-v7:22.2.0'
     compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:design:22.2.0'
     //Square Phrase library for making string.xml localization easier
     compile 'com.squareup.phrase:phrase:1.1.0'
     //REST client for http interaction and dependencies

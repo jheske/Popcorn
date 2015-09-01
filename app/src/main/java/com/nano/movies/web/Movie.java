@@ -34,6 +34,8 @@ public class Movie implements Parcelable {
     private Integer id;
     @SerializedName("homepage")
     private String mHomePage;
+    @SerializedName("backdrop")
+    private String mBackdrop;
     @SerializedName("original_title")
     private String mOriginalTitle;
     @SerializedName("overview")
@@ -129,12 +131,20 @@ public class Movie implements Parcelable {
         this.mHomePage = mHomePage;
     }
 
+    public String getBackdrop() {
+        return mBackdrop;
+    }
+
+    public void setBackdrop(String backdrop) {
+        this.mBackdrop = backdrop;
+    }
+
     public String getOriginalTitle() {
         return mOriginalTitle;
     }
 
-    public void setOriginalTitle(String mOriginalTitle) {
-        this.mOriginalTitle = mOriginalTitle;
+    public void setOriginalTitle(String originalTitle) {
+        this.mOriginalTitle = originalTitle;
     }
 
     public String getOverview() {
@@ -237,6 +247,7 @@ public class Movie implements Parcelable {
     private Movie(Parcel in) {
         id = in.readInt();
         mHomePage = in.readString();
+        mBackdrop = in.readString();
         mOriginalTitle = in.readString();
         mOverview = in.readString();
         mPopularity = in.readDouble();
@@ -266,6 +277,7 @@ public class Movie implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(mHomePage);
+        dest.writeString(mBackdrop);
         dest.writeString(mOriginalTitle);
         dest.writeString(mOverview);
         dest.writeDouble(mPopularity);
