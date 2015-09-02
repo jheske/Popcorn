@@ -101,7 +101,7 @@
             </LinearLayout>
             <!-- Container holding Trailers and Reviews
             <include
-                layout="@layout/reviews_trailers"
+                layout="@layout/reviews_include"
                 android:layout_below="@+id/movie_details_container"
                 android:id="@+id/reviews_and_trailers"
                 android:layout_width="wrap_content"
