@@ -88,6 +88,14 @@ public class Tmdb {
     public Tmdb() {
     }
 
+    public static String getYoutubeUrl(String source) {
+        return ("http://www.youtube.com/v/" + source);
+    }
+
+    public static String getYoutubeThumbnail(String source) {
+        return ("http://img.youtube.com/vi/" + source + "/mqdefault.jpg");
+    }
+
     public static String getMoviePosterUrl(String mImagePath, String imageSize) {
         return ("https://image.tmdb.org/t/p/" + imageSize + "/" + mImagePath);
     }

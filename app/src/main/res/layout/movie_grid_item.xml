@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     android:layout_width="60dp">
     <ImageView
+        android:id="@+id/img_poster"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:id="@+id/img_poster"
         android:contentDescription="@string/desc_title"/>
 </FrameLayout>
 

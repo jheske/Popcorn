@@ -5,23 +5,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nano.movies.R;
-import com.nano.movies.web.Reviews.Review;
+import com.nano.movies.web.Tmdb;
+import com.nano.movies.web.Trailers.Trailer;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * !!!RecyclerView does not handle empty lists!!!
- * So we have to do it ourselves and it's messy.
- *
- * http://blabadi.blogspot.com/2014/12/android-recyclerview-adding-empty-view.html
- */
-public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Review> mReviews;
+public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+    private List<Trailer> mTrailers;
     private static final int EMPTY_VIEW = 10;
+    private Context mContext;
 
     public class EmptyViewHolder extends RecyclerView.ViewHolder {
         public EmptyViewHolder(View itemView) {
@@ -34,19 +32,18 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView txtAuthor;
-        public TextView txtContent;
+        public ImageView imgThumbnail;
 
-        public ViewHolder(View v) {
-            super(v);
-            txtAuthor = (TextView) v.findViewById(R.id.txt_author);
-            txtContent = (TextView) v.findViewById(R.id.txt_content);
+        public ViewHolder(View view) {
+            super(view);
+            imgThumbnail = (ImageView) view.findViewById(R.id.img_youtube_thumbnail);
         }
     }
 
     // Constructor
-    public ReviewAdapter() {
-        mReviews = new ArrayList<>();
+    public TrailerAdapter(Context context) {
+        mContext = context;
+        mTrailers= new ArrayList<>();
     }
 
     @Override
@@ -58,7 +55,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return new EmptyViewHolder(view);
         }
 
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.review_item_card, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trailer_item_card, parent, false);
         return new ViewHolder(view);
     }
 
@@ -69,11 +66,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
-            Review review = mReviews.get(position);
+            Trailer trailer = getItemAtPosition(position);
             ViewHolder vh = (ViewHolder) holder;
-            vh.txtAuthor.setText(review.getAuthor());
-            vh.txtContent.setText(String.valueOf(review.getContent()));
-        }
+            final String thumbImageUrl = Tmdb.getYoutubeThumbnail(trailer.getSource());
+
+            Picasso.with(mContext).load(thumbImageUrl)
+                    .placeholder(R.drawable.placeholder_poster_w185)
+                    .error(R.drawable.no_poster_w185)
+                    .into(vh.imgThumbnail);
+            vh.imgThumbnail.setContentDescription(trailer.getName());
+      }
+    }
+
+    public Trailer getItemAtPosition(int position) {
+        return mTrailers.get(position);
     }
 
     /**
@@ -84,12 +90,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return mReviews.size() > 0 ? mReviews.size() : 1;
+        return mTrailers.size() > 0 ? mTrailers.size() : 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (mReviews.size() == 0) {
+        if (mTrailers.size() == 0) {
             return EMPTY_VIEW;
         }
         return super.getItemViewType(position);
@@ -99,25 +105,25 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * Empties out the whole and optionally notifies
      */
     public void clear(boolean notify) {
-        mReviews.clear();
+        mTrailers.clear();
         if (notify) {
             notifyDataSetChanged();
         }
     }
 
-    public void add(int position, Review item) {
-        mReviews.add(position, item);
+    public void add(int position, Trailer trailer) {
+        mTrailers.add(position, trailer);
         notifyItemInserted(position);
     }
 
-    public void remove(Review item) {
-        int position = mReviews.indexOf(item);
-        mReviews.remove(position);
+    public void remove(Trailer trailer) {
+        int position = mTrailers.indexOf(trailer);
+        mTrailers.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void addAll(List<Review> reviews) {
-        mReviews.addAll(reviews);
+    public void addAll(List<Trailer> trailers) {
+        mTrailers.addAll(trailers);
         notifyDataSetChanged();
     }
 }

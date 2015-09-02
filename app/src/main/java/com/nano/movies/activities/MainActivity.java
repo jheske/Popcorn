@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putInt(SAVE_SPINNER_TAG, mSpinnerSelection.ordinal());
-        editor.commit();
+        editor.apply();
     }
 
 /*    @Override

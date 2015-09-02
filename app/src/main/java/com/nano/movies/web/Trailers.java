@@ -100,7 +100,6 @@ public class Trailers implements Parcelable {
             this.mType = type;
         }
 
-
         @Override
         public int describeContents() {
             return 0;

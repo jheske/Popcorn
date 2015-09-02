@@ -21,15 +21,19 @@ import android.widget.TextView;
 
 import com.nano.movies.R;
 import com.nano.movies.adapters.ReviewAdapter;
+import com.nano.movies.adapters.TrailerAdapter;
 import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
+import com.nano.movies.web.Reviews;
+import com.nano.movies.web.Reviews.Review;
 import com.nano.movies.web.Tmdb;
 import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 import retrofit.Callback;
@@ -48,7 +52,11 @@ public class MovieDetailFragment extends Fragment {
     private TextView mTextViewVoteAverage;
     private RatingBar mRatingVoteAverage;
     private RecyclerView mRecyclerView;
-    private ReviewAdapter mReviewAdapter;
+    //private ReviewAdapter mReviewAdapter;
+    private TrailerAdapter mTrailerAdapter;
+    private TextView mTextViewReview1;
+    private TextView mTextViewReview2;
+    private TextView mTextViewReview3;
     private int mMovieId;
     private Movie mMovie;
     private final Tmdb tmdbManager = new Tmdb();
@@ -62,7 +70,7 @@ public class MovieDetailFragment extends Fragment {
     // show the full-sized image.
     // DON'T FORGET TO DESTROY IT WHEN IN onDetach() OR IT WILL LEAK MEMORY
     public interface MovieDetailChangeListener {
-        void onMovieDetailChanged(String backdropPath,String originalTitle);
+        void onMovieDetailChanged(String backdropPath, String originalTitle);
     }
 
     private MovieDetailChangeListener mCallback = null;
@@ -78,7 +86,6 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_detail_coordinated, container, false);
-    //    mImageViewBackdrop = (ImageView) rootView.findViewById(R.id.img_backdrop);
         mImageViewThumbnail = (ImageView) rootView.findViewById(R.id.img_thumbnail);
         mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_movie_title);
         mTextViewReleaseDate = (TextView) rootView.findViewById(R.id.tv_release_date);
@@ -86,8 +93,11 @@ public class MovieDetailFragment extends Fragment {
         mRatingVoteAverage = (RatingBar) rootView.findViewById(R.id.rating_bar_vote_average);
         mTextViewOverview = (TextView) rootView.findViewById(R.id.tv_overview);
         mTextViewVoteAverage = (TextView) rootView.findViewById(R.id.tv_vote_average);
+        mTextViewReview1 = (TextView) rootView.findViewById(R.id.tv_review1);
+        mTextViewReview2 = (TextView) rootView.findViewById(R.id.tv_review2);
+        mTextViewReview3 = (TextView) rootView.findViewById(R.id.tv_review3);
         rootView.findViewById(R.id.btn_mark_fav).setOnClickListener(mOnClickListener);
-//        setupReviewRecyclerView(rootView);
+        setupRecyclerView(rootView);
         return rootView;
     }
 
@@ -135,15 +145,15 @@ public class MovieDetailFragment extends Fragment {
         mCallback = null;
     }
 
-
-    private void setupReviewRecyclerView(View rootView) {
+    private void setupRecyclerView(View rootView) {
         Context context = getActivity();
 
-        mReviewAdapter = new ReviewAdapter();
+        mTrailerAdapter = new TrailerAdapter(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_reviews);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(mReviewAdapter);
+        mRecyclerView.setAdapter(mTrailerAdapter);
     }
 
     /**
@@ -186,10 +196,10 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void displayMovieDetails(Movie movie) {
-//        mReviewAdapter.clear(true);
-//        mReviewAdapter.addAll(movie.getReviews().getResults());
-//        mTextViewTitle.setText(movie.getOriginalTitle());
+        mTrailerAdapter.clear(true);
+        mTrailerAdapter.addAll(movie.getTrailers().getYoutube());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+        displayReviews(movie.getReviews().getResults());
         mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
                 .put("runtime", movie.getRuntime().toString())
@@ -200,11 +210,55 @@ public class MovieDetailFragment extends Fragment {
         mTextViewVoteAverage.setText(movie.getVoteAverage().toString()
                 + "/10 ("
                 + movie.getVoteCount() + ")");
-        //      mCollapsingToolbar.setTitle(movie.getOriginalTitle());
         loadPosterImage(movie);
         //Activity displays backdrop image in the AppBar
-        mCallback.onMovieDetailChanged(movie.getBackdropPath(),movie.getOriginalTitle());
-        //       loadBackdropImage(movie);
+        mCallback.onMovieDetailChanged(movie.getBackdropPath(), movie.getOriginalTitle());
+    }
+
+    /**
+     * There's room for 3 reviews, then show MORE button.
+     * MAYBE TRY fixed-height horizontal scrolling grid HERE??
+     */
+    private void displayReviews(List<Review> reviews) {
+        final int MAX_REVIEWS = 3;
+        int reviewCount;
+        Review review;
+
+        if (reviews == null) {
+            mTextViewReview1.setText(getResources().getString(R.string.msg_no_reviews));
+            return;
+        }
+        reviewCount = reviews.size();
+        if (reviewCount == 0) {
+            mTextViewReview1.setText(getResources().getString(R.string.msg_no_reviews));
+            return;
+        }
+
+        // This is a fake because reviews are actually a "list"
+        // but you can't have a vertical list inside of a ScrollView.
+        // So punt after MAX_REVIEWS review and offer a "MORE REVIEWS" button.
+        // THERE MUST BE A BETTER WAY!!!
+        for (int i = 0; i < MAX_REVIEWS; i++) {
+            if (i >= reviewCount)
+                return;
+            displayReview(reviews.get(i), i);
+        }
+    }
+
+    private void displayReview(Review review, int position) {
+        if (review == null)
+            return;
+        switch (position) {
+            case 0:
+                mTextViewReview1.setText(review.getContent());
+                break;
+            case 1:
+                mTextViewReview2.setText(review.getContent());
+                break;
+            case 2:
+                mTextViewReview3.setText(review.getContent());
+                break;
+        }
     }
 
     private void loadPosterImage(Movie movie) {
@@ -214,11 +268,4 @@ public class MovieDetailFragment extends Fragment {
                 .into(mImageViewThumbnail);
     }
 
-  /*  private void loadBackdropImage(Movie movie) {
-        String backdropUrl = Tmdb.getMovieBackdropUrl(movie.getBackdropPath(),
-                Tmdb.IMAGE_POSTER_LARGE);
-        Log.d(TAG, "Getting backdrop " + backdropUrl);
-        Picasso.with(getActivity()).load(backdropUrl)
-                .into(mImageViewBackdrop);
-    }*/
 }
