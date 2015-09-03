@@ -1,12 +1,14 @@
 package com.nano.movies.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.nano.movies.R;
 import com.nano.movies.web.Tmdb;
@@ -16,7 +18,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final String TAG = getClass().getSimpleName();
     private List<Trailer> mTrailers;
     private static final int EMPTY_VIEW = 10;
     private Context mContext;
@@ -43,7 +46,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     // Constructor
     public TrailerAdapter(Context context) {
         mContext = context;
-        mTrailers= new ArrayList<>();
+        mTrailers = new ArrayList<>();
     }
 
     @Override
@@ -55,7 +58,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return new EmptyViewHolder(view);
         }
 
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trailer_item_card, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trailer_recycler_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -66,16 +69,26 @@ public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
-            Trailer trailer = getItemAtPosition(position);
+            final Trailer trailer = getItemAtPosition(position);
             ViewHolder vh = (ViewHolder) holder;
-            final String thumbImageUrl = Tmdb.getYoutubeThumbnail(trailer.getSource());
+            final String thumbImagePath = Tmdb.getYoutubeThumbnail(trailer.getSource());
 
-            Picasso.with(mContext).load(thumbImageUrl)
+            Picasso.with(mContext).load(thumbImagePath)
                     .placeholder(R.drawable.placeholder_poster_w185)
                     .error(R.drawable.no_poster_w185)
                     .into(vh.imgThumbnail);
             vh.imgThumbnail.setContentDescription(trailer.getName());
-      }
+            vh.imgThumbnail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "Play Youtube Video " + Uri.parse(Tmdb.getYoutubeUrl(trailer.getSource())));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailer.getSource()));
+                    intent.putExtra("VIDEO_ID", trailer.getSource());
+                    intent.putExtra("force_fullscreen", true);
+                    mContext.startActivity(intent);
+                }
+            });
+        }
     }
 
     public Trailer getItemAtPosition(int position) {
@@ -83,11 +96,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     /**
-     *  Return the size of your dataset (invoked by the layout manager)
-     *  Return 1 if the list is empty in order
-     *  to make room for the EMPTY_VIEW message
+     * Return the size of your dataset (invoked by the layout manager)
+     * Return 1 if the list is empty in order
+     * to make room for the EMPTY_VIEW message
      */
-
     @Override
     public int getItemCount() {
         return mTrailers.size() > 0 ? mTrailers.size() : 1;
@@ -127,3 +139,15 @@ public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 }
+/**
+ * vh.imgThumbnail.setOnClickListener(new View.OnClickListener() {
+ *
+ * @Override public void onClick(View v) {
+ * Log.d(TAG, "Play Youtube Video " + Uri.parse(Tmdb.getYoutubeUrl(trailer.getSource())));
+ * Intent intent = new Intent(mContext, VideoViewActivity.class);
+ * intent.putExtra(VideoViewActivity.VIDEO_PATH_EXTRA, Tmdb.getYoutubeUrl(trailer.getSource()));
+ * mContext.startActivity(intent);
+ * }
+ * });
+ * }
+ **/

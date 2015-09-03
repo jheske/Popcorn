@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.nano.movies.activities.FavoritesGridFragment;
-import com.nano.movies.activities.MovieGridFragment;
 
 /****************************************************************************
  * The FavoritesRecyclerTouchListener class sets up the RecyclerView's gesture

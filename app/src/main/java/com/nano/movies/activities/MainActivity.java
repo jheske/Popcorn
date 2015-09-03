@@ -47,7 +47,7 @@ import com.nano.movies.R;
  * <p/>
  * MainActivity contains 2 Fragments:
  * <p/>
- * MovieGridFragment handles the
+ * MovieMainGridFragment handles the
  * Main UI and maintains the list of
  * downloaded movies and corresponding view (in the adapter).
  * This Fragment communicates with MainActivity through callback
@@ -57,26 +57,27 @@ import com.nano.movies.R;
  * the Fragment calls the Listener's onMovieSelected callback
  * method to pass the path to the selected image to MainActivity,
  * which will the pass it on to either
- * MovieDetailFragment (in two-pane layout) or MovieViewActivity
+ * MovieDetailActivityFragment (in two-pane layout) or MovieViewActivity
  * (one-pane layout)
  * <p/>
- * MovieDetailFragment displays movie details when
+ * MovieDetailActivityFragment displays movie details when
  * user selects a poster from the grid.
  * The fragment is only available in a two-pane layout,
  * and displays on the same screen and to the right
- * of MovieGridFragment, so it is not used at all on a phone or on a
+ * of MovieMainGridFragment, so it is not used at all on a phone or on a
  * tablet in portrait mode.  I one-pane layout, we use MovieDetailActivity
  * to load its fragment show the details on a separate screen instead.
  */
 public class MainActivity extends AppCompatActivity
-        implements MovieGridFragment.MovieSelectionListener,
+        implements MovieMainGridFragment.MovieSelectionListener,
         FavoritesGridFragment.MovieSelectionListener {
     private final String TAG = getClass().getSimpleName();
 
     private boolean mIsTwoPane = false;
 
-    private MovieDetailFragment mMovieDetailFragment;
-    private MovieGridFragment mMovieGridFragment;
+    //private MovieDetailActivityFragment mMovieDetailFragment;
+    private MovieMainActivityDetailFragment mMovieDetailFragment;
+    private MovieMainGridFragment mMovieGridFragment;
     private static final String MOVIE_FRAGMENT_TAG = "MOVIE_FRAGMENT_TAG";
     private static final String FAVORITES_FRAGMENT_TAG = "FAVORITES_FRAGMENT_TAG";
     private static final String SAVE_SPINNER_TAG = "SAVE_SPINNER_TAG";
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity
      * and are stored in a database and loaded using a Loader and viewed using an
      * Adapter with a Cursor.
      *
-     * @TODO select MovieGridFragment or FavoritesGridFragment based on user's current Spinner
+     * @TODO select MovieMainGridFragment or FavoritesGridFragment based on user's current Spinner
      * selection (Movies vs Favorites)
      * http://developer.android.com/guide/topics/resources/runtime-changes.html#RetainingAnObject
      */
@@ -173,7 +174,9 @@ public class MainActivity extends AppCompatActivity
         // or swap it out on Spinner selection change
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        mMovieDetailFragment = (MovieDetailFragment) fragmentManager.findFragmentById(
+        // There are TWO layouts available for MovieMainActivityDetailFragment:
+        // one for landscape and one for large-landscape.
+        mMovieDetailFragment = (MovieMainActivityDetailFragment) fragmentManager.findFragmentById(
                 R.id.fragment_movie_detail);
         if (mSpinnerSelection == SpinnerSelection.FAVORITES) {
             if (savedInstanceState == null) {
@@ -184,7 +187,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             if (savedInstanceState == null) {
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_movie_grid_container, new MovieGridFragment(), MOVIE_FRAGMENT_TAG)
+                        .replace(R.id.fragment_movie_grid_container, new MovieMainGridFragment(), MOVIE_FRAGMENT_TAG)
                         .commit();
                 //Otherwise findFragmentByTag will return null in initMovieGrid()
                 fragmentManager.executePendingTransactions();
@@ -206,7 +209,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         } else {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_movie_grid_container, new MovieGridFragment(), MOVIE_FRAGMENT_TAG)
+                    .replace(R.id.fragment_movie_grid_container, new MovieMainGridFragment(), MOVIE_FRAGMENT_TAG)
                     .commit();
             fragmentManager.executePendingTransactions();
             initMovieGrid();
@@ -214,7 +217,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initMovieGrid() {
-        mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager()
+        mMovieGridFragment = (MovieMainGridFragment) getSupportFragmentManager()
                 .findFragmentByTag(MOVIE_FRAGMENT_TAG);
         mMovieGridFragment.setSortBy(mSpinnerSelection);
         mMovieGridFragment.downloadMovies();

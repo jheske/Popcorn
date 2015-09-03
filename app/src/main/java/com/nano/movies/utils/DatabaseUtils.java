@@ -45,6 +45,7 @@ public class DatabaseUtils {
     public static void insertMovie(Context context, Movie movie) {
         long movieId = dbInsertMovie(context,movie);
         if (movie.getTrailers() != null) {
+            //@TODO Get rid of Quicktime References, not required
             insertTrailers(context, movie.getTrailers().getQuicktime(), TRAILER_ORIGIN_QUICKTIME, movieId);
             insertTrailers(context, movie.getTrailers().getYoutube(), TRAILER_ORIGIN_YOUTUBE, movieId);
         }

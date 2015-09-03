@@ -98,7 +98,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
              * onClick called back from the GestureDetector
              * mCallback calls into MainActivity which
              * implements this fragment's MovieSelectionListener
-             * Note that MovieGridFragment works the same way.
+             * Note that MovieMainGridFragment works the same way.
              */
             @Override
             public void onClick(View view, int position) {

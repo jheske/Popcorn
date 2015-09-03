@@ -31,4 +31,8 @@
     <string name="content_authority"  translatable="false">com.nano.movies.app</string>
     <string name="empty_list">There are no reviews for this movie.</string>
     <string name="msg_no_reviews">There are no reviews for this movie</string>
+    <string name="title_activity_video_view">View Trailer</string>
+    <string name="title_activity_movie_detail_fragment">MovieDetailFragment</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

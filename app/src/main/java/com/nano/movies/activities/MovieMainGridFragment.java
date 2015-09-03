@@ -34,10 +34,9 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
 
-public class MovieGridFragment extends Fragment {
-    private final String TAG = MovieGridFragment.class.getSimpleName();
+public class MovieMainGridFragment extends Fragment {
+    private final String TAG = MovieMainGridFragment.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -72,7 +71,7 @@ public class MovieGridFragment extends Fragment {
 
     private MovieSelectionListener mCallback = null;
 
-    public MovieGridFragment() {
+    public MovieMainGridFragment() {
     }
 
     @Override

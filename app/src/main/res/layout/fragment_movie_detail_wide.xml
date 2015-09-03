@@ -1,11 +1,21 @@
-<!-- Main container holds Title, Play Details container, Overview, and Trailer container -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Card view for Movie Details, including thumbnail, votes, rating, release date, runtime -->
+    <include layout="@layout/movie_details_card_include" />
+    <!-- Card views for Trailers and Reviews -->
+    <include layout="@layout/trailers_card_include" />
+    <include layout="@layout/reviews_card_include" />
+</LinearLayout>
+<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="com.nano.movies.activities.MovieDetailFragment">
-    <!-- Top-Level Movie title, doesn't scroll so always visible-->
+    tools:context="com.nano.movies.activities.MovieDetailActivityFragment">
     <TextView
         android:id="@+id/tv_movie_title"
         android:layout_width="match_parent"
@@ -16,7 +26,6 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:text="Movie Title"
         android:textSize="30sp" />
-    <!-- Top-level ScrollView container.  -->
     <ScrollView
         android:id="@+id/detail_scroll_view"
         android:layout_width="wrap_content"
@@ -24,7 +33,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <!-- Container holding thumbnail and play details container -->
             <LinearLayout
                 android:id="@+id/movie_details_container"
                 android:layout_alignParentTop="true"
@@ -33,16 +41,12 @@
                 android:layout_marginLeft="@dimen/margin_40"
                 android:layout_marginStart="@dimen/margin_40"
                 android:orientation="horizontal">
-                <!-- Thumbnail sized image of poster -->
                 <ImageView
                     android:id="@+id/img_thumbnail"
                     android:layout_width="@dimen/movie_detail_width"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/desc_title"/>
-                <!-- Play details container hold release year, runtime,
-                     viewer rating, and favorites button
-                     In wide-screen also contains the overview -->
                 <LinearLayout
                     android:id="@+id/play_details"
                     android:layout_width="wrap_content"
@@ -99,17 +103,6 @@
                         android:textSize="15sp" />
                 </LinearLayout>
             </LinearLayout>
-            <!-- Container holding Trailers and Reviews
-            <include
-                layout="@layout/reviews_include"
-                android:layout_below="@+id/movie_details_container"
-                android:id="@+id/reviews_and_trailers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_40"
-                android:layout_marginLeft="@dimen/margin_20"
-                android:layout_marginRight="@dimen/margin_20">
-            </include>  -->
         </RelativeLayout>
     </ScrollView>
     <android.support.v7.widget.RecyclerView
@@ -118,3 +111,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>
+-->

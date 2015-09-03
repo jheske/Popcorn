@@ -20,7 +20,7 @@ import com.nano.movies.R;
 import com.nano.movies.web.Tmdb;
 
 public class MovieDetailActivity extends AppCompatActivity
-        implements MovieDetailFragment.MovieDetailChangeListener {
+        implements MovieDetailActivityFragment.MovieDetailChangeListener {
 
     private final String TAG = getClass().getSimpleName();
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
@@ -66,7 +66,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
     private void setupDetailFragment() {
         int movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
-        MovieDetailFragment detailFragment = ((MovieDetailFragment) getSupportFragmentManager()
+        MovieDetailActivityFragment detailFragment = ((MovieDetailActivityFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_movie_detail_coordinated));
         detailFragment.downloadMovie(movieId);
     }

@@ -1,4 +1,4 @@
-<!-- Container holding Trailers and Reviews.
+<!-- Container holding Reviews.
      Details layouts will <include> this in their layouts --><!-- Reviews -->
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
