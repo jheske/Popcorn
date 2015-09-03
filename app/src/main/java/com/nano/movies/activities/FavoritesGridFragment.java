@@ -79,7 +79,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_grid, container, false);
         //The adapter has a cursor for linking the RecyclerView with the database
         mMovieAdapter = new MovieAdapterWithCursor(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);

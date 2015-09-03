@@ -1,6 +1,9 @@
-<!--
-    See activity_main_two_panes for large-screen version of this activity.
--->
+<!--This layout will be called from
+    values/layouts.xml when app is run on a device
+    in portrait mode.
+    If the user rotates the device, then
+    values-large-port/layout.xml will be
+    load the one_pane version instead.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_containers"
@@ -18,10 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:entries="@array/sort_by_array"/>
-
-    <!--
-    Layout will be assigned by the fragment's activity.
-    -->
     <FrameLayout
         android:id="@+id/fragment_movie_grid_container"
         android:layout_width="match_parent"

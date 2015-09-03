@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="layout_main" type="layout">@layout/activity_main_one_pane</item>
+<!--    <item name="layout_main" type="layout">@layout/activity_main_one_pane</item>  -->
+    <item name="layout_main" type="layout">@layout/activity_main_one_pane_tabs</item>
     <bool name="has_two_panes">false</bool>
 </resources>

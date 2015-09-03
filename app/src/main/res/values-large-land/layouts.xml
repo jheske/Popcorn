@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="layout_main" type="layout">@layout/activity_main_two_panes</item>
+    <item name="layout_main" type="layout">@layout/activity_main_two_panes_tabs</item>
     <item name="fragment_movie_detail" type="layout">@layout/fragment_movie_detail_wide</item>
     <bool name="has_two_panes">true</bool>
 </resources>

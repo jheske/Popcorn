@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pop Movies</string>
+    <string name="app_name">Popcorn</string>
     <!-- Menu actions (to be integrated in P2 -->
     <string name="action_settings">Settings</string>
 

@@ -48,7 +48,8 @@ public class MovieMainGridFragment extends Fragment {
     //State vars that must survive a config change.
     private Parcelable mLayoutManagerSavedState;
     private int mLastPosition = 0;
-    private String mSortBy = MovieServiceProxy.POPULARITY_DESC;
+    //    private String mSortBy = MovieServiceProxy.POPULARITY_DESC;
+    private String mSortBy;
     private List<Movie> mMovies = null;
 
     //Tags for storing/retrieving state on config change.
@@ -84,10 +85,11 @@ public class MovieMainGridFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_grid, container, false);
         // Grid with 2 columns
         Context activityContext = getActivity();
 
+        mSortBy = getArguments().getString("SORT_BY");
         mMovieAdapter = new MovieAdapter(activityContext);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         //Show two columns or three, depending device orientation.
@@ -132,6 +134,9 @@ public class MovieMainGridFragment extends Fragment {
             mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES);
             displayPosters();
         }
+
+        else
+            downloadMovies();
     }
 
     @Override
@@ -249,6 +254,17 @@ public class MovieMainGridFragment extends Fragment {
             mSortBy = MovieServiceProxy.VOTE_AVERAGE_DESC;
         else
             mSortBy = MovieServiceProxy.POPULARITY_DESC;
+        mLastPosition = 0;
+    }
+
+
+    /**
+     * For testing Tabbed MainActivity
+     *
+     * @param sortBy
+     */
+    public void setSortBy(String sortBy) {
+        mSortBy = sortBy;
         mLastPosition = 0;
     }
 

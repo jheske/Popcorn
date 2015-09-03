@@ -16,7 +16,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.MainActivity_Tabs"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -28,20 +28,12 @@
         <activity
             android:name=".activities.MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
-            android:parentActivityName=".activities.MainActivity" >
+            android:parentActivityName=".activities.MainActivity_Tabs" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nano.movies.activities.MainActivity" />
-        </activity>
-        <activity
-            android:name=".activities.DetailFragment"
-            android:label="@string/title_activity_movie_detail_fragment" >
-        </activity>
-        <activity
-            android:name=".activities.DetailFragmentBaseClass"
-            android:label="@string/title_activity_detail_base_fragment" >
+                android:value="com.nano.movies.activities.MainActivity_Tabs" />
         </activity>
     </application>
 

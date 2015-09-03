@@ -42,7 +42,7 @@ public class MovieDetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_detail_coordinated);
+        setContentView(R.layout.activity_movie_detail);
         setupToolbar();
         setupDetailFragment();
     }
@@ -68,7 +68,7 @@ public class MovieDetailActivity extends AppCompatActivity
     private void setupDetailFragment() {
         int movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
         DetailActivityFragment detailFragment = ((DetailActivityFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_movie_detail_coordinated));
+                .findFragmentById(R.id.fragment_movie_detail));
         detailFragment.downloadMovie(movieId);
     }
 
