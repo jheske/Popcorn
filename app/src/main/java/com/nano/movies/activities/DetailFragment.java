@@ -20,6 +20,7 @@ import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Reviews;
+import com.nano.movies.web.Reviews.Review;
 import com.nano.movies.web.Tmdb;
 import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
@@ -176,7 +177,6 @@ public class DetailFragment extends Fragment {
     private void displayReviews(List<Reviews.Review> reviews) {
         final int MAX_REVIEWS = 3;
         int reviewCount;
-        Reviews.Review review;
 
         if (reviews == null) {
             mTextViewReview1.setText(getResources().getString(R.string.msg_no_reviews));
@@ -207,9 +207,11 @@ public class DetailFragment extends Fragment {
                 mTextViewReview1.setText(review.getContent());
                 break;
             case 1:
+                mTextViewReview2.setVisibility(View.VISIBLE);
                 mTextViewReview2.setText(review.getContent());
                 break;
             case 2:
+                mTextViewReview3.setVisibility(View.VISIBLE);
                 mTextViewReview3.setText(review.getContent());
                 break;
         }
