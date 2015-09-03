@@ -90,7 +90,6 @@ public class Tmdb {
 
     public static String getYoutubeUrl(String source) {
         return ("http://www.youtube.com/watch?v=" + source);
-        //return ("http://www.youtube.com/v/" + source + "&feature=youtu.be");
     }
 
     public static String getYoutubeThumbnail(String source) {

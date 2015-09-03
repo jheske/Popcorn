@@ -57,10 +57,10 @@ import com.nano.movies.R;
  * the Fragment calls the Listener's onMovieSelected callback
  * method to pass the path to the selected image to MainActivity,
  * which will the pass it on to either
- * MovieDetailActivityFragment (in two-pane layout) or MovieViewActivity
+ * DetailActivityFragment (in two-pane layout) or MovieViewActivity
  * (one-pane layout)
  * <p/>
- * MovieDetailActivityFragment displays movie details when
+ * DetailActivityFragment displays movie details when
  * user selects a poster from the grid.
  * The fragment is only available in a two-pane layout,
  * and displays on the same screen and to the right
@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity
 
     private boolean mIsTwoPane = false;
 
-    //private MovieDetailActivityFragment mMovieDetailFragment;
-    private MovieMainActivityDetailFragment mMovieDetailFragment;
+    //private DetailActivityFragment mMovieDetailFragment;
+    private DetailFragment mMovieDetailFragment;
     private MovieMainGridFragment mMovieGridFragment;
     private static final String MOVIE_FRAGMENT_TAG = "MOVIE_FRAGMENT_TAG";
     private static final String FAVORITES_FRAGMENT_TAG = "FAVORITES_FRAGMENT_TAG";
@@ -174,9 +174,9 @@ public class MainActivity extends AppCompatActivity
         // or swap it out on Spinner selection change
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        // There are TWO layouts available for MovieMainActivityDetailFragment:
+        // There are TWO layouts available for DetailFragment:
         // one for landscape and one for large-landscape.
-        mMovieDetailFragment = (MovieMainActivityDetailFragment) fragmentManager.findFragmentById(
+        mMovieDetailFragment = (DetailFragment) fragmentManager.findFragmentById(
                 R.id.fragment_movie_detail);
         if (mSpinnerSelection == SpinnerSelection.FAVORITES) {
             if (savedInstanceState == null) {

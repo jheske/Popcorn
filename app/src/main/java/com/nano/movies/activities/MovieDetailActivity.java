@@ -14,13 +14,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import com.squareup.picasso.Picasso;
 
 import com.nano.movies.R;
+import com.squareup.picasso.Picasso;
+
 import com.nano.movies.web.Tmdb;
 
 public class MovieDetailActivity extends AppCompatActivity
-        implements MovieDetailActivityFragment.MovieDetailChangeListener {
+        implements DetailActivityFragment.MovieDetailChangeListener {
 
     private final String TAG = getClass().getSimpleName();
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
@@ -66,7 +67,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
     private void setupDetailFragment() {
         int movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
-        MovieDetailActivityFragment detailFragment = ((MovieDetailActivityFragment) getSupportFragmentManager()
+        DetailActivityFragment detailFragment = ((DetailActivityFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_movie_detail_coordinated));
         detailFragment.downloadMovie(movieId);
     }

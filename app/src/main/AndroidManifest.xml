@@ -36,8 +36,12 @@
                 android:value="com.nano.movies.activities.MainActivity" />
         </activity>
         <activity
-            android:name=".activities.MovieMainActivityDetailFragment"
+            android:name=".activities.DetailFragment"
             android:label="@string/title_activity_movie_detail_fragment" >
+        </activity>
+        <activity
+            android:name=".activities.DetailFragmentBaseClass"
+            android:label="@string/title_activity_detail_base_fragment" >
         </activity>
     </application>
 

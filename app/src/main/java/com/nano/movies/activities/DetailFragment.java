@@ -1,6 +1,5 @@
 package com.nano.movies.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -35,54 +34,39 @@ import retrofit.client.Response;
 
 /**
  * This fragment attaches ONLY to MainActivity two-pane mode
- * MovieDetailActivity uses a different fragment, MovieDetailActivityFragment.
+ * MovieDetailActivity uses a different fragment, DetailActivityFragment.
+ *
  */
-public class MovieMainActivityDetailFragment extends Fragment {
+public class DetailFragment extends Fragment {
+    protected final String TAG = DetailActivityFragment.class.getSimpleName();
 
-    private final String TAG = MovieDetailActivityFragment.class.getSimpleName();
-
-    private ImageView mImageViewThumbnail;
-    private TextView mTextViewReleaseDate;
-    private TextView mTextViewRuntime;
-    private TextView mTextViewOverview;
-    private TextView mTextViewVoteAverage;
-    private RatingBar mRatingVoteAverage;
-    private RecyclerView mRecyclerView;
-    private TrailerAdapter mTrailerAdapter;
-    private TextView mTextViewReview1;
-    private TextView mTextViewReview2;
-    private TextView mTextViewReview3;
-    private int mMovieId;
-    private Movie mMovie;
-    private final Tmdb tmdbManager = new Tmdb();
+    protected ImageView mImageViewThumbnail;
+    protected TextView mTextViewReleaseDate;
+    protected TextView mTextViewRuntime;
+    protected TextView mTextViewOverview;
+    protected TextView mTextViewVoteAverage;
+    protected RatingBar mRatingVoteAverage;
+    protected RecyclerView mRecyclerView;
+    protected TrailerAdapter mTrailerAdapter;
+    protected TextView mTextViewReview1;
+    protected TextView mTextViewReview2;
+    protected TextView mTextViewReview3;
+    protected int mMovieId;
+    protected Movie mMovie;
+    protected final Tmdb tmdbManager = new Tmdb();
     // Tag for saving movie so it doesn't have to be re-downloaded on config change
-    private final String BUNDLE_MOVIE = "SaveMovie";
+    protected final String BUNDLE_MOVIE = "SaveMovie";
+    protected TextView mTextViewTitle;
 
-    private TextView mTextViewTitle;
-    // This callback interface that allows this Fragment to notify MainActivity when
-    // user clicks on a List Item so MainActivity can have SelfieImageFragment
-    // show the full-sized image.
-    // DON'T FORGET TO DESTROY IT WHEN IN onDetach() OR IT WILL LEAK MEMORY
-    //@TODO Abstract this into its own class
-   /* public interface MovieDetailChangeListener {
-        void onMovieDetailChanged(String backdropPath, String originalTitle);
-    }
-
-    private MovieDetailChangeListener mCallback = null;
-
-    public MovieMainActivityDetailFragment() {
-        setRetainInstance(true);
-    } */
-
-    /**
-     * @TODO Hook up Favorite button
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_movie_title);
+        mTextViewTitle.setVisibility(View.VISIBLE);
         mImageViewThumbnail = (ImageView) rootView.findViewById(R.id.img_thumbnail);
-      //  mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_movie_title);
         mTextViewReleaseDate = (TextView) rootView.findViewById(R.id.tv_release_date);
         mTextViewRuntime = (TextView) rootView.findViewById(R.id.tv_runtime);
         mRatingVoteAverage = (RatingBar) rootView.findViewById(R.id.rating_bar_vote_average);
@@ -119,28 +103,6 @@ public class MovieMainActivityDetailFragment extends Fragment {
         }
     };
 
-    /*
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // The hosting Activity must implement
-        // MovieSelectionListener callback interface.
-        try {
-            mCallback = (MovieDetailChangeListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + getResources().getString(R.string.error_implement_method)
-                    + " MovieDetailChangeListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallback = null;
-    } */
-
     private void setupRecyclerView(View rootView) {
         Context context = getActivity();
 
@@ -152,11 +114,9 @@ public class MovieMainActivityDetailFragment extends Fragment {
         mRecyclerView.setAdapter(mTrailerAdapter);
     }
 
-    /**
-     * Called by MainActivity if Fragment already exists (two-pane mode),
-     * or when the Fragment is created by its own separate activity
-     * (MovieDetailActivity), in single-pane mode.
-     */
+    //Called by MainActivity if Fragment already exists (two-pane mode),
+    //or when the Fragment is created by its own separate activity
+    //(MovieDetailActivity), in single-pane mode.
     public void downloadMovie(int movieId) {
         // If user is displaying the same movie,
         // then don't download it again.
@@ -191,7 +151,9 @@ public class MovieMainActivityDetailFragment extends Fragment {
                 });
     }
 
-    private void displayMovieDetails(Movie movie) {
+    protected void displayMovieDetails(Movie movie) {
+        if (mTextViewTitle.getVisibility() == View.VISIBLE)
+            mTextViewTitle.setText(movie.getOriginalTitle());
         mTrailerAdapter.clear(true);
         mTrailerAdapter.addAll(movie.getTrailers().getYoutube());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
@@ -207,14 +169,10 @@ public class MovieMainActivityDetailFragment extends Fragment {
                 + "/10 ("
                 + movie.getVoteCount() + ")");
         loadPosterImage(movie);
-        //Activity displays backdrop image in the AppBar
- //mCallback.onMovieDetailChanged(movie.getBackdropPath(), movie.getOriginalTitle());
     }
 
-    /**
-     * There's room for 3 reviews, then show MORE button.
-     * MAYBE TRY fixed-height horizontal scrolling grid HERE??
-     */
+    //There's room for 3 reviews, then show MORE button.
+    //MAYBE TRY fixed-height horizontal scrolling grid HERE??
     private void displayReviews(List<Reviews.Review> reviews) {
         final int MAX_REVIEWS = 3;
         int reviewCount;
@@ -263,6 +221,4 @@ public class MovieMainActivityDetailFragment extends Fragment {
         Picasso.with(getActivity()).load(movieImageUrl)
                 .into(mImageViewThumbnail);
     }
-
-
 }
