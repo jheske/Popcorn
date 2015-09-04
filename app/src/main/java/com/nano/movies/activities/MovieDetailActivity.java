@@ -88,16 +88,22 @@ public class MovieDetailActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+  /*      if (id == R.id.action_settings) {
             return true;
-        }
-        switch (item.getItemId()) {
+        } */
+        switch (id) {
+            case R.id.action_settings:
+                return true;
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
+            case R.id.menu_item_share:
+                // Defer to Fragment menu
+                return false;
+            default:
+                return false;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void onMovieDetailChanged(String backdropPath, String originalTitle) {

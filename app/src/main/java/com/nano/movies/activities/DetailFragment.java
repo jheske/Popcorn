@@ -1,12 +1,17 @@
 package com.nano.movies.activities;
 
-import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,7 +25,6 @@ import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Reviews;
-import com.nano.movies.web.Reviews.Review;
 import com.nano.movies.web.Tmdb;
 import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
@@ -36,7 +40,6 @@ import retrofit.client.Response;
 /**
  * This fragment attaches ONLY to MainActivity two-pane mode
  * MovieDetailActivity uses a different fragment, DetailActivityFragment.
- *
  */
 public class DetailFragment extends Fragment {
     protected final String TAG = DetailActivityFragment.class.getSimpleName();
@@ -58,6 +61,14 @@ public class DetailFragment extends Fragment {
     // Tag for saving movie so it doesn't have to be re-downloaded on config change
     protected final String BUNDLE_MOVIE = "SaveMovie";
     protected TextView mTextViewTitle;
+    private ShareActionProvider mShareActionProvider;
+    private Intent mShareIntent;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,8 +97,12 @@ public class DetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             mMovie = savedInstanceState.getParcelable(BUNDLE_MOVIE);
-            if (mMovie != null)
+            if (mMovie != null) {
                 mMovieId = mMovie.getId();
+                setShareTrailerIntent();
+                //String trailerPath = mMovie.getTrailers().getYoutube().get(0).getSource();
+                //mShareIntent.putExtra(Intent.EXTRA_TEXT,Tmdb.getYoutubeUrl(trailerPath));
+            }
         }
     }
 
@@ -104,9 +119,33 @@ public class DetailFragment extends Fragment {
         }
     };
 
-    private void setupRecyclerView(View rootView) {
-        Context context = getActivity();
+    //http://stackoverflow.com/questions/25093706/shareactionprovider-is-null
+    //https://github.com/commonsguy/cw-omnibus/blob/ef269a785353b9dc2704aee9f7bc3b16abf186cc/EmPubLite/T15-Share/src/com/commonsware/empublite/NoteFragment.java
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_detail_fragment, menu);
+        MenuItem menuItem = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        mShareIntent = new Intent();
+        mShareIntent.setAction(Intent.ACTION_SEND);
+//        mShareIntent.putExtra(Intent.EXTRA_TEXT, "This text is to be shared to other applications.");
+        mShareIntent.setType("text/plain");
+        mShareActionProvider.setShareIntent(mShareIntent);
 
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void setShareTrailerIntent() {
+        if (mShareActionProvider == null) {
+            Log.d(TAG, "Null ShareActionProvider");
+            return;
+        }
+        String trailerPath = mMovie.getTrailers().getYoutube().get(0).getSource();
+        mShareIntent.putExtra(Intent.EXTRA_TEXT, Tmdb.getYoutubeUrl(trailerPath))
+                .setType("text/plain");
+    }
+
+    private void setupRecyclerView(View rootView) {
         mTrailerAdapter = new TrailerAdapter(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_trailers);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
@@ -137,6 +176,9 @@ public class DetailFragment extends Fragment {
                     @Override
                     public void success(Movie movie, Response response) {
                         mMovie = movie;
+                        setShareTrailerIntent();
+                        //String trailerPath = mMovie.getTrailers().getYoutube().get(0).getSource();
+                        //mShareIntent.putExtra(Intent.EXTRA_TEXT,Tmdb.getYoutubeUrl(trailerPath));
                         displayMovieDetails(movie);
                         Log.i(TAG, "Success!! Movie title = " + movie.getOriginalTitle());
                         Log.i(TAG, "There are "
