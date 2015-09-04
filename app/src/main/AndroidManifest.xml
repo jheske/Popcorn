@@ -16,7 +16,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".activities.MainActivity_Tabs"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -28,12 +28,12 @@
         <activity
             android:name=".activities.MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
-            android:parentActivityName=".activities.MainActivity_Tabs" >
+            android:parentActivityName=".activities.MainActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nano.movies.activities.MainActivity_Tabs" />
+                android:value=".activities.MainActivity" />
         </activity>
     </application>
 

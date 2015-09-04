@@ -35,8 +35,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MovieMainGridFragment extends Fragment {
-    private final String TAG = MovieMainGridFragment.class.getSimpleName();
+public class MovieGridFragment extends Fragment {
+    private final String TAG = MovieGridFragment.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -72,7 +72,7 @@ public class MovieMainGridFragment extends Fragment {
 
     private MovieSelectionListener mCallback = null;
 
-    public MovieMainGridFragment() {
+    public MovieGridFragment() {
     }
 
     @Override
@@ -132,9 +132,9 @@ public class MovieMainGridFragment extends Fragment {
             mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
             mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIES);
-            displayPosters();
         }
-
+        if (mMovies != null)
+            displayPosters();
         else
             downloadMovies();
     }
@@ -161,10 +161,10 @@ public class MovieMainGridFragment extends Fragment {
     private void restoreLayoutManagerPosition() {
         if (mLayoutManagerSavedState != null) {
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
-        } else {
+        } /*else {
             mLastPosition = 0;
             mLayoutManagerSavedState = null;
-        }
+        }*/
     }
 
     /**
@@ -219,7 +219,6 @@ public class MovieMainGridFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         // The hosting Activity must implement
         // MovieSelectionListener callback interface.
         try {
@@ -236,6 +235,10 @@ public class MovieMainGridFragment extends Fragment {
         mCallback = null;
     }
 
+    public String getSortBy() {
+        return mSortBy;
+    }
+
     private void displayPosters() {
         mMovieAdapter.clear();
         mMovieAdapter.addAll(mMovies);
@@ -245,27 +248,11 @@ public class MovieMainGridFragment extends Fragment {
         //if this is first time through.
         restoreLayoutManagerPosition();
         Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
-        //false = Movie not selected by user
-        mCallback.onMovieSelected(movie.getId(), false);
-    }
-
-    public void setSortBy(MainActivity.SpinnerSelection sortBy) {
-        if (sortBy == MainActivity.SpinnerSelection.HIGHEST_RATED)
-            mSortBy = MovieServiceProxy.VOTE_AVERAGE_DESC;
-        else
-            mSortBy = MovieServiceProxy.POPULARITY_DESC;
-        mLastPosition = 0;
-    }
-
-
-    /**
-     * For testing Tabbed MainActivity
-     *
-     * @param sortBy
-     */
-    public void setSortBy(String sortBy) {
-        mSortBy = sortBy;
-        mLastPosition = 0;
+        //Only the POPULARITY tab shows its details as as soon as its movies download.
+        //Thereafter, the user picks which movie to show details for.
+        if (mSortBy.equals(MovieServiceProxy.POPULARITY_DESC))
+          //false = Movie not selected by user
+          mCallback.onMovieSelected(movie.getId(), false);
     }
 
     /**

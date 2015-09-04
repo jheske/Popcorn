@@ -8,8 +8,9 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/desc_title"/>
 </FrameLayout>
 
-
+<!--        android:scaleType="fitCenter"
+-->

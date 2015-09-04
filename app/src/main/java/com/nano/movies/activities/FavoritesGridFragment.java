@@ -43,7 +43,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     //State vars that must survive a config change.
     private Parcelable mLayoutManagerSavedState;
     private int mLastPosition = 0;
-    private String mSortBy = MovieServiceProxy.POPULARITY_DESC;
     private List<Movie> mMovies = null;
 
     //Tags for storing/retrieving state on config change.
@@ -98,7 +97,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
              * onClick called back from the GestureDetector
              * mCallback calls into MainActivity which
              * implements this fragment's MovieSelectionListener
-             * Note that MovieMainGridFragment works the same way.
+             * Note that MovieGridFragment works the same way.
              */
             @Override
             public void onClick(View view, int position) {
@@ -124,7 +123,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
 
         if (savedInstanceState != null) {
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
-            mSortBy = savedInstanceState.getString(BUNDLE_SORT_BY);
             mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
         }
@@ -215,7 +213,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
         mMovieAdapter.swapCursor(cursor);
         mRecyclerView.smoothScrollToPosition(mLastPosition);
         mMovieAdapter.moveCursorToPosition(mLastPosition);
-        displayMovieDetails();
+//        displayMovieDetails();
     }
 
     /**
