@@ -20,12 +20,18 @@ import com.squareup.picasso.Picasso;
 
 import com.nano.movies.web.Tmdb;
 
-public class MovieDetailActivity extends AppCompatActivity
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+public class DetailActivity extends AppCompatActivity
         implements DetailActivityFragment.MovieDetailChangeListener {
 
     private final String TAG = getClass().getSimpleName();
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
-    private ImageView mImageViewBackdrop;
+
+    @Bind(R.id.img_backdrop)
+    ImageView mImageViewBackdrop;
+    @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
 
     /**
@@ -43,6 +49,7 @@ public class MovieDetailActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        ButterKnife.bind(this);
         setupToolbar();
         setupDetailFragment();
     }
@@ -60,9 +67,6 @@ public class MovieDetailActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mCollapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        mImageViewBackdrop = (ImageView) findViewById(R.id.img_backdrop);
     }
 
     private void setupDetailFragment() {

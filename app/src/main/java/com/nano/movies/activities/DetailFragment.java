@@ -2,6 +2,7 @@ package com.nano.movies.activities;
 
 import android.os.Bundle;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,36 +34,53 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.Bind;
+import butterknife.BindString;
+import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
  * This fragment attaches ONLY to MainActivity two-pane mode
- * MovieDetailActivity uses a different fragment, DetailActivityFragment.
+ * DetailActivity uses a different fragment, DetailActivityFragment.
  */
 public class DetailFragment extends Fragment {
     protected final String TAG = DetailActivityFragment.class.getSimpleName();
 
+    @Bind(R.id.img_thumbnail)
     protected ImageView mImageViewThumbnail;
+    @Bind(R.id.tv_release_date)
     protected TextView mTextViewReleaseDate;
+    @Bind(R.id.tv_runtime)
     protected TextView mTextViewRuntime;
+    @Bind(R.id.tv_overview)
     protected TextView mTextViewOverview;
+    @Bind(R.id.tv_vote_average)
     protected TextView mTextViewVoteAverage;
+    @Bind(R.id.rating_bar_vote_average)
     protected RatingBar mRatingVoteAverage;
+    @Bind(R.id.tv_review1)
+    protected TextView mTextViewReview1;
+    @Bind(R.id.tv_review2)
+    protected TextView mTextViewReview2;
+    @Bind(R.id.tv_review3)
+    protected TextView mTextViewReview3;
+    @Nullable
+    @Bind(R.id.tv_movie_title)
+    protected TextView mTextViewTitle;
     protected RecyclerView mRecyclerView;
     protected TrailerAdapter mTrailerAdapter;
-    protected TextView mTextViewReview1;
-    protected TextView mTextViewReview2;
-    protected TextView mTextViewReview3;
     protected int mMovieId;
     protected Movie mMovie;
     protected final Tmdb tmdbManager = new Tmdb();
     // Tag for saving movie so it doesn't have to be re-downloaded on config change
     protected final String BUNDLE_MOVIE = "SaveMovie";
-    protected TextView mTextViewTitle;
+
     private ShareActionProvider mShareActionProvider;
     private Intent mShareIntent;
+    @BindString(R.string.msg_no_reviews)
+    String msgNoReviews;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,17 +94,7 @@ public class DetailFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-        mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_movie_title);
-        mTextViewTitle.setVisibility(View.VISIBLE);
-        mImageViewThumbnail = (ImageView) rootView.findViewById(R.id.img_thumbnail);
-        mTextViewReleaseDate = (TextView) rootView.findViewById(R.id.tv_release_date);
-        mTextViewRuntime = (TextView) rootView.findViewById(R.id.tv_runtime);
-        mRatingVoteAverage = (RatingBar) rootView.findViewById(R.id.rating_bar_vote_average);
-        mTextViewOverview = (TextView) rootView.findViewById(R.id.tv_overview);
-        mTextViewVoteAverage = (TextView) rootView.findViewById(R.id.tv_vote_average);
-        mTextViewReview1 = (TextView) rootView.findViewById(R.id.tv_review1);
-        mTextViewReview2 = (TextView) rootView.findViewById(R.id.tv_review2);
-        mTextViewReview3 = (TextView) rootView.findViewById(R.id.tv_review3);
+        ButterKnife.bind(this,rootView);
         rootView.findViewById(R.id.btn_mark_fav).setOnClickListener(mOnClickListener);
         setupRecyclerView(rootView);
         return rootView;
@@ -100,8 +108,6 @@ public class DetailFragment extends Fragment {
             if (mMovie != null) {
                 mMovieId = mMovie.getId();
                 setShareTrailerIntent();
-                //String trailerPath = mMovie.getTrailers().getYoutube().get(0).getSource();
-                //mShareIntent.putExtra(Intent.EXTRA_TEXT,Tmdb.getYoutubeUrl(trailerPath));
             }
         }
     }
@@ -128,7 +134,6 @@ public class DetailFragment extends Fragment {
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
         mShareIntent = new Intent();
         mShareIntent.setAction(Intent.ACTION_SEND);
-//        mShareIntent.putExtra(Intent.EXTRA_TEXT, "This text is to be shared to other applications.");
         mShareIntent.setType("text/plain");
         mShareActionProvider.setShareIntent(mShareIntent);
 
@@ -156,7 +161,7 @@ public class DetailFragment extends Fragment {
 
     //Called by MainActivity if Fragment already exists (two-pane mode),
     //or when the Fragment is created by its own separate activity
-    //(MovieDetailActivity), in single-pane mode.
+    //(DetailActivity), in single-pane mode.
     public void downloadMovie(int movieId) {
         // If user is displaying the same movie,
         // then don't download it again.
@@ -221,12 +226,12 @@ public class DetailFragment extends Fragment {
         int reviewCount;
 
         if (reviews == null) {
-            mTextViewReview1.setText(getResources().getString(R.string.msg_no_reviews));
+            mTextViewReview1.setText(msgNoReviews);
             return;
         }
         reviewCount = reviews.size();
         if (reviewCount == 0) {
-            mTextViewReview1.setText(getResources().getString(R.string.msg_no_reviews));
+            mTextViewReview1.setText(msgNoReviews);
             return;
         }
 

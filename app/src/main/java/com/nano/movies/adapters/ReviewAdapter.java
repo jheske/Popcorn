@@ -13,6 +13,9 @@ import com.nano.movies.web.Reviews.Review;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * !!!RecyclerView does not handle empty lists!!!
  * So we have to do it ourselves and it's messy.
@@ -34,13 +37,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        @Bind(R.id.txt_author)
         public TextView txtAuthor;
+        @Bind(R.id.txt_content)
         public TextView txtContent;
 
-        public ViewHolder(View v) {
-            super(v);
-            txtAuthor = (TextView) v.findViewById(R.id.txt_author);
-            txtContent = (TextView) v.findViewById(R.id.txt_content);
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this,view);
         }
     }
 

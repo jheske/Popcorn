@@ -13,6 +13,9 @@ import com.nano.movies.web.Movie;
 import com.nano.movies.web.Tmdb;
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Adapter for connecting the RecyclerView with
  * the list of Movies.
@@ -23,7 +26,6 @@ import com.squareup.picasso.Picasso;
 public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWithCursor.MovieViewHolder> {
     private Context mContext;
     private Cursor mCursor;
-   // final private View mEmptyView;
 
     public MovieAdapterWithCursor(Context context) {
         super();
@@ -31,11 +33,12 @@ public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWit
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.img_poster)
         public ImageView imgPoster;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
-            imgPoster = (ImageView) itemView.findViewById(R.id.img_poster);
+            ButterKnife.bind(this,itemView);
         }
     }
 
@@ -71,20 +74,6 @@ public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWit
         return (new Movie(mCursor));
     }
 
-    /**
-     * Clear all the movies from the RecyclerView,
-     * usually in preparation for re-downloading
-     * the list with different sort criteria.
-     *
-    public void clear() {
-        int size = mMovies.size();
-        if (size <= 0)
-            return;
-        for (int i = 0; i < size; i++)
-            mMovies.remove(0);
-        notifyItemRangeRemoved(0, size);
-    } */
-
     public void moveCursorToPosition(int position) {
         mCursor.moveToPosition(position);
     }
@@ -92,7 +81,6 @@ public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWit
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
-//        mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public Cursor getCursor() {

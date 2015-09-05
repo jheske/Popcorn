@@ -5,8 +5,6 @@
  */
 package com.nano.movies.web;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -20,15 +18,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.nano.movies.utils.ApiKey;
+
+//import com.nano.movies.utils.ApiKey;
 
 import java.io.IOException;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -219,7 +212,7 @@ public class Tmdb {
                  */
                 @Override
                 public void intercept(RequestInterceptor.RequestFacade requestFacade) {
-                    requestFacade.addQueryParam(PARAM_API_KEY, ApiKey.getApiKey());
+                    requestFacade.addQueryParam(PARAM_API_KEY, "ce554ff7189861a8ef07517840922909");
                 }
             });
             if (isDebug) {

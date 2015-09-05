@@ -27,9 +27,6 @@ public class MainActivity extends AppCompatActivity
     private boolean mIsTwoPane = false;
 
     private DetailFragment mMovieDetailFragment;
-    private static final String MOVIE_FRAGMENT_TAG = "MOVIE_FRAGMENT_TAG";
-    private static final String FAVORITES_FRAGMENT_TAG = "FAVORITES_FRAGMENT_TAG";
-    private static final String SAVE_SPINNER_TAG = "SAVE_SPINNER_TAG";
     private ViewPager mViewPager;
     private Adapter mPagerAdapter;
 
@@ -171,8 +168,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startMovieDetailActivity(int movieId) {
-        Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, movieId);
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(DetailActivity.MOVIE_ID_EXTRA, movieId);
         this.startActivity(intent);
     }
 

@@ -27,6 +27,8 @@ import com.nano.movies.web.Tmdb;
 
 import java.util.List;
 
+import butterknife.BindString;
+
 public class FavoritesGridFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private final String TAG = FavoritesGridFragment.class.getSimpleName();
 
@@ -48,7 +50,9 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     //Tags for storing/retrieving state on config change.
     private final String BUNDLE_RECYCLER_LAYOUT = "SaveLayoutState";
     private final String BUNDLE_LAST_POSITION = "SaveLastPosition";
-    private final String BUNDLE_SORT_BY = "SaveSortBy";
+    @BindString(R.string.error_implement_method)
+    String errorMissingMethod;
+
 
     // Android recommends Fragments always communicate with each other
     // via the container Activity
@@ -146,7 +150,8 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
             mCallback = (MovieSelectionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + getResources().getString(R.string.error_implement_method) + " MovieSelectionListener");
+                    + errorMissingMethod
+                    + " MovieSelectionListener");
         }
         //Favorite movies are in the database so no download needed.
         //They should display automatically once Loader initializes.

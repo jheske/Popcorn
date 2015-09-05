@@ -31,6 +31,8 @@ import com.nano.movies.web.TmdbResults;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.BindString;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -57,6 +59,10 @@ public class MovieGridFragment extends Fragment {
     private final String BUNDLE_LAST_POSITION = "SaveLastPosition";
     private final String BUNDLE_SORT_BY = "SaveSortBy";
     private final String BUNDLE_MOVIES = "SaveMovies";
+    @BindString(R.string.error_download_movie_failed)
+    String errorDownloadFailed;
+    @BindString(R.string.error_implement_method)
+    String errorMissingMethod;
 
     // Android recommends Fragments always communicate with each other
     // via the container Activity
@@ -161,10 +167,7 @@ public class MovieGridFragment extends Fragment {
     private void restoreLayoutManagerPosition() {
         if (mLayoutManagerSavedState != null) {
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
-        } /*else {
-            mLastPosition = 0;
-            mLayoutManagerSavedState = null;
-        }*/
+        }
     }
 
     /**
@@ -208,8 +211,7 @@ public class MovieGridFragment extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 // Handle errors here
-                String errorMsg = getResources()
-                        .getString(R.string.error_download_movies_failed);
+                String errorMsg = errorDownloadFailed;
                 Utils.showToast(getActivity(), errorMsg);
                 Log.i(TAG, error.getMessage() + " kind = " + error.getKind());
             }
@@ -225,7 +227,8 @@ public class MovieGridFragment extends Fragment {
             mCallback = (MovieSelectionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + getResources().getString(R.string.error_implement_method) + " MovieSelectionListener");
+                    + errorMissingMethod
+                    + " MovieSelectionListener");
         }
     }
 
@@ -251,8 +254,8 @@ public class MovieGridFragment extends Fragment {
         //Only the POPULARITY tab shows its details as as soon as its movies download.
         //Thereafter, the user picks which movie to show details for.
         if (mSortBy.equals(MovieServiceProxy.POPULARITY_DESC))
-          //false = Movie not selected by user
-          mCallback.onMovieSelected(movie.getId(), false);
+            //false = Movie not selected by user
+            mCallback.onMovieSelected(movie.getId(), false);
     }
 
     /**
