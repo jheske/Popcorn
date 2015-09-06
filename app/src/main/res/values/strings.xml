@@ -10,11 +10,10 @@
     <!-- Text and label constants, some include test placeholders (like test_release_year) -->
     <string name="text_release_year"  translatable="false">2015</string>
     <string name="text_runtime">{runtime}min</string>
-    <string name="text_viewer_rating"  translatable="false">7.2/10</string>
+    <string name="text_vote_count"  translatable="false"> ({votecount})</string>
     <string name="text_overview">Your movie synopsis goes here.</string>
-    <string name="text_vote">1 vote</string>
-    <string name="text_votes">{votes} votes</string>
-    <string name="label_mark_fav">Mark as Favorite</string>
+    <string name="text_mpaa_rating">PG13</string>
+    <string name="label_mark_fav">Favorites</string>
     <string name="label_trailers">Trailers</string>
     <string name="label_reviews">Reviews</string>
     <!-- Sort order spinner strings -->
@@ -29,14 +28,11 @@
     <string name="desc_title">Movie title</string>
     <!-- ContentAuthority (to be integrated in P2) -->
     <string name="content_authority"  translatable="false">com.nano.movies.app</string>
-    <string name="empty_list">There are no reviews for this movie.</string>
+    <string name="empty_trailer_list">There are no trailers for this movie.</string>
     <string name="msg_no_reviews">There are no reviews for this movie</string>
     <string name="title_activity_video_view">View Trailer</string>
     <string name="title_activity_movie_detail_fragment">MovieDetailFragment</string>
 
-    <string name="hello_world">Hello world!</string>
-
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_detail_base_fragment">DetailBaseFragment</string>
 </resources>

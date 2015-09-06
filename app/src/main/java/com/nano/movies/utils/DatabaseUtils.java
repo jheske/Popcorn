@@ -16,8 +16,7 @@ import java.util.List;
 
 public class DatabaseUtils {
 
-    private final static String TRAILER_ORIGIN_YOUTUBE="youtube";
-    private final static String TRAILER_ORIGIN_QUICKTIME="quicktime";
+    private final static String TRAILER_ORIGIN_YOUTUBE = "youtube";
 
     public static void clearDatabase(Context context) {
         // Delete movies ((which should also delete Reviews and Trailers because
@@ -28,29 +27,26 @@ public class DatabaseUtils {
 
     public static void insertMovies(Context context, List<Movie> movies) {
         for (int position = 0; position < movies.size(); position++) {
-            insertMovie(context,movies.get(position));
+            insertMovie(context, movies.get(position));
         }
     }
 
     /**
-     *
      * Insert movie first, which returns its primary key
      * to use as the movie_id foreign key when inserting trailers and reviews.
-     *
+     * <p/>
      * Don't try to insert Reviews and Trailers. They
      * Then insert Reviews and Trailers.  A movie has one list of reviews and
-     * two lists of trailers (Youtube and Quicktime).
+     * two lists of trailers (Youtube and Quicktime (Quicktime REMOVED)).
      * Reviews and/or trailers may be empty.
      */
     public static void insertMovie(Context context, Movie movie) {
-        long movieId = dbInsertMovie(context,movie);
+        long movieId = dbInsertMovie(context, movie);
         if (movie.getTrailers() != null) {
-            //@TODO Get rid of Quicktime References, not required
-            insertTrailers(context, movie.getTrailers().getQuicktime(), TRAILER_ORIGIN_QUICKTIME, movieId);
             insertTrailers(context, movie.getTrailers().getYoutube(), TRAILER_ORIGIN_YOUTUBE, movieId);
         }
         if (movie.getReviews() != null)
-          insertReviews(context, movie.getReviews().getResults(), movieId);
+            insertReviews(context, movie.getReviews().getResults(), movieId);
     }
 
     /**
@@ -59,7 +55,7 @@ public class DatabaseUtils {
      * @return the id of the created movie. It will be used as
      * foreign key when inserting reviews and trailers
      */
-    private static long dbInsertMovie(Context context,Movie movie) {
+    private static long dbInsertMovie(Context context, Movie movie) {
         MovieContentValues values = new MovieContentValues();
         values.putTmdbId(movie.getId());
         values.putHomepage(movie.getHomePage());
@@ -84,13 +80,13 @@ public class DatabaseUtils {
      * the Movie table's _id (the auto-generated primary key)
      *
      * @param trailers Will be empty if movie has no trailers.
-     * @param movieId The foreign key linking this trailer to its associated
-     *                associated movie (Movie._id).
-     * @param origin Trailer plays on either Youtube or Quicktime
+     * @param movieId  The foreign key linking this trailer to its associated
+     *                 associated movie (Movie._id).
+     * @param origin   Trailer plays on either Youtube, or Quicktime (REMOVED)
      */
     private static void insertTrailers(Context context,
-                                List<Trailers.Trailer> trailers,
-                                String origin, Long movieId) {
+                                       List<Trailers.Trailer> trailers,
+                                       String origin, Long movieId) {
         Trailers.Trailer trailer;
 
         if (trailers == null)
@@ -99,7 +95,7 @@ public class DatabaseUtils {
             return;
         for (int i = 0; i < trailers.size(); i++) {
             trailer = trailers.get(i);
-            dbInsertTrailer(context, trailer,origin,movieId);
+            dbInsertTrailer(context, trailer, origin, movieId);
         }
     }
 
@@ -109,13 +105,12 @@ public class DatabaseUtils {
      * sends the data to the ContentProvider to be inserted into the db.
      *
      * @param trailer
-     * @param origin  Youtube or Quicktime
+     * @param origin  Youtube or Quicktime (I have removed Quicktime from JSon response)
      * @param movieId The _id of the movie associated with this trailer
-     * @return  The _id of the inserted record
-     *
+     * @return The _id of the inserted record
+     * <p/>
      * TrailerContentValues is a Trailer-specific wrapper containing a ContentValues object,
      * the Uri's to Trailer table operations, and CRUD wrapper methods.
-     *
      */
     private static long dbInsertTrailer(Context context, Trailers.Trailer trailer, String origin, Long movieId) {
         TrailerContentValues values = new TrailerContentValues();
@@ -137,7 +132,7 @@ public class DatabaseUtils {
      * @param reviews Will be empty if movie has no reviews.
      * @param movieId
      */
-    private static void insertReviews(Context context, List<Reviews.Review> reviews,Long movieId) {
+    private static void insertReviews(Context context, List<Reviews.Review> reviews, Long movieId) {
         Reviews.Review review;
 
         if (reviews == null)
@@ -157,12 +152,10 @@ public class DatabaseUtils {
      *
      * @param {review}
      * @param movieId
-     * @return
-     *
-     * ReviewContentValues is a Review-specific wrapper class containing a ContentValues object,
+     * @return ReviewContentValues is a Review-specific wrapper class containing a ContentValues object,
      * the Uri's to Review table operations, and CRUD wrapper methods.
      */
-    private static long dbInsertReview(Context context, Reviews.Review trailer,Long movieId) {
+    private static long dbInsertReview(Context context, Reviews.Review trailer, Long movieId) {
         ReviewContentValues values = new ReviewContentValues();
 
         values.putMovieId(movieId);

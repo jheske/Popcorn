@@ -46,7 +46,7 @@ public interface TrailerModel extends BaseModel {
     String getType();
 
     /**
-     * Youtube or Quicktime
+     * Youtube or Quicktime (Quicktime REMOVED)
      * Cannot be {@code null}.
      */
     @NonNull

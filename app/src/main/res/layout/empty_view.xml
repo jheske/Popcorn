@@ -8,6 +8,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/empty_list" />
+        android:text="@string/empty_trailer_list" />
 
 </LinearLayout>

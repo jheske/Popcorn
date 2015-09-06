@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Reviews;
+import com.nano.movies.web.Reviews.Review;
 import com.nano.movies.web.Tmdb;
 import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
@@ -37,6 +39,7 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -56,16 +59,12 @@ public class DetailFragment extends Fragment {
     protected TextView mTextViewRuntime;
     @Bind(R.id.tv_overview)
     protected TextView mTextViewOverview;
-    @Bind(R.id.tv_vote_average)
-    protected TextView mTextViewVoteAverage;
+    @Bind(R.id.tv_mpaa_rating)
+    protected TextView mTextViewMpaaRating;
     @Bind(R.id.rating_bar_vote_average)
     protected RatingBar mRatingVoteAverage;
-    @Bind(R.id.tv_review1)
-    protected TextView mTextViewReview1;
-    @Bind(R.id.tv_review2)
-    protected TextView mTextViewReview2;
-    @Bind(R.id.tv_review3)
-    protected TextView mTextViewReview3;
+    @Bind(R.id.tv_reviews)
+    protected TextView mTextViewReviews;
     @Nullable
     @Bind(R.id.tv_movie_title)
     protected TextView mTextViewTitle;
@@ -81,6 +80,8 @@ public class DetailFragment extends Fragment {
     private Intent mShareIntent;
     @BindString(R.string.msg_no_reviews)
     String msgNoReviews;
+    @Bind(R.id.btn_mark_fav)
+    Button btnMarkFavorite;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,8 +95,7 @@ public class DetailFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-        ButterKnife.bind(this,rootView);
-        rootView.findViewById(R.id.btn_mark_fav).setOnClickListener(mOnClickListener);
+        ButterKnife.bind(this, rootView);
         setupRecyclerView(rootView);
         return rootView;
     }
@@ -118,15 +118,12 @@ public class DetailFragment extends Fragment {
         outState.putParcelable(BUNDLE_MOVIE, mMovie);
     }
 
-    private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            DatabaseUtils.insertMovie(getActivity(), mMovie);
-        }
-    };
+    @OnClick(R.id.btn_mark_fav)
+    final void favoritesbuttonClick() {
+        Log.i(TAG, "Adding movie to favorites " + mMovie.getOriginalTitle());
+        DatabaseUtils.insertMovie(getActivity(), mMovie);
+    }
 
-    //http://stackoverflow.com/questions/25093706/shareactionprovider-is-null
-    //https://github.com/commonsguy/cw-omnibus/blob/ef269a785353b9dc2704aee9f7bc3b16abf186cc/EmPubLite/T15-Share/src/com/commonsware/empublite/NoteFragment.java
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_detail_fragment, menu);
@@ -141,6 +138,8 @@ public class DetailFragment extends Fragment {
     }
 
     private void setShareTrailerIntent() {
+        if (mMovie.getTrailers().getYoutube().size() == 0)
+            return;
         if (mShareActionProvider == null) {
             Log.d(TAG, "Null ShareActionProvider");
             return;
@@ -199,69 +198,70 @@ public class DetailFragment extends Fragment {
                 });
     }
 
+    /**
+     * This requires a lot of NULL checking because
+     * movies will often have missing fields,
+     * especially trailers and reviews.
+     *
+     * @param movie
+     */
     protected void displayMovieDetails(Movie movie) {
+        Log.d(TAG, "Display movie " + movie.getId() + "  " + movie.getOriginalTitle());
         if (mTextViewTitle.getVisibility() == View.VISIBLE)
             mTextViewTitle.setText(movie.getOriginalTitle());
-        mTrailerAdapter.clear(true);
-        mTrailerAdapter.addAll(movie.getTrailers().getYoutube());
+        if (movie.getTrailers() != null) {
+            mTrailerAdapter.clear(true);
+            mTrailerAdapter.addAll(movie.getTrailers().getYoutube());
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
         displayReviews(movie.getReviews().getResults());
-        mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
+        if (movie.getReleaseDate() == null)
+            Log.d(TAG, "NULL RELEASE DATE");
+        else
+            mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
                 .put("runtime", movie.getRuntime().toString())
                 .format();
         mTextViewRuntime.setText(runtime);
         mRatingVoteAverage.setRating(movie.getVoteAverage().floatValue());
         mTextViewOverview.setText(movie.getOverview());
-        mTextViewVoteAverage.setText(movie.getVoteAverage().toString()
-                + "/10 ("
-                + movie.getVoteCount() + ")");
         loadPosterImage(movie);
     }
 
     //There's room for 3 reviews, then show MORE button.
     //MAYBE TRY fixed-height horizontal scrolling grid HERE??
-    private void displayReviews(List<Reviews.Review> reviews) {
+    //See http://android--examples.blogspot.com/2015/01/textview-new-line-multiline-in-android.html
+    private void displayReviews(List<Review> reviews) {
         final int MAX_REVIEWS = 3;
         int reviewCount;
 
         if (reviews == null) {
-            mTextViewReview1.setText(msgNoReviews);
+            mTextViewReviews.setText(msgNoReviews);
             return;
         }
         reviewCount = reviews.size();
         if (reviewCount == 0) {
-            mTextViewReview1.setText(msgNoReviews);
+            mTextViewReviews.setText(msgNoReviews);
             return;
         }
+        displayReview(reviews.get(0));
 
-        // This is a fake because reviews are actually a "list"
+        // This is a BIG FAKE because reviews is actually a "list" of Review items,
         // but you can't have a vertical list inside of a ScrollView.
-        // So punt after MAX_REVIEWS review and offer a "MORE REVIEWS" button.
-        // THERE MUST BE A BETTER WAY!!!
-        for (int i = 0; i < MAX_REVIEWS; i++) {
+        for (int i = 1; i < MAX_REVIEWS; i++) {
             if (i >= reviewCount)
                 return;
-            displayReview(reviews.get(i), i);
+            //define new line by append android system line separator
+            mTextViewReviews.append(System.getProperty("line.separator"));
+            mTextViewReviews.append(System.getProperty("line.separator"));
+            displayReview(reviews.get(i));
         }
     }
 
-    private void displayReview(Reviews.Review review, int position) {
-        if (review == null)
-            return;
-        switch (position) {
-            case 0:
-                mTextViewReview1.setText(review.getContent());
-                break;
-            case 1:
-                mTextViewReview2.setVisibility(View.VISIBLE);
-                mTextViewReview2.setText(review.getContent());
-                break;
-            case 2:
-                mTextViewReview3.setVisibility(View.VISIBLE);
-                mTextViewReview3.setText(review.getContent());
-                break;
-        }
+    private void displayReview(Review review) {
+        mTextViewReviews.setText(review.getAuthor());
+        mTextViewReviews.append(System.getProperty("line.separator"));
+        mTextViewReviews.append(review.getContent());
     }
 
     private void loadPosterImage(Movie movie) {

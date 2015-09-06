@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/layout_rating_and_favs"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/layout_rating_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_mpaa_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/textColorSecondary"
+            android:text="@string/text_mpaa_rating"/>
+
+        <TextView
+            android:id="@+id/tv_runtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/textColorSecondary"
+            tools:text="@string/text_runtime"/>
+
+        <TextView
+            android:id="@+id/tv_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/textColorSecondary"
+            android:text="@string/text_release_year"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_rating_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_rating_details"
+        android:layout_alignParentLeft="true"
+        android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
+        android:orientation="horizontal">
+        <RatingBar
+            android:id="@+id/rating_bar_vote_average"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:numStars="10" />
+        <TextView
+            android:id="@+id/tv_vote_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/textColorSecondary"
+            android:text=" (1023)"/>
+    </LinearLayout>
+
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/btn_mark_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:drawablePadding="0dp"
+        android:minHeight="40dp"
+        android:minWidth="100dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="-5dp"
+        android:textColor="@android:color/white"
+        fbutton:cornerRadius="15dp"
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="6dp"
+        android:text="@string/label_mark_fav" />
+</RelativeLayout>

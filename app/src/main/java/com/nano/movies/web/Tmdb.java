@@ -5,6 +5,8 @@
  */
 package com.nano.movies.web;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -121,6 +123,7 @@ public class Tmdb {
             try {
                 return JSON_STRING_DATE.parse(json.getAsString());
             } catch (ParseException e) {
+                Log.d(TAG, "JSon date is NULL!!");
                 return null;
             }
         }

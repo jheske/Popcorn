@@ -202,7 +202,7 @@ public class TrailerCursor extends AbstractCursor implements TrailerModel {
     }
 
     /**
-     * Youtube or Quicktime
+     * Youtube or Quicktime (Quicktime REMOVED)
      * Cannot be {@code null}.
      */
     @NonNull

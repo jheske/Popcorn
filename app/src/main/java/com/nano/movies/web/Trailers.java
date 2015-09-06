@@ -14,18 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trailers implements Parcelable {
-    @SerializedName("quicktime")
-    private List<Trailer> mQuicktime;
     @SerializedName("youtube")
     private List<Trailer> mYoutube;
-
-    public List<Trailer> getQuicktime() {
-        return mQuicktime;
-    }
-
-    public void setQuicktime(List<Trailer> quicktime) {
-        this.mQuicktime = quicktime;
-    }
 
     public List<Trailer> getYoutube() {
         return mYoutube;
@@ -36,7 +26,7 @@ public class Trailers implements Parcelable {
     }
 
     public int getCount() {
-        return (mQuicktime.size() + mYoutube.size());
+        return (mYoutube.size());
     }
 
     @Override
@@ -134,12 +124,10 @@ public class Trailers implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(mQuicktime);
         dest.writeTypedList(mYoutube);
     }
 
     private Trailers(Parcel in) {
-        in.readTypedList(mQuicktime,Trailer.CREATOR);
         in.readTypedList(mYoutube,Trailer.CREATOR);
     }
 

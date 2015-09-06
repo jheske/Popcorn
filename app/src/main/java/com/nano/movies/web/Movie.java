@@ -180,6 +180,8 @@ public class Movie implements Parcelable {
     }
 
     public Integer getRuntime() {
+        if (mRuntime == null)
+            return 0;
         return mRuntime;
     }
 
