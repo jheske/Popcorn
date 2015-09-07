@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 import com.nano.movies.R;
-import com.nano.movies.web.MovieServiceProxy;
+import com.nano.movies.web.MovieService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,13 +88,13 @@ public class MainActivity extends AppCompatActivity
         //Most Popular Fragment
         MovieGridFragment popularFragment = new MovieGridFragment();
         Bundle args = new Bundle();
-        args.putString("SORT_BY", MovieServiceProxy.POPULARITY_DESC);
+        args.putString("SORT_BY", MovieService.POPULARITY_DESC);
         popularFragment.setArguments(args);
         mPagerAdapter.addFragment(popularFragment, "Most Popular");
         //Voter Average Fragment
         MovieGridFragment voteAvgFragment = new MovieGridFragment();
         args = new Bundle();
-        args.putString("SORT_BY", MovieServiceProxy.VOTE_AVERAGE_DESC);
+        args.putString("SORT_BY", MovieService.VOTE_AVERAGE_DESC);
         voteAvgFragment.setArguments(args);
         mPagerAdapter.addFragment(voteAvgFragment, "Highest Rated");
         //Favorites Fragment

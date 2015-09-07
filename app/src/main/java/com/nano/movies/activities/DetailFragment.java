@@ -25,8 +25,7 @@ import com.nano.movies.adapters.TrailerAdapter;
 import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
-import com.nano.movies.web.MovieServiceProxy;
-import com.nano.movies.web.Reviews;
+import com.nano.movies.web.MovieService;
 import com.nano.movies.web.Reviews.Review;
 import com.nano.movies.web.Tmdb;
 import com.squareup.phrase.Phrase;
@@ -68,11 +67,12 @@ public class DetailFragment extends Fragment {
     @Nullable
     @Bind(R.id.tv_movie_title)
     protected TextView mTextViewTitle;
+
     protected RecyclerView mRecyclerView;
     protected TrailerAdapter mTrailerAdapter;
     protected int mMovieId;
     protected Movie mMovie;
-    protected final Tmdb tmdbManager = new Tmdb();
+
     // Tag for saving movie so it doesn't have to be re-downloaded on config change
     protected final String BUNDLE_MOVIE = "SaveMovie";
 
@@ -103,6 +103,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         if (savedInstanceState != null) {
             mMovie = savedInstanceState.getParcelable(BUNDLE_MOVIE);
             if (mMovie != null) {
@@ -137,6 +138,10 @@ public class DetailFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private Tmdb getTmdbApp() {
+        return (Tmdb) getActivity().getApplication();
+    }
+
     private void setShareTrailerIntent() {
         if (mMovie.getTrailers().getYoutube().size() == 0)
             return;
@@ -162,6 +167,8 @@ public class DetailFragment extends Fragment {
     //or when the Fragment is created by its own separate activity
     //(DetailActivity), in single-pane mode.
     public void downloadMovie(int movieId) {
+        Tmdb tmdbManager = getTmdbApp();
+        MovieService movieService = tmdbManager.getMovieService();
         // If user is displaying the same movie,
         // then don't download it again.
         if (mMovie != null) {
@@ -174,8 +181,8 @@ public class DetailFragment extends Fragment {
         //callback for error handling
         mMovieId = movieId;
         tmdbManager.setIsDebug(false);
-        tmdbManager.moviesServiceProxy().summary(movieId,
-                MovieServiceProxy.REVIEWS_AND_TRAILERS,
+        movieService.summary(movieId,
+                MovieService.REVIEWS_AND_TRAILERS,
                 new Callback<Movie>() {
                     @Override
                     public void success(Movie movie, Response response) {

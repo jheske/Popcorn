@@ -22,8 +22,6 @@ import com.nano.movies.data.movie.MovieColumns;
 import com.nano.movies.data.movie.MovieSelection;
 import com.nano.movies.utils.FavoritesRecyclerTouchListener;
 import com.nano.movies.web.Movie;
-import com.nano.movies.web.MovieServiceProxy;
-import com.nano.movies.web.Tmdb;
 
 import java.util.List;
 
@@ -37,10 +35,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
 
     //Cursor loader variables
     private static final int MOVIE_LOADER = 0;
-
-    //Manages communication between activities
-    //and themoviedb.org service proxies
-    private final Tmdb tmdbManager = new Tmdb();
 
     //State vars that must survive a config change.
     private Parcelable mLayoutManagerSavedState;
@@ -71,13 +65,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     public FavoritesGridFragment() {
         setHasOptionsMenu(true);
     }
-
-/*    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        setRetainInstance(true);
-    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

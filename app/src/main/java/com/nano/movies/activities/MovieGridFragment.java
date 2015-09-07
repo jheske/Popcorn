@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,35 +21,29 @@ import com.google.gson.annotations.SerializedName;
 import com.nano.movies.R;
 import com.nano.movies.adapters.MovieAdapter;
 import com.nano.movies.utils.MovieRecyclerTouchListener;
-import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
-import com.nano.movies.web.MovieServiceProxy;
+import com.nano.movies.web.MovieService;
 import com.nano.movies.web.Tmdb;
 import com.nano.movies.web.TmdbResults;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.BindString;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MovieGridFragment extends Fragment {
+public class MovieGridFragment extends ErrorHandlerFragment {
     private final String TAG = MovieGridFragment.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
 
-    //Manages communication between activities
-    //and themoviedb.org service proxies
-    private final Tmdb tmdbManager = new Tmdb();
-
     //State vars that must survive a config change.
     private Parcelable mLayoutManagerSavedState;
     private int mLastPosition = 0;
-    //    private String mSortBy = MovieServiceProxy.POPULARITY_DESC;
+    //    private String mSortBy = MovieService.POPULARITY_DESC;
     private String mSortBy;
     private List<Movie> mMovies = null;
 
@@ -131,7 +124,6 @@ public class MovieGridFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         if (savedInstanceState != null) {
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             mSortBy = savedInstanceState.getString(BUNDLE_SORT_BY);
@@ -170,6 +162,11 @@ public class MovieGridFragment extends Fragment {
         }
     }
 
+
+    private Tmdb getTmdbApp() {
+        return (Tmdb) getActivity().getApplication();
+    }
+
     /**
      * Useful for debugging
      */
@@ -179,6 +176,7 @@ public class MovieGridFragment extends Fragment {
         @SerializedName("error")
         public String errorDetails;
     }
+
 
     /**
      * Called after parent Activity is created,
@@ -190,8 +188,11 @@ public class MovieGridFragment extends Fragment {
         //do don't download them again.
         if (mMovies != null)
             return;
+
+        Tmdb tmdbManager = getTmdbApp();
+        MovieService movieService = tmdbManager.getMovieService();
         tmdbManager.setIsDebug(false);
-        tmdbManager.moviesServiceProxy().discoverMovies(1, mSortBy, new Callback<TmdbResults>() {
+        movieService.discoverMovies(1, mSortBy, new Callback<TmdbResults>() {
             @Override
             public void success(TmdbResults results, Response response) {
                 //Save movies and stash/restore then on
@@ -208,11 +209,14 @@ public class MovieGridFragment extends Fragment {
              *
              * @param error
              */
+            //Errors are handled by an ApiErrorHandler,
+            //set in Tmdb.RestAdapter.Builder.setErrorHandler
             @Override
             public void failure(RetrofitError error) {
                 // Handle errors here
-                String errorMsg = errorDownloadFailed;
-                Utils.showToast(getActivity(), errorMsg);
+            //    String errorMsg = errorDownloadFailed;
+            //    error.getCause();
+            //    Utils.showToast(getActivity(), errorMsg);
                 Log.i(TAG, error.getMessage() + " kind = " + error.getKind());
             }
         });
@@ -253,7 +257,7 @@ public class MovieGridFragment extends Fragment {
         Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
         //Only the POPULARITY tab shows its details as as soon as its movies download.
         //Thereafter, the user picks which movie to show details for.
-        if (mSortBy.equals(MovieServiceProxy.POPULARITY_DESC))
+        if (mSortBy.equals(MovieService.POPULARITY_DESC))
             //false = Movie not selected by user
             mCallback.onMovieSelected(movie.getId(), false);
     }

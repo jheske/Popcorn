@@ -35,4 +35,7 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_detail_base_fragment">DetailBaseFragment</string>
+    <string name="error_retrofit_network_exception">Network exception: </string>
+    <string name="error_retrofit_unauthorized_exception">Unauthorized exception:"</string>
+    <string name="error_retrofit_unhandled_exception">Unhandled Exception: </string>
 </resources>

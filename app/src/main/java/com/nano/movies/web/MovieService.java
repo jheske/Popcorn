@@ -17,7 +17,7 @@ import retrofit.http.Query;
  * For now put everything in here I think I might need for P1, P2, etc.
  *
  */
-public interface MovieServiceProxy {
+public interface MovieService {
     String POPULARITY_DESC = "popularity.desc";
     String VOTE_AVERAGE_DESC = "vote_average.desc";
     String TRAILERS = "trailers";

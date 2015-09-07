@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This "Plain Ol' Java Object" (POJO) class represents data of
- * interest downloaded in Json from the MovieServiceProxy.  We
+ * interest downloaded in Json from the MovieService.  We
  * don't care about all the data offered by the service,
  * just the fields defined in this class.
  */
