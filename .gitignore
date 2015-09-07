@@ -6,6 +6,7 @@ colors_indigo_amber.xml
 *.apk
 *.ap_
 
+
 # Files for the Dalvik VM
 *.dex
 
@@ -34,6 +35,7 @@ proguard/
 
 /.idea/workspace.xml
 /.idea/libraries
+/.idea
 .DS_Store
 /captures
 /json
