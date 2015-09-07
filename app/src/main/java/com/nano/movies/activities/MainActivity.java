@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 import com.nano.movies.R;
+import com.nano.movies.adapters.PopcornPagerAdapter;
 import com.nano.movies.web.MovieService;
 
 import java.util.ArrayList;
@@ -27,9 +28,6 @@ public class MainActivity extends AppCompatActivity
     private boolean mIsTwoPane = false;
 
     private DetailFragment mMovieDetailFragment;
-    private ViewPager mViewPager;
-    private Adapter mPagerAdapter;
-
     private SharedPreferences mSharedPrefs;
     private static final String PREFS_SAVE_STATE = "save_state";
 
@@ -77,8 +75,61 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
     }
 
+    private void setupViewPager() {
+        mMovieDetailFragment =
+                (DetailFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.fragment_movie_detail);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.addTab(tabLayout.newTab().setText("Most Popular"));
+        tabLayout.addTab(tabLayout.newTab().setText("Highest Ratede"));
+        tabLayout.addTab(tabLayout.newTab().setText("Favorites"));
+        //tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-    //JEH So we can swipe thru Tabs
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        final PopcornPagerAdapter pagerAdapter = new PopcornPagerAdapter(getSupportFragmentManager(),
+                tabLayout.getTabCount());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        /*
+        mPagerAdapter = new Adapter(getSupportFragmentManager());
+        //Most Popular Fragment
+        MovieGridFragment popularFragment = new MovieGridFragment();
+        Bundle args = new Bundle();
+        args.putString("SORT_BY", MovieService.POPULARITY_DESC);
+        popularFragment.setArguments(args);
+        mPagerAdapter.addFragment(popularFragment, "Most Popular");
+        //Voter Average Fragment
+        MovieGridFragment voteAvgFragment = new MovieGridFragment();
+        args = new Bundle();
+        args.putString("SORT_BY", MovieService.VOTE_AVERAGE_DESC);
+        voteAvgFragment.setArguments(args);
+        mPagerAdapter.addFragment(voteAvgFragment, "Highest Rated");
+        //Favorites Fragment
+        FavoritesGridFragment favoritesFragment = new FavoritesGridFragment();
+        mPagerAdapter.addFragment(favoritesFragment, "Favorites");
+        mViewPager.setAdapter(mPagerAdapter);
+    //    TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);*/
+    }
+
+    /*
     private void setupViewPager() {
         mMovieDetailFragment =
                 (DetailFragment) getSupportFragmentManager()
@@ -120,6 +171,8 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
+            //INSTANTIATE FRAGMENT HERE!!!! OR ELSE IT WILL KEEP INSTANTIATING
+            //NEW FRAGMENTS ON PAGING
             return mFragments.get(position);
         }
 
@@ -132,7 +185,8 @@ public class MainActivity extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             return mFragmentTitles.get(position);
         }
-    }
+    } */
+
 
     /**
      * Determine whether we are in two-pane mode, based

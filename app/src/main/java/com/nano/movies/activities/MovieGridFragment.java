@@ -177,7 +177,6 @@ public class MovieGridFragment extends ErrorHandlerFragment {
         public String errorDetails;
     }
 
-
     /**
      * Called after parent Activity is created,
      * or after when changes Spinner selection

@@ -151,16 +151,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
         mCallback = null;
     }
 
-    public void displayMovieDetails() {
-        //Tell main Activity that if it is in two-pane mode
-        //it can display the movie at
-        //mLastPosition, which will be 0 (first movie in the list)
-        //if this is first time through.
-        Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
-        //false = Movie not selected by user
-        mCallback.onMovieSelected(movie.getId(), false);
-    }
-
     /**
      * The CursorLoader derives from AsyncTaskLoader so it is
      * executed in a background thread.
