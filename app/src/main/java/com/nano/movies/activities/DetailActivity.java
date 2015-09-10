@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.nano.movies.R;
+import com.nano.movies.web.Movie;
 import com.squareup.picasso.Picasso;
 
 import com.nano.movies.web.Tmdb;
@@ -28,6 +29,7 @@ public class DetailActivity extends AppCompatActivity
 
     private final String TAG = getClass().getSimpleName();
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
+    public static final String MOVIE_EXTRA = "MOVIE EXTRA";
 
     @Bind(R.id.img_backdrop)
     ImageView mImageViewBackdrop;
@@ -69,11 +71,21 @@ public class DetailActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * If there is no internet connection and user is
+     * displaying a Favorite, then movie was
+     * loaded from the cache and can't be downloaded.
+     */
     private void setupDetailFragment() {
-        int movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
         DetailActivityFragment detailFragment = ((DetailActivityFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_movie_detail));
-        detailFragment.downloadMovie(movieId);
+        int movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA, -1);
+        if (movieId == -1)  {
+            Movie movie = getIntent().getParcelableExtra(MOVIE_EXTRA);
+            detailFragment.displayMovieDetails(movie);
+        }
+        else
+          detailFragment.downloadMovie(movieId);
     }
 
     @Override
@@ -92,9 +104,6 @@ public class DetailActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-  /*      if (id == R.id.action_settings) {
-            return true;
-        } */
         switch (id) {
             case R.id.action_settings:
                 return true;
@@ -116,6 +125,8 @@ public class DetailActivity extends AppCompatActivity
                 Tmdb.IMAGE_POSTER_LARGE);
         Log.d(TAG, "Getting backdrop " + backdropUrl);
         Picasso.with(this).load(backdropUrl)
+                .placeholder(R.drawable.placeholder_backdrop_w300)
+                .error(R.drawable.placeholder_backdrop_w300)
                 .into(mImageViewBackdrop);
         mCollapsingToolbar.setTitle(originalTitle);
 

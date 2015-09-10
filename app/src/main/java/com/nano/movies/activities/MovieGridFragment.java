@@ -6,6 +6,7 @@
 package com.nano.movies.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Parcelable;
@@ -36,6 +37,7 @@ import retrofit.client.Response;
 
 public class MovieGridFragment extends ErrorHandlerFragment {
     private final String TAG = MovieGridFragment.class.getSimpleName();
+    private final String SORT_BY_EXTRA = "SORT_BY";
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -43,9 +45,10 @@ public class MovieGridFragment extends ErrorHandlerFragment {
     //State vars that must survive a config change.
     private Parcelable mLayoutManagerSavedState;
     private int mLastPosition = 0;
-    //    private String mSortBy = MovieService.POPULARITY_DESC;
     private String mSortBy;
     private List<Movie> mMovies = null;
+    private ProgressDialog mProgressDialog;
+
 
     //Tags for storing/retrieving state on config change.
     private final String BUNDLE_RECYCLER_LAYOUT = "SaveLayoutState";
@@ -66,12 +69,18 @@ public class MovieGridFragment extends ErrorHandlerFragment {
     // show the full-sized image.
     // DON'T FORGET TO DESTROY IT WHEN IN onDetach() OR IT WILL LEAK MEMORY
     public interface MovieSelectionListener {
-        void onMovieSelected(int movieId, boolean isUserSelected);
+        boolean onRegisterMovie(int position, int movieId);
+        void onMovieSelected(int position, int movieId, boolean isUserSelected);
     }
 
     private MovieSelectionListener mCallback = null;
 
-    public MovieGridFragment() {
+    public static MovieGridFragment newInstance(String sortBy) {
+        MovieGridFragment fragment = new MovieGridFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("SORT_BY", sortBy);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -88,7 +97,10 @@ public class MovieGridFragment extends ErrorHandlerFragment {
         // Grid with 2 columns
         Context activityContext = getActivity();
 
-        mSortBy = getArguments().getString("SORT_BY");
+        if (getArguments() != null)
+            mSortBy = getArguments().getString("SORT_BY");
+        else
+            Log.d(TAG, "No args!!!!");
         mMovieAdapter = new MovieAdapter(activityContext);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         //Show two columns or three, depending device orientation.
@@ -108,11 +120,13 @@ public class MovieGridFragment extends ErrorHandlerFragment {
             @Override
             public void onClick(View view, int position) {
                 //Get movie info from the adapter
-                Movie movie = mMovieAdapter.getItemAtPosition(position);
-                //Call back to MainActivity to handle the click event
-                //true = Movie selected by user
                 mLastPosition = position;
-                mCallback.onMovieSelected(movie.getId(), true);
+                Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
+                if (mSortBy == MovieService.POPULARITY_DESC)
+                    mCallback.onRegisterMovie(MainActivity.MOST_POPULAR, movie.getId());
+                else
+                    mCallback.onRegisterMovie(MainActivity.HIGHEST_RATED, movie.getId());
+                selectCurrentMovie(true);
             }
         }));
         return rootView;
@@ -162,7 +176,6 @@ public class MovieGridFragment extends ErrorHandlerFragment {
         }
     }
 
-
     private Tmdb getTmdbApp() {
         return (Tmdb) getActivity().getApplication();
     }
@@ -177,6 +190,14 @@ public class MovieGridFragment extends ErrorHandlerFragment {
         public String errorDetails;
     }
 
+    private void showProgressDialog() {
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage("Loading...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+    }
+
     /**
      * Called after parent Activity is created,
      * or after when changes Spinner selection
@@ -188,6 +209,7 @@ public class MovieGridFragment extends ErrorHandlerFragment {
         if (mMovies != null)
             return;
 
+        showProgressDialog();
         Tmdb tmdbManager = getTmdbApp();
         MovieService movieService = tmdbManager.getMovieService();
         tmdbManager.setIsDebug(false);
@@ -197,7 +219,8 @@ public class MovieGridFragment extends ErrorHandlerFragment {
                 //Save movies and stash/restore then on
                 //config changes so we can avoid a needless api call.
                 mMovies = results.results;
-                //Put them all the the database
+                if (mProgressDialog.isShowing())
+                    mProgressDialog.dismiss();
                 displayPosters();
             }
 
@@ -212,24 +235,23 @@ public class MovieGridFragment extends ErrorHandlerFragment {
             //set in Tmdb.RestAdapter.Builder.setErrorHandler
             @Override
             public void failure(RetrofitError error) {
-                // Handle errors here
-            //    String errorMsg = errorDownloadFailed;
-            //    error.getCause();
-            //    Utils.showToast(getActivity(), errorMsg);
+                if (mProgressDialog.isShowing())
+                    mProgressDialog.dismiss();
                 Log.i(TAG, error.getMessage() + " kind = " + error.getKind());
             }
         });
     }
 
+
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         // The hosting Activity must implement
         // MovieSelectionListener callback interface.
         try {
-            mCallback = (MovieSelectionListener) activity;
+            mCallback = (MovieSelectionListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + errorMissingMethod
                     + " MovieSelectionListener");
         }
@@ -241,10 +263,6 @@ public class MovieGridFragment extends ErrorHandlerFragment {
         mCallback = null;
     }
 
-    public String getSortBy() {
-        return mSortBy;
-    }
-
     private void displayPosters() {
         mMovieAdapter.clear();
         mMovieAdapter.addAll(mMovies);
@@ -253,12 +271,32 @@ public class MovieGridFragment extends ErrorHandlerFragment {
         //mLastPosition, which will be 0 (first movie in the list)
         //if this is first time through.
         restoreLayoutManagerPosition();
+        //false = this movie is being displayed as part of screen setup, not
+        //as result of user selection
+        if (registerCurrentMovie())
+          selectCurrentMovie(false);
+    }
+
+
+    //Call back to MainActivity to handle the click event,
+    //which will request a more detailed version of the Movie object.
+    public boolean registerCurrentMovie() {
         Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
-        //Only the POPULARITY tab shows its details as as soon as its movies download.
-        //Thereafter, the user picks which movie to show details for.
-        if (mSortBy.equals(MovieService.POPULARITY_DESC))
-            //false = Movie not selected by user
-            mCallback.onMovieSelected(movie.getId(), false);
+        if (mSortBy == MovieService.POPULARITY_DESC)
+            return mCallback.onRegisterMovie(MainActivity.MOST_POPULAR,movie.getId());
+        else
+            return mCallback.onRegisterMovie(MainActivity.HIGHEST_RATED,movie.getId());
+    }
+
+
+    //Call back to MainActivity to handle the click event,
+    //which will request a more detailed version of the Movie object.
+    public void selectCurrentMovie(boolean isUserSelected) {
+        Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
+        if (mSortBy == MovieService.POPULARITY_DESC)
+            mCallback.onMovieSelected(MainActivity.MOST_POPULAR,movie.getId(), isUserSelected);
+        else
+            mCallback.onMovieSelected(MainActivity.HIGHEST_RATED, movie.getId(), isUserSelected);
     }
 
     /**

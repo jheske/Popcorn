@@ -47,7 +47,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_rating_details"
         android:layout_alignParentLeft="true"
-        android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
         android:orientation="horizontal">
         <RatingBar
             android:id="@+id/rating_bar_vote_average"
@@ -65,7 +64,16 @@
             android:textColor="@color/textColorSecondary"
             android:text=" (1023)"/>
     </LinearLayout>
-
+    <TextView
+        android:id="@+id/tv_genres"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_rating_bar"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/textColorSecondary"
+        android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
+        android:text="Genres">
+    </TextView>
 
     <info.hoang8f.widget.FButton
         android:id="@+id/btn_mark_fav"
@@ -79,10 +87,11 @@
         android:minWidth="100dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="-5dp"
+        android:paddingTop="-2dp"
         android:textColor="@android:color/white"
-        fbutton:cornerRadius="15dp"
+        fbutton:buttonColor="@color/colorAccent"
+        fbutton:cornerRadius="5dp"
         fbutton:shadowEnabled="true"
-        fbutton:shadowHeight="6dp"
-        android:text="@string/label_mark_fav" />
+        fbutton:shadowHeight="2dp"
+        android:text="@string/label_add_fav" />
 </RelativeLayout>

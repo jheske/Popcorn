@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <!-- Card view for Movie Details, including thumbnail, votes, rating, release date, runtime -->
-    <include layout="@layout/details_card_include" />
+    <include layout="@layout/details_card_wide_include" />
     <!-- Card views for Trailers and Reviews -->
     <include layout="@layout/trailers_card" />
     <include layout="@layout/reviews_card" />

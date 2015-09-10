@@ -24,10 +24,13 @@ import com.nano.movies.R;
 import com.nano.movies.adapters.TrailerAdapter;
 import com.nano.movies.utils.DatabaseUtils;
 import com.nano.movies.utils.Utils;
+import com.nano.movies.web.Releases;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieService;
+import com.nano.movies.web.Reviews;
 import com.nano.movies.web.Reviews.Review;
 import com.nano.movies.web.Tmdb;
+import com.nano.movies.web.Trailers;
 import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
 
@@ -64,9 +67,25 @@ public class DetailFragment extends Fragment {
     protected RatingBar mRatingVoteAverage;
     @Bind(R.id.tv_reviews)
     protected TextView mTextViewReviews;
+    @Bind(R.id.tv_trailers_title)
+    protected TextView mTextViewTrailersTitle;
+    @Bind(R.id.tv_vote_count)
+    protected TextView mTextViewVoteCount;
+    @Bind(R.id.tv_genres)
+    protected TextView mTextViewGenres;
     @Nullable
     @Bind(R.id.tv_movie_title)
     protected TextView mTextViewTitle;
+    @BindString(R.string.msg_no_reviews)
+    String msgNoReviews;
+    @BindString(R.string.msg_no_trailers)
+    String msgNoTrailers;
+    @BindString(R.string.msg_trailers_not_available)
+    String msgTrailersNotAvailable;
+    @BindString(R.string.msg_reviews_not_available)
+    String msgReviewsNotAvailable;
+    @Bind(R.id.btn_mark_fav)
+    Button btnMarkFavorite;
 
     protected RecyclerView mRecyclerView;
     protected TrailerAdapter mTrailerAdapter;
@@ -74,14 +93,9 @@ public class DetailFragment extends Fragment {
     protected Movie mMovie;
 
     // Tag for saving movie so it doesn't have to be re-downloaded on config change
-    protected final String BUNDLE_MOVIE = "SaveMovie";
-
+    public String BUNDLE_MOVIE = "SaveMovie";
     private ShareActionProvider mShareActionProvider;
     private Intent mShareIntent;
-    @BindString(R.string.msg_no_reviews)
-    String msgNoReviews;
-    @Bind(R.id.btn_mark_fav)
-    Button btnMarkFavorite;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,10 +133,31 @@ public class DetailFragment extends Fragment {
         outState.putParcelable(BUNDLE_MOVIE, mMovie);
     }
 
+    private void setupFavoritesButton() {
+        if (DatabaseUtils.isFavoriteMovie(getActivity(),mMovie.getId()))
+            btnMarkFavorite.setText("- Favorites");
+        else
+            btnMarkFavorite.setText("+ Favorites");
+    }
+
+    /**
+     * Toggle movie in/out of favorites
+     *
+     * @param favButton
+     */
+    @SuppressWarnings("unused")
     @OnClick(R.id.btn_mark_fav)
-    final void favoritesbuttonClick() {
-        Log.i(TAG, "Adding movie to favorites " + mMovie.getOriginalTitle());
-        DatabaseUtils.insertMovie(getActivity(), mMovie);
+    public void favoritesButtonClick(Button favButton) {
+        if (DatabaseUtils.isFavoriteMovie(getActivity(),mMovie.getId())) {
+            Log.i(TAG, "Removing movie from favorites " + mMovie.getOriginalTitle());
+            DatabaseUtils.deleteMovie(getActivity(), mMovie.getId());
+            favButton.setText("+ Favorites");
+        }
+        else {
+            Log.i(TAG, "Adding movie to favorites " + mMovie.getOriginalTitle());
+            DatabaseUtils.insertMovie(getActivity(), mMovie);
+            favButton.setText("- Favorites");
+        }
     }
 
     @Override
@@ -163,12 +198,13 @@ public class DetailFragment extends Fragment {
         mRecyclerView.setAdapter(mTrailerAdapter);
     }
 
+    //Download the extra details associated with a Movie (trailers, reviews)
     //Called by MainActivity if Fragment already exists (two-pane mode),
     //or when the Fragment is created by its own separate activity
     //(DetailActivity), in single-pane mode.
     public void downloadMovie(int movieId) {
         Tmdb tmdbManager = getTmdbApp();
-        MovieService movieService = tmdbManager.getMovieService();
+        final MovieService movieService = tmdbManager.getMovieService();
         // If user is displaying the same movie,
         // then don't download it again.
         if (mMovie != null) {
@@ -188,19 +224,44 @@ public class DetailFragment extends Fragment {
                     public void success(Movie movie, Response response) {
                         mMovie = movie;
                         setShareTrailerIntent();
-                        //String trailerPath = mMovie.getTrailers().getYoutube().get(0).getSource();
-                        //mShareIntent.putExtra(Intent.EXTRA_TEXT,Tmdb.getYoutubeUrl(trailerPath));
-                        displayMovieDetails(movie);
                         Log.i(TAG, "Success!! Movie title = " + movie.getOriginalTitle());
                         Log.i(TAG, "There are "
                                 + movie.getTrailerCount() + " trailers and "
                                 + movie.getReviewCount() + " reviews");
+                        Log.i(TAG, "Now make separate call for movie's Mpaa rating");
+                        downloadReleases(movieService);
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         // Handle errors here.
                         Utils.showToast(getActivity(), "Failed to download movie " + mMovieId);
+                    }
+                });
+    }
+
+    /**
+     * MAKES A GREAT CASE FOR RxJava/Android, NEXT ON MY LEARNING CURVE LIST
+     * <p/>
+     * Movie releases require a separate API call.
+     * This call is nested in the downloadMovie call.
+     * It is called after the main movie details completes.
+     */
+    private void downloadReleases(MovieService movieService) {
+        movieService.releases(mMovieId,
+                new Callback<Releases>() {
+                    @Override
+                    public void success(Releases releases, Response response) {
+                        Log.i(TAG, "There are " + releases.getCount() + " releases");
+                        mMovie.setReleases(releases);
+                        Log.i(TAG, "US rating is " + mMovie.getUSRating());
+                        displayMovieDetails(mMovie);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        // Handle errors here.
+                        Utils.showToast(getActivity(), "Failed to download releases " + mMovieId);
                     }
                 });
     }
@@ -214,14 +275,14 @@ public class DetailFragment extends Fragment {
      */
     protected void displayMovieDetails(Movie movie) {
         Log.d(TAG, "Display movie " + movie.getId() + "  " + movie.getOriginalTitle());
+        Log.d(TAG, "   Genres " + movie.getGenres());
         if (mTextViewTitle.getVisibility() == View.VISIBLE)
             mTextViewTitle.setText(movie.getOriginalTitle());
-        if (movie.getTrailers() != null) {
-            mTrailerAdapter.clear(true);
-            mTrailerAdapter.addAll(movie.getTrailers().getYoutube());
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
-        displayReviews(movie.getReviews().getResults());
+        mTextViewMpaaRating.setText(movie.getUSRating());
+        mTextViewGenres.setText(movie.getGenres());
+        displayTrailers(movie.getTrailers());
+        displayReviews(movie.getReviews());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         if (movie.getReleaseDate() == null)
             Log.d(TAG, "NULL RELEASE DATE");
         else
@@ -231,37 +292,70 @@ public class DetailFragment extends Fragment {
                 .format();
         mTextViewRuntime.setText(runtime);
         mRatingVoteAverage.setRating(movie.getVoteAverage().floatValue());
+        mTextViewVoteCount.setText(" (" + movie.getVoteCount() + ")");
         mTextViewOverview.setText(movie.getOverview());
+        setupFavoritesButton();
         loadPosterImage(movie);
+    }
+
+    private void displayTrailers(Trailers trailers) {
+        int trailerCount;
+        String emptyMsg = msgNoTrailers;
+
+        if (!getTmdbApp().isNetworkAvailable())
+            emptyMsg = msgTrailersNotAvailable;
+
+        mTrailerAdapter.clear(true);
+        if (trailers == null) {
+            mTextViewTrailersTitle.setText(emptyMsg);
+            mRecyclerView.setVisibility(View.GONE);
+            mTextViewTrailersTitle.setVisibility(View.VISIBLE);
+            return;
+        }
+        List<Trailers.Trailer> trailerList = trailers.getYoutube();
+        trailerCount = trailerList.size();
+        if (trailerCount == 0) {
+            mTextViewTrailersTitle.setText(emptyMsg);
+            mRecyclerView.setVisibility(View.GONE);
+            mTextViewTrailersTitle.setVisibility(View.VISIBLE);
+            return;
+        }
+        mTrailerAdapter.addAll(trailerList);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mTextViewTrailersTitle.setVisibility(View.GONE);
     }
 
     //There's room for 3 reviews, then show MORE button.
     //MAYBE TRY fixed-height horizontal scrolling grid HERE??
     //See http://android--examples.blogspot.com/2015/01/textview-new-line-multiline-in-android.html
-    private void displayReviews(List<Review> reviews) {
-        final int MAX_REVIEWS = 3;
+    //private void displayReviews(List<Review> reviews) {
+    private void displayReviews(Reviews reviews) {
         int reviewCount;
+        String emptyMsg = msgNoReviews;
+
+        if (!getTmdbApp().isNetworkAvailable())
+            emptyMsg = msgReviewsNotAvailable;
 
         if (reviews == null) {
-            mTextViewReviews.setText(msgNoReviews);
+            mTextViewReviews.setText(emptyMsg);
             return;
         }
-        reviewCount = reviews.size();
+        List<Review> reviewList = reviews.getResults();
+        reviewCount = reviewList.size();
         if (reviewCount == 0) {
-            mTextViewReviews.setText(msgNoReviews);
+            mTextViewReviews.setText(emptyMsg);
             return;
         }
-        displayReview(reviews.get(0));
+        displayReview(reviewList.get(0));
 
-        // This is a BIG FAKE because reviews is actually a "list" of Review items,
-        // but you can't have a vertical list inside of a ScrollView.
-        for (int i = 1; i < MAX_REVIEWS; i++) {
-            if (i >= reviewCount)
-                return;
+        // This is a BIG FAKE because reviews comprises a "list" of Review items,
+        // but you can't have a vertical list inside of a ScrollView.,
+        // so just make it one big multi-line string.
+        for (int i = 1; i < reviewList.size(); i++) {
             //define new line by append android system line separator
             mTextViewReviews.append(System.getProperty("line.separator"));
             mTextViewReviews.append(System.getProperty("line.separator"));
-            displayReview(reviews.get(i));
+            displayReview(reviewList.get(i));
         }
     }
 

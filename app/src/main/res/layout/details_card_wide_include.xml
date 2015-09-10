@@ -26,24 +26,33 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_movie_title" />
 
-        <ImageView
-            android:id="@+id/img_thumbnail"
-            android:layout_width="120dp"
+        <LinearLayout
+            android:id="@+id/movie_details_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_below="@+id/include_ratings"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/desc_title" />
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_overview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/img_thumbnail"
-            android:layout_marginTop="@dimen/abc_list_item_padding_horizontal_material"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/textColorSecondary"
-            android:text="@string/text_overview" />
+            <ImageView
+                android:id="@+id/img_thumbnail"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/include_ratings"
+                android:layout_gravity="left"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/desc_title"
+                tools:drawable="@drawable/placeholder_poster_w185"/>
+
+            <TextView
+                android:id="@+id/tv_overview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:text="@string/text_overview"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/textColorSecondary" />
+        </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>
 

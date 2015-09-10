@@ -6,6 +6,9 @@
 package com.nano.movies.web;
 
 import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -31,6 +34,7 @@ import retrofit.converter.ConversionException;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedInput;
 
+import com.nano.movies.utils.Utils;
 import com.nano.movies.web.ErroHandler.ApiErrorHandler;
 import com.nano.movies.web.MovieService;
 import com.squareup.picasso.OkHttpDownloader;
@@ -64,6 +68,7 @@ public class Tmdb extends Application {
     private boolean isDebug;
     private RestAdapter mRestAdapter;
     private MovieService mMovieService;
+    private boolean mIsNetworkAvailable=false;
 
 
     /**
@@ -106,8 +111,13 @@ public class Tmdb extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        mIsNetworkAvailable = Utils.isNetworkAvailable(getApplicationContext());
         setupRestAdapter();
         setupPicasso();
+    }
+
+    public boolean isNetworkAvailable() {
+        return mIsNetworkAvailable;
     }
 
     private void setupRestAdapter() {

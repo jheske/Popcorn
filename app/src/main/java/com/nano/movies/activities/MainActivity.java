@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,11 +13,9 @@ import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 import com.nano.movies.R;
-import com.nano.movies.adapters.PopcornPagerAdapter;
+import com.nano.movies.adapters.MovieStatePagerAdapter;
+import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements MovieGridFragment.MovieSelectionListener,
@@ -30,6 +27,16 @@ public class MainActivity extends AppCompatActivity
     private DetailFragment mMovieDetailFragment;
     private SharedPreferences mSharedPrefs;
     private static final String PREFS_SAVE_STATE = "save_state";
+    public static final int MOST_POPULAR = 0;
+    public static final int HIGHEST_RATED = 1;
+    public static final int FAVORITES = 2;
+    private int mTabPosition = 0;
+    private int[] mMovieIds = new int[]{0, 0, 0};
+
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    MoviePagerAdapter mPagerAdapter;
+
 
     /**
      * Android will load either
@@ -75,118 +82,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
     }
 
-    private void setupViewPager() {
-        mMovieDetailFragment =
-                (DetailFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_movie_detail);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("Most Popular"));
-        tabLayout.addTab(tabLayout.newTab().setText("Highest Ratede"));
-        tabLayout.addTab(tabLayout.newTab().setText("Favorites"));
-        //tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        final PopcornPagerAdapter pagerAdapter = new PopcornPagerAdapter(getSupportFragmentManager(),
-                tabLayout.getTabCount());
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        /*
-        mPagerAdapter = new Adapter(getSupportFragmentManager());
-        //Most Popular Fragment
-        MovieGridFragment popularFragment = new MovieGridFragment();
-        Bundle args = new Bundle();
-        args.putString("SORT_BY", MovieService.POPULARITY_DESC);
-        popularFragment.setArguments(args);
-        mPagerAdapter.addFragment(popularFragment, "Most Popular");
-        //Voter Average Fragment
-        MovieGridFragment voteAvgFragment = new MovieGridFragment();
-        args = new Bundle();
-        args.putString("SORT_BY", MovieService.VOTE_AVERAGE_DESC);
-        voteAvgFragment.setArguments(args);
-        mPagerAdapter.addFragment(voteAvgFragment, "Highest Rated");
-        //Favorites Fragment
-        FavoritesGridFragment favoritesFragment = new FavoritesGridFragment();
-        mPagerAdapter.addFragment(favoritesFragment, "Favorites");
-        mViewPager.setAdapter(mPagerAdapter);
-    //    TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);*/
-    }
-
-    /*
-    private void setupViewPager() {
-        mMovieDetailFragment =
-                (DetailFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_movie_detail);
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mPagerAdapter = new Adapter(getSupportFragmentManager());
-        //Most Popular Fragment
-        MovieGridFragment popularFragment = new MovieGridFragment();
-        Bundle args = new Bundle();
-        args.putString("SORT_BY", MovieService.POPULARITY_DESC);
-        popularFragment.setArguments(args);
-        mPagerAdapter.addFragment(popularFragment, "Most Popular");
-        //Voter Average Fragment
-        MovieGridFragment voteAvgFragment = new MovieGridFragment();
-        args = new Bundle();
-        args.putString("SORT_BY", MovieService.VOTE_AVERAGE_DESC);
-        voteAvgFragment.setArguments(args);
-        mPagerAdapter.addFragment(voteAvgFragment, "Highest Rated");
-        //Favorites Fragment
-        FavoritesGridFragment favoritesFragment = new FavoritesGridFragment();
-        mPagerAdapter.addFragment(favoritesFragment, "Favorites");
-        mViewPager.setAdapter(mPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-    }
-
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragments = new ArrayList<>();
-        private final List<String> mFragmentTitles = new ArrayList<>();
-
-        public Adapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragments.add(fragment);
-            mFragmentTitles.add(title);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            //INSTANTIATE FRAGMENT HERE!!!! OR ELSE IT WILL KEEP INSTANTIATING
-            //NEW FRAGMENTS ON PAGING
-            return mFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitles.get(position);
-        }
-    } */
-
 
     /**
      * Determine whether we are in two-pane mode, based
@@ -204,6 +99,25 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    private int getMovieId(int position) {
+        return mMovieIds[position];
+    }
+
+    public boolean onRegisterMovie(int position, int movieId) {
+        boolean firstMovie;
+        //This is a boundary condition to handle displaying the first movie
+        //if app comes up in two-pane mode, before any of the fragments
+        // register their movies
+        //onMovieSelected(position, movieId, false);
+        if ((mMovieIds[position] == 0) && mIsTwoPane)
+            firstMovie = true;
+        else
+            firstMovie = false;
+        mMovieIds[position] = movieId;
+        return firstMovie;
+    }
+
+
     /**
      * Display Movie details.
      * If two-pane mode, then direct already-existing Fragment
@@ -211,20 +125,137 @@ public class MainActivity extends AppCompatActivity
      * If one-pane, then start a new Activity tod
      * display the movie on its own screen.
      */
-    public void onMovieSelected(int movieId, boolean isUserSelected) {
-        //Gotta figure out which Page
-        if (mIsTwoPane) {
+    public void onMovieSelected(int position, int movieId, boolean isUserSelected) {
+        //This is only true if the movie has never been registered
+        //boolean displayMovie = registerMovieId(position, movieId);
+        mTabPosition = mViewPager.getCurrentItem();
+
+        if (movieId == 0)
+            return;
+        if (mIsTwoPane && (position == mTabPosition)) {
             mMovieDetailFragment.downloadMovie(movieId);
         } else {
-            if (isUserSelected)
+            //Don't display movie unless user selected it.
+            if (isUserSelected) {
                 startMovieDetailActivity(movieId);
+            }
         }
+    }
+
+    /**
+     * The networks is not available, so the Favorite movie
+     * was taken from the database.
+     */
+    public void onCachedFavoriteSelected(Movie movie, boolean isUserSelected) {
+//        onRegisterMovieId(FRAGMENT_FAVORITES, movie.getId());
+        if (mIsTwoPane) {
+            mMovieDetailFragment.displayMovieDetails(movie);
+        } else {
+            if (isUserSelected)
+                startMovieDetailActivity(movie);
+        }
+    }
+
+    private void startMovieDetailActivity(Movie movie) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DetailActivity.MOVIE_EXTRA, movie);
+        intent.putExtras(bundle);
+        this.startActivity(intent);
     }
 
     private void startMovieDetailActivity(int movieId) {
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.MOVIE_ID_EXTRA, movieId);
         this.startActivity(intent);
+    }
+
+    // Extend from a MovieStatePagerAdapter now instead for more dynamic ViewPager items
+    public static class MoviePagerAdapter extends MovieStatePagerAdapter {
+        private static int NUM_ITEMS = 3;
+
+        private String mTabTitles[] = new String[]{"Most Popular", "Highest Rated", "Favorites"};
+
+        public MoviePagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        // Returns the fragment to display for that page
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case MOST_POPULAR:
+                    return MovieGridFragment.newInstance(MovieService.POPULARITY_DESC);
+                case HIGHEST_RATED:
+                    return MovieGridFragment.newInstance(MovieService.VOTE_AVERAGE_DESC);
+                case FAVORITES:
+                    return FavoritesGridFragment.newInstance();
+                default:
+                    return null;
+            }
+        }
+
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTabTitles[position];
+        }
+
+    }
+
+    private void setupViewPager() {
+        mMovieDetailFragment =
+                (DetailFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.fragment_movie_detail);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mPagerAdapter = new MoviePagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mPagerAdapter);
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //This is the workaround for the null fragment issue
+                int movieId = getMovieId(position);
+                //@TODO FIX THIS !!
+                //Retrieve associated fragment and
+                //Get its current movieId so
+                //the movie can be displayed in DetailFragment (if in two-pane mode).
+                switch (position) {
+                    case MOST_POPULAR:
+                    case HIGHEST_RATED:
+                        //@TODO find out why the fragment is sometimes null on config changes
+//                        MovieGridFragment movieFragment =
+//                                (MovieGridFragment) mPagerAdapter
+//                                        .getRegisteredFragment(position);
+//                        movieId = movieFragment.getLatestMovieId();
+                        break;
+                    case FAVORITES:
+                        //@TODO find out why the fragment is sometimes null on config changes
+//                        FavoritesGridFragment favoritesFragment =
+//                                (FavoritesGridFragment) mPagerAdapter.getRegisteredFragment(position);
+//                        movieId = favoritesFragment.getLatestMovieId();
+//                        ((FavoritesGridFragment)fragment).selectCurrentMovie(false);
+                        break;
+                }
+                onMovieSelected(position, movieId, false);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
 
@@ -241,4 +272,6 @@ public class MainActivity extends AppCompatActivity
                                 Stetho.defaultInspectorModulesProvider(this))
                         .build());
     }
+
 }
+

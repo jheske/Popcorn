@@ -1,6 +1,6 @@
 /**
  * Created by Jill Heske
- *
+ * <p/>
  * Copyright(c) 2015
  */
 package com.nano.movies.web;
@@ -8,11 +8,13 @@ package com.nano.movies.web;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+import android.text.TextUtils;
 
+import com.facebook.stetho.common.StringUtil;
 import com.google.gson.annotations.SerializedName;
 import com.nano.movies.data.movie.MovieCursor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,13 +58,16 @@ public class Movie implements Parcelable {
     private Double mVoteAverage;
     @SerializedName("vote_count")
     private Integer mVoteCount;
+    @SerializedName("genres")
+    private List<Genre> mGenres = new ArrayList<>();
     // Used with append_to_response=trailers
     @SerializedName("trailers")
     private Trailers mTrailers;
     // Used with append_to_response=reviews
     @SerializedName("reviews")
     private Reviews mReviews;
-    private final String TAG=getClass().getSimpleName();
+    private Releases mReleases;
+    private final String TAG = getClass().getSimpleName();
 
 
     /**
@@ -70,7 +75,7 @@ public class Movie implements Parcelable {
      *
      * @param cursor
      */
-    public Movie (Cursor cursor) {
+    public Movie(Cursor cursor) {
         MovieCursor movieCursor = new MovieCursor(cursor);
         id = movieCursor.getTmdbId();
         mHomePage = movieCursor.getHomepage();
@@ -111,10 +116,6 @@ public class Movie implements Parcelable {
         this.mVoteCount = voteCount;
     }
 
-    /**
-     * Getters and Setters
-     *
-     */
     public Integer getId() {
         return id;
     }
@@ -179,6 +180,16 @@ public class Movie implements Parcelable {
         this.mReleaseDate = mReleaseDate;
     }
 
+    public void setReleases(Releases releases) {
+        mReleases = releases;
+    }
+
+    public String getUSRating() {
+        if (mReleases == null)
+            return "";
+        return mReleases.getMpaaRating("US");
+    }
+
     public Integer getRuntime() {
         if (mRuntime == null)
             return 0;
@@ -209,16 +220,19 @@ public class Movie implements Parcelable {
         return mVoteAverage;
     }
 
-    public void setVoteAverage(Double mVoteAverage) {
-        this.mVoteAverage = mVoteAverage;
-    }
-
     public Integer getVoteCount() {
         return mVoteCount;
     }
 
-    public void setVoteCount(Integer mVoteCount) {
-        this.mVoteCount = mVoteCount;
+    //Just get the first one in the list, good enough
+    public String getGenres() {
+        if (mGenres == null)
+            return ("");
+        if (mGenres.size() == 0)
+            return ("");
+
+        String allGenres = TextUtils.join(", ", mGenres);
+        return (allGenres);
     }
 
     public int getTrailerCount() {
@@ -264,13 +278,14 @@ public class Movie implements Parcelable {
         mTitle = in.readString();
         mVoteAverage = in.readDouble();
         mVoteCount = in.readInt();
+        in.readTypedList(mGenres, Genre.CREATOR);
         mTrailers = in.readParcelable(Trailers.class.getClassLoader());
         mReviews = in.readParcelable(Reviews.class.getClassLoader());
     }
 
     /**
      * Used to marshall the data to the parcel.
-     *
+     * <p/>
      * The order of writing out variables
      * MUST MATCH the order in
      * the constructor Movie(Parcel in)
@@ -290,6 +305,7 @@ public class Movie implements Parcelable {
         dest.writeString(mTitle);
         dest.writeDouble((mVoteAverage == null) ? 0 : mVoteAverage);
         dest.writeInt((mVoteCount == null) ? 0 : mVoteCount);
+        dest.writeTypedList(mGenres);
         dest.writeParcelable(mTrailers, flags);
         dest.writeParcelable(mReviews, flags);
     }

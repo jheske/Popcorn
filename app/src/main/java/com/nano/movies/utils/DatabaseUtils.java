@@ -3,8 +3,11 @@ package com.nano.movies.utils;
 import android.content.ContentUris;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
+import com.nano.movies.data.movie.MovieColumns;
 import com.nano.movies.data.movie.MovieContentValues;
+import com.nano.movies.data.movie.MovieCursor;
 import com.nano.movies.data.movie.MovieSelection;
 import com.nano.movies.data.review.ReviewContentValues;
 import com.nano.movies.data.trailer.TrailerContentValues;
@@ -167,6 +170,23 @@ public class DatabaseUtils {
 
         Uri uri = values.insert(context);
         return ContentUris.parseId(uri);
+    }
+
+    // Query one person
+    public static boolean isFavoriteMovie(Context context, int movieId) {
+        MovieSelection movieSelection = new MovieSelection();
+        movieSelection.tmdbId(movieId);
+        String[] projection = {MovieColumns._ID};
+        MovieCursor cursor = movieSelection.query(context.getContentResolver(), projection);
+        boolean isFavorite = cursor.getCount() != 0;
+        cursor.close();
+        return isFavorite;
+    }
+
+    public static void deleteMovie(Context context,int movieId) {
+        MovieSelection movieSelection = new MovieSelection();
+        movieSelection.tmdbId(movieId);
+        movieSelection.delete(context.getContentResolver());
     }
 
     /**

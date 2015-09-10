@@ -1,6 +1,7 @@
 package com.nano.movies.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Parcelable;
@@ -21,7 +22,9 @@ import com.nano.movies.adapters.MovieAdapterWithCursor;
 import com.nano.movies.data.movie.MovieColumns;
 import com.nano.movies.data.movie.MovieSelection;
 import com.nano.movies.utils.FavoritesRecyclerTouchListener;
+import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
+import com.nano.movies.web.Tmdb;
 
 import java.util.List;
 
@@ -39,7 +42,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     //State vars that must survive a config change.
     private Parcelable mLayoutManagerSavedState;
     private int mLastPosition = 0;
-    private List<Movie> mMovies = null;
 
     //Tags for storing/retrieving state on config change.
     private final String BUNDLE_RECYCLER_LAYOUT = "SaveLayoutState";
@@ -57,13 +59,24 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     // show the full-sized image.
     // DON'T FORGET TO DESTROY IT WHEN IN onDetach() OR IT WILL LEAK MEMORY
     public interface MovieSelectionListener {
-        void onMovieSelected(int movieId, boolean isUserSelected);
+        boolean onRegisterMovie(int position, int movieId);
+        void onMovieSelected(int position, int movieId, boolean isUserSelected);
+        void onCachedFavoriteSelected(Movie movie, boolean isUserSelected);
     }
 
     private MovieSelectionListener mCallback = null;
 
     public FavoritesGridFragment() {
         setHasOptionsMenu(true);
+    }
+
+    private Tmdb getTmdbApp() {
+        return (Tmdb) getActivity().getApplication();
+    }
+
+    public static FavoritesGridFragment newInstance() {
+        FavoritesGridFragment fragment = new FavoritesGridFragment();
+        return fragment;
     }
 
     @Override
@@ -93,16 +106,25 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
             @Override
             public void onClick(View view, int position) {
                 //Move database cursor to new position
-                mMovieAdapter.moveCursorToPosition(position);
-                //Get latest movie info from the database
-                Movie movie = mMovieAdapter.getItemAtPosition(position);
-                //Call back to MainActivity to handle the click event
-                //true = Movie selected by user
                 mLastPosition = position;
-                mCallback.onMovieSelected(movie.getId(), true);
+                mMovieAdapter.moveCursorToPosition(mLastPosition);
+                Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
+                mCallback.onRegisterMovie(MainActivity.FAVORITES, movie.getId());
+                selectCurrentMovie(movie,true);
             }
         }));
         return rootView;
+    }
+
+
+    public void selectCurrentMovie(Movie movie,boolean isUserSelected) {
+        //Get latest movie info from the database
+        //Call back to MainActivity to handle the click event
+        //true = Movie selected by user
+        if (getTmdbApp().isNetworkAvailable())
+            mCallback.onMovieSelected(MainActivity.FAVORITES,movie.getId(),isUserSelected);
+        else
+            mCallback.onCachedFavoriteSelected(movie,isUserSelected);
     }
 
     /**
@@ -128,15 +150,15 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // The hosting Activity must implement
         // MovieSelectionListener callback interface.
         try {
-            mCallback = (MovieSelectionListener) activity;
+            mCallback = (MovieSelectionListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + errorMissingMethod
                     + " MovieSelectionListener");
         }
@@ -191,11 +213,14 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         int count = cursor.getCount();
         Log.d(TAG, "MovieCount = " + count);
-
+        if (count == 0)
+            return;
         mMovieAdapter.swapCursor(cursor);
         mRecyclerView.smoothScrollToPosition(mLastPosition);
         mMovieAdapter.moveCursorToPosition(mLastPosition);
-//        displayMovieDetails();
+        Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
+        if (mCallback.onRegisterMovie(MainActivity.FAVORITES, movie.getId()))
+            selectCurrentMovie(movie,false);
     }
 
     /**

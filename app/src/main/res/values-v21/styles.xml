@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="AppTheme.Base">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
@@ -10,10 +10,4 @@
         <!--Default styles for un-styled buttons -->
         <item name="android:colorButtonNormal">@color/colorAccent</item>
     </style>
-
-    <!-- Default style for this theme's buttons -->
-    <style name="AppTheme.Button" parent="android:Widget.Material.Button">
-        <item name="android:textSize">20sp</item>
-    </style>
-
 </resources>

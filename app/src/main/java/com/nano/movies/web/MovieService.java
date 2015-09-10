@@ -50,11 +50,12 @@ public interface MovieService {
      * Get the cast and crew information for a specific movie id.
      *
      * @param tmdbId TMDb id.
-     */
+
     @GET("/movie/{id}/credits")
-    Reviews reviews(
+    Credits credits(
             @Path("id") int tmdbId
     );
+     */
 
 
     /**
@@ -74,4 +75,19 @@ public interface MovieService {
     void discoverMovies(@Query("page") int page,
                         @Query("sort_by") String sort_by,
                    Callback<TmdbResults> resultsCallback);
+
+    //Get Movie's list of Mpaa ratings by country
+    //We only want USA, but got to get them all
+    @GET("/movie/{id}/releases")
+    void releases(
+            @Path("id") int tmdbId,
+            Callback<Releases> resultsCallback
+    );
+/*
+    @GET("/certification/movie/list")
+    void certifications(
+            @Path("id") int tmdbId,
+            @Query("certification_country") String country
+            Callback<Certifications> resultsCallback
+    ); */
 }

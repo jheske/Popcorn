@@ -11,9 +11,10 @@
     <string name="text_release_year"  translatable="false">2015</string>
     <string name="text_runtime">{runtime}min</string>
     <string name="text_vote_count"  translatable="false"> ({votecount})</string>
-    <string name="text_overview">Your movie synopsis goes here.</string>
+    <string name="text_overview">No details for this movie</string>
     <string name="text_mpaa_rating">PG13</string>
-    <string name="label_mark_fav">Favorites</string>
+    <string name="label_remove_fav">- Favorites</string>
+    <string name="label_add_fav">+ Favorites</string>
     <string name="label_trailers">Trailers</string>
     <string name="label_reviews">Reviews</string>
     <!-- Sort order spinner strings -->
@@ -28,14 +29,18 @@
     <string name="desc_title">Movie title</string>
     <!-- ContentAuthority (to be integrated in P2) -->
     <string name="content_authority"  translatable="false">com.nano.movies.app</string>
-    <string name="empty_trailer_list">There are no trailers for this movie.</string>
+    <string name="msg_no_trailers">There are no trailers for this movie</string>
     <string name="msg_no_reviews">There are no reviews for this movie</string>
+    <string name="msg_trailers_not_available">You must be connected to the network to view trailers</string>
+    <string name="msg_reviews_not_available">You must be connected to the network to view reviews</string>
     <string name="title_activity_video_view">View Trailer</string>
     <string name="title_activity_movie_detail_fragment">MovieDetailFragment</string>
 
-<!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_detail_base_fragment">DetailBaseFragment</string>
     <string name="error_retrofit_network_exception">Network exception: </string>
     <string name="error_retrofit_unauthorized_exception">Unauthorized exception:"</string>
     <string name="error_retrofit_unhandled_exception">Unhandled Exception: </string>
+    <string name="tab_most_popular">Most Popular</string>
+    <string name="tab_highest_rated">Highest Rated</string>
+    <string name="tab_favorites">Favorites</string>
 </resources>
