@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity
     public static final int MOST_POPULAR = 0;
     public static final int HIGHEST_RATED = 1;
     public static final int FAVORITES = 2;
-    private int mTabPosition = 0;
     private int[] mMovieIds = new int[]{0, 0, 0};
 
     private ViewPager mViewPager;
@@ -66,14 +65,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Save spinner selection preference.
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    /**
      * Replace default toolbar with custom toolbar defined
      * in layouts/app_bar.xml
      */
@@ -104,15 +95,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public boolean onRegisterMovie(int position, int movieId) {
-        boolean firstMovie;
+        boolean firstMovie=false;
         //This is a boundary condition to handle displaying the first movie
         //if app comes up in two-pane mode, before any of the fragments
         // register their movies
         //onMovieSelected(position, movieId, false);
         if ((mMovieIds[position] == 0) && mIsTwoPane)
             firstMovie = true;
-        else
-            firstMovie = false;
         mMovieIds[position] = movieId;
         return firstMovie;
     }
@@ -128,11 +117,9 @@ public class MainActivity extends AppCompatActivity
     public void onMovieSelected(int position, int movieId, boolean isUserSelected) {
         //This is only true if the movie has never been registered
         //boolean displayMovie = registerMovieId(position, movieId);
-        mTabPosition = mViewPager.getCurrentItem();
-
         if (movieId == 0)
             return;
-        if (mIsTwoPane && (position == mTabPosition)) {
+        if (mIsTwoPane && (position == mViewPager.getCurrentItem())) {
             mMovieDetailFragment.downloadMovie(movieId);
         } else {
             //Don't display movie unless user selected it.

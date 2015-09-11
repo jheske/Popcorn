@@ -15,7 +15,7 @@ public abstract class BroadcastedException extends Throwable {
     public static final String EXTRA_TYPE = "broadcasted_exception_type";
     public static final String EXTRA_MESSAGE = "broadcasted_exception_message";
 
-    public static enum EXCEPTION_TYPE {
+    public enum EXCEPTION_TYPE {
         UNKNOWN, NETWORK, UNAUTHORIZED, FORBIDDEN, INTERNAL_SERVER;
 
         public static EXCEPTION_TYPE getByOrdinal(int o) {

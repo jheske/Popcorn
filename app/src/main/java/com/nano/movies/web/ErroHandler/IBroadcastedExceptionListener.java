@@ -5,5 +5,5 @@ package com.nano.movies.web.ErroHandler;
  */
 
 public interface IBroadcastedExceptionListener {
-    public void processException(BroadcastedException.EXCEPTION_TYPE type, String message);
+    void processException(BroadcastedException.EXCEPTION_TYPE type, String message);
 }

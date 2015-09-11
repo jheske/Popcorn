@@ -43,4 +43,9 @@
     <string name="tab_most_popular">Most Popular</string>
     <string name="tab_highest_rated">Highest Rated</string>
     <string name="tab_favorites">Favorites</string>
+    <string name="txt_share">Share</string>
+    <string name="txt_vote_count">(1023)</string>
+    <string name="txt_genres">Genres</string>
+    <string name="txt_play">Play</string>
+    <string name="txt_backdrop">Movie Backdrop Image</string>
 </resources>

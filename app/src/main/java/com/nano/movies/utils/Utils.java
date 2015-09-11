@@ -10,8 +10,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import com.nano.movies.web.Tmdb;
-
 public class Utils {
 
     /**

@@ -5,8 +5,6 @@ import android.provider.BaseColumns;
 
 import com.nano.movies.data.MovieProvider;
 import com.nano.movies.data.movie.MovieColumns;
-import com.nano.movies.data.review.ReviewColumns;
-import com.nano.movies.data.trailer.TrailerColumns;
 
 /**
  * Movie reviews table.

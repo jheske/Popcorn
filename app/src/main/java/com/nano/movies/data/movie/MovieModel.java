@@ -4,7 +4,6 @@ import com.nano.movies.data.base.BaseModel;
 
 import java.util.Date;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**

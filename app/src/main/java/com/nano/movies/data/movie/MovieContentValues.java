@@ -5,7 +5,6 @@ import java.util.Date;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.nano.movies.data.base.AbstractContentValues;
@@ -32,7 +31,7 @@ public class MovieContentValues extends AbstractContentValues {
     /**
      * Update row(s) using the values stored by this object and the given selection.
      *
-     * @param contentResolver The content resolver to use.
+     * @param {contentResolver} The content resolver to use.
      * @param where The selection to use (can be {@code null}).
      */
     public int update(Context context, @Nullable MovieSelection where) {

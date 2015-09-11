@@ -10,7 +10,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.facebook.stetho.common.StringUtil;
 import com.google.gson.annotations.SerializedName;
 import com.nano.movies.data.movie.MovieCursor;
 
@@ -231,8 +230,7 @@ public class Movie implements Parcelable {
         if (mGenres.size() == 0)
             return ("");
 
-        String allGenres = TextUtils.join(", ", mGenres);
-        return (allGenres);
+        return TextUtils.join(", ", mGenres);
     }
 
     public int getTrailerCount() {

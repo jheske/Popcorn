@@ -5,7 +5,6 @@
  */
 package com.nano.movies.activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -37,7 +36,6 @@ import retrofit.client.Response;
 
 public class MovieGridFragment extends ErrorHandlerFragment {
     private final String TAG = MovieGridFragment.class.getSimpleName();
-    private final String SORT_BY_EXTRA = "SORT_BY";
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -122,7 +120,7 @@ public class MovieGridFragment extends ErrorHandlerFragment {
                 //Get movie info from the adapter
                 mLastPosition = position;
                 Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
-                if (mSortBy == MovieService.POPULARITY_DESC)
+                if (mSortBy.equals(MovieService.POPULARITY_DESC))
                     mCallback.onRegisterMovie(MainActivity.MOST_POPULAR, movie.getId());
                 else
                     mCallback.onRegisterMovie(MainActivity.HIGHEST_RATED, movie.getId());
@@ -282,7 +280,7 @@ public class MovieGridFragment extends ErrorHandlerFragment {
     //which will request a more detailed version of the Movie object.
     public boolean registerCurrentMovie() {
         Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
-        if (mSortBy == MovieService.POPULARITY_DESC)
+        if (mSortBy.equals(MovieService.POPULARITY_DESC))
             return mCallback.onRegisterMovie(MainActivity.MOST_POPULAR,movie.getId());
         else
             return mCallback.onRegisterMovie(MainActivity.HIGHEST_RATED,movie.getId());
@@ -293,7 +291,7 @@ public class MovieGridFragment extends ErrorHandlerFragment {
     //which will request a more detailed version of the Movie object.
     public void selectCurrentMovie(boolean isUserSelected) {
         Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
-        if (mSortBy == MovieService.POPULARITY_DESC)
+        if (mSortBy.equals(MovieService.POPULARITY_DESC))
             mCallback.onMovieSelected(MainActivity.MOST_POPULAR,movie.getId(), isUserSelected);
         else
             mCallback.onMovieSelected(MainActivity.HIGHEST_RATED, movie.getId(), isUserSelected);

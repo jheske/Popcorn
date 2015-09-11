@@ -3,7 +3,6 @@ package com.nano.movies.utils;
 import android.content.ContentUris;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import com.nano.movies.data.movie.MovieColumns;
 import com.nano.movies.data.movie.MovieContentValues;

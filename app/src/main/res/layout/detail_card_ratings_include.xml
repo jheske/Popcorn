@@ -62,7 +62,7 @@
             android:layout_gravity="center_vertical"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/textColorSecondary"
-            android:text=" (1023)"/>
+            android:text="@string/txt_vote_count"/>
     </LinearLayout>
     <TextView
         android:id="@+id/tv_genres"
@@ -72,7 +72,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/textColorSecondary"
         android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
-        android:text="Genres">
+        android:text="@string/txt_genres">
     </TextView>
 
     <info.hoang8f.widget.FButton

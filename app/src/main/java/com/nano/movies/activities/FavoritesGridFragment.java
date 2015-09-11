@@ -1,6 +1,5 @@
 package com.nano.movies.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -22,11 +21,8 @@ import com.nano.movies.adapters.MovieAdapterWithCursor;
 import com.nano.movies.data.movie.MovieColumns;
 import com.nano.movies.data.movie.MovieSelection;
 import com.nano.movies.utils.FavoritesRecyclerTouchListener;
-import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.Tmdb;
-
-import java.util.List;
 
 import butterknife.BindString;
 
@@ -40,7 +36,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     private static final int MOVIE_LOADER = 0;
 
     //State vars that must survive a config change.
-    private Parcelable mLayoutManagerSavedState;
     private int mLastPosition = 0;
 
     //Tags for storing/retrieving state on config change.
@@ -75,8 +70,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     }
 
     public static FavoritesGridFragment newInstance() {
-        FavoritesGridFragment fragment = new FavoritesGridFragment();
-        return fragment;
+        return new FavoritesGridFragment();
     }
 
     @Override
@@ -133,11 +127,12 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Parcelable layoutManagerSavedState;
 
         if (savedInstanceState != null) {
-            mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            layoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
         }
     }
 
@@ -189,13 +184,14 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
         // Sort order:  Ascending, by title.
         String sortOrder = MovieColumns.ORIGINAL_TITLE + " ASC";
         MovieSelection movieSelection = new MovieSelection();
-        Loader<Cursor> loader = new CursorLoader(getActivity(),
+        //Loader<Cursor> loader =
+        return new CursorLoader(getActivity(),
                 movieSelection.uri(),
                 MovieColumns.ALL_COLUMNS,
                 null,
                 null,
                 sortOrder);
-        return loader;
+    //    return loader;
     }
 
     /**

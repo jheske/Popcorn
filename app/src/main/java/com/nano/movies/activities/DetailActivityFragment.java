@@ -6,6 +6,7 @@
 package com.nano.movies.activities;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.nano.movies.R;
 import com.nano.movies.web.Movie;
@@ -34,15 +35,15 @@ public class DetailActivityFragment extends DetailFragment {
     private MovieDetailChangeListener mCallback = null;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // The hosting Activity must implement
         // MovieSelectionListener callback interface.
         try {
-            mCallback = (MovieDetailChangeListener) activity;
+            mCallback = (MovieDetailChangeListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + errorMissingMethod
                     + "MovieDetailChangeListener");
         }
