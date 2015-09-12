@@ -25,6 +25,6 @@
             android:name="com.nano.movies.activities.DetailActivityFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_movie_detail_land" />
+            tools:layout="@layout/fragment_activity_land" />
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>
