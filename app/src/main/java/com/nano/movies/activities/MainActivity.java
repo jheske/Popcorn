@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupStethoLibrary();
-        setContentView(R.layout.layout_main);
+        setContentView(R.layout.layout_activity_main);
         setupToolbar();
         mIsTwoPane = checkForDualPane();
         setupViewPager();

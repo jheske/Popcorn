@@ -59,7 +59,9 @@ public class DetailActivityFragment extends DetailFragment {
     protected void displayMovieDetails(Movie movie) {
         super.displayMovieDetails(movie);
 
-        //Activity displays backdrop image in the AppBar
+        //This is not called in two-pane mode, only by DetailActivity
+        //after the user selects a movie.
+        //DetailActivity displays backdrop image in the AppBar
         mCallback.onMovieDetailChanged(movie.getBackdropPath(), movie.getOriginalTitle());
     }
 }

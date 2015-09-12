@@ -8,10 +8,10 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Text and label constants, some include test placeholders (like test_release_year) -->
-    <string name="text_release_year"  translatable="false">2015</string>
+    <string name="text_release_year" translatable="false">2015</string>
     <string name="text_runtime">{runtime}min</string>
-    <string name="text_vote_count"  translatable="false"> ({votecount})</string>
-    <string name="text_overview">No details for this movie</string>
+    <string name="text_vote_count" translatable="false"> ({votecount})</string>
+    <string name="text_overview">No details for this movie. This is a very long line of text to see what happens on the phone</string>
     <string name="text_mpaa_rating">PG13</string>
     <string name="label_remove_fav">- Favorites</string>
     <string name="label_add_fav">+ Favorites</string>
@@ -28,7 +28,7 @@
     <!-- Image contentDescription -->
     <string name="desc_title">Movie title</string>
     <!-- ContentAuthority (to be integrated in P2) -->
-    <string name="content_authority"  translatable="false">com.nano.movies.app</string>
+    <string name="content_authority" translatable="false">com.nano.movies.app</string>
     <string name="msg_no_trailers">There are no trailers for this movie</string>
     <string name="msg_no_reviews">There are no reviews for this movie</string>
     <string name="msg_trailers_not_available">You must be connected to the network to view trailers</string>
@@ -48,4 +48,5 @@
     <string name="txt_genres">Genres</string>
     <string name="txt_play">Play</string>
     <string name="txt_backdrop">Movie Backdrop Image</string>
+    <string name="txt_movie_title">Title</string>
 </resources>

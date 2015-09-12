@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="layout_activity_main" type="layout">@layout/activity_main_two_panes</item>
+    <item name="layout_activity_detail" type="layout">@layout/activity_detail_land</item>
+    <item name="layout_fragment_detail" type="layout">@layout/fragment_movie_detail_land</item>
+    <bool name="has_two_panes">true</bool>
+</resources>

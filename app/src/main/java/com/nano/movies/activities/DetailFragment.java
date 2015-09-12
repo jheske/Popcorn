@@ -84,6 +84,8 @@ public class DetailFragment extends Fragment {
     String msgTrailersNotAvailable;
     @BindString(R.string.msg_reviews_not_available)
     String msgReviewsNotAvailable;
+    @BindString(R.string.error_implement_method)
+    String errorMissingMethod;
     @Bind(R.id.btn_mark_fav)
     Button btnMarkFavorite;
 
@@ -108,7 +110,7 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        View rootView = inflater.inflate(R.layout.layout_fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
         setupRecyclerView(rootView);
         return rootView;
@@ -276,8 +278,15 @@ public class DetailFragment extends Fragment {
     protected void displayMovieDetails(Movie movie) {
         Log.d(TAG, "Display movie " + movie.getId() + "  " + movie.getOriginalTitle());
         Log.d(TAG, "   Genres " + movie.getGenres());
-        if (mTextViewTitle.getVisibility() == View.VISIBLE)
+        //Larger screens won't have title on the detail Layout
+//        if (mTextViewTitle.getVisibility() == View.VISIBLE)
+        if (mTextViewTitle != null) {
             mTextViewTitle.setText(movie.getOriginalTitle());
+            Log.d(TAG,"NO title in layout, show it in backdrop");
+        }
+        else
+            Log.d(TAG, "Title in layout, don't show it in backdrop");
+
         mTextViewMpaaRating.setText(movie.getUSRating());
         mTextViewGenres.setText(movie.getGenres());
         displayTrailers(movie.getTrailers());

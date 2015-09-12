@@ -4,7 +4,7 @@
     android:orientation="vertical">
 
     <!-- Card view for Movie Details, including thumbnail, votes, rating, release date, runtime -->
-    <include layout="@layout/details_card_wide_include" />
+    <include layout="@layout/detail_card_land" />
     <!-- Card views for Trailers and Reviews -->
     <include layout="@layout/trailers_card" />
     <include layout="@layout/reviews_card" />

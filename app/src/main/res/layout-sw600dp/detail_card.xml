@@ -8,20 +8,9 @@
         style="@style/Widget.CardContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <!-- Container holding thumbnail and play details container -->
-        <TextView
-            android:id="@+id/tv_movie_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:gravity="center_vertical"
-            android:textSize="30sp"
-            android:visibility="gone"
-            tools:text="Movie Title" />
-
         <include
             android:id="@+id/include_ratings"
-            layout="@layout/detail_card_ratings_include"
+            layout="@layout/detail_card_ratings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_movie_title" />
@@ -54,4 +43,3 @@
         </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>
-

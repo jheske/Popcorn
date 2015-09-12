@@ -6,6 +6,7 @@
 package com.nano.movies.activities;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -31,8 +32,11 @@ public class DetailActivity extends AppCompatActivity
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
     public static final String MOVIE_EXTRA = "MOVIE EXTRA";
 
+    //Small screens won't have a backdrop
+    @Nullable
     @Bind(R.id.img_backdrop)
     ImageView mImageViewBackdrop;
+    @Nullable
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
 
@@ -50,7 +54,7 @@ public class DetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_detail);
+        setContentView(R.layout.layout_activity_detail);
         ButterKnife.bind(this);
         setupToolbar();
         setupDetailFragment();
@@ -119,7 +123,15 @@ public class DetailActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Small screens don't have a title on the backdrop
+     *
+     * @param backdropPath
+     * @param originalTitle
+     */
     public void onMovieDetailChanged(String backdropPath, String originalTitle) {
+        if(mImageViewBackdrop == null)
+            return;
         //Display backdrop image in the AppBar
         String backdropUrl = Tmdb.getMovieBackdropUrl(backdropPath,
                 Tmdb.IMAGE_POSTER_LARGE);
