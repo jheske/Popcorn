@@ -2,7 +2,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <!-- Card view for Movie Details, including thumbnail, votes, rating, release date, runtime -->
     <include layout="@layout/detail_card" />
     <!-- Card views for Trailers and Reviews -->

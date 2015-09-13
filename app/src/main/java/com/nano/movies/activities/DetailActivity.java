@@ -5,6 +5,7 @@
  */
 package com.nano.movies.activities;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -82,7 +83,8 @@ public class DetailActivity extends AppCompatActivity
      */
     private void setupDetailFragment() {
         DetailActivityFragment detailFragment = ((DetailActivityFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_movie_detail));
+                .findFragmentById(R.id.fragment_activity_detail));
+
         int movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA, -1);
         if (movieId == -1)  {
             Movie movie = getIntent().getParcelableExtra(MOVIE_EXTRA);
