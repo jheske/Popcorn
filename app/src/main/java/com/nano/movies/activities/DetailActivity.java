@@ -32,6 +32,7 @@ public class DetailActivity extends AppCompatActivity
     private final String TAG = getClass().getSimpleName();
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
     public static final String MOVIE_EXTRA = "MOVIE EXTRA";
+    private boolean mIsTwoPane=false;
 
     //Small screens won't have a backdrop
     @Nullable
@@ -58,7 +59,23 @@ public class DetailActivity extends AppCompatActivity
         setContentView(R.layout.layout_activity_detail);
         ButterKnife.bind(this);
         setupToolbar();
+        mIsTwoPane = checkForDualPane();
         setupDetailFragment();
+    }
+
+    /**
+     * Determine whether we are in two-pane mode, based
+     * on layouts.xml-defined boolean value.
+     */
+    private boolean checkForDualPane() {
+        // has_two_panes is defined in values/layouts.xml
+        if (getResources().getBoolean(R.bool.has_two_panes)) {
+            Log.i(TAG, "Two-pane layout");
+            return true;
+        } else {
+            Log.i(TAG, "One-pane layout");
+            return false;
+        }
     }
 
     /**

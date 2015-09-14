@@ -197,6 +197,7 @@ public class DetailFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setAdapter(mTrailerAdapter);
     }
 
