@@ -207,11 +207,17 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mMovieAdapter.swapCursor(cursor);
+        //If the mLastPosition movie has been deleted by DetailFragment,
+        //DON'T try to reference it.
         int count = cursor.getCount();
         Log.d(TAG, "MovieCount = " + count);
-        if (count == 0)
+        if (count <= 0)
             return;
-        mMovieAdapter.swapCursor(cursor);
+        if (mLastPosition >= count)
+            mLastPosition = count - 1;
+        if (mLastPosition < 0)
+            return;
         mRecyclerView.smoothScrollToPosition(mLastPosition);
         mMovieAdapter.moveCursorToPosition(mLastPosition);
         Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);

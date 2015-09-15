@@ -38,7 +38,6 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimaryDark"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -51,6 +50,8 @@
         app:behavior_overlapTop="64dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <!-- Reference a different fragment, as in android:name="...DetailActivityFragmentWide"
+             to accommodate DetailActivity in landscape on a larger device -->
         <fragment
             android:id="@+id/fragment_activity_detail"
             android:name="com.nano.movies.activities.DetailActivityFragment"
