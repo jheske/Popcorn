@@ -51,13 +51,13 @@
         <android.support.v4.widget.NestedScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
-
+            <!-- This shows up only on Tablet in landscape so has one fixed layout. -->
             <fragment
-                android:id="@+id/fragment_movie_detail"
-                android:name="com.nano.movies.activities.DetailFragment"
+                android:id="@+id/fragment_main_activity_detail"
+                android:name="com.nano.movies.activities.MainActivityDetailFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:layout="@layout/fragment_movie_detail" />
+                tools:layout="@layout/fragment_main_activity_detail" />
         </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

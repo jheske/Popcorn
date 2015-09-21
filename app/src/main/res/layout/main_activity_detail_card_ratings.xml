@@ -1,8 +1,7 @@
-<!-- Phone in PORTRAIT -->
-<!-- NOTE that MainActivity uses the same layout for its detail pane in
-     two-pane mode, but it has to be in a separate file with a unique name,
-     so Android doesn't pick up layout-sw600dp-land\detail_card.  That one is
-     adapted for DetailActivity to use in Landscape mode). -->
+<!-- NOTE that this is the same layout used by Phone in Portrait.
+     This has to be in a separate file with a unique name
+     so Android doesn't pick up layout-sw600dp-land\detail_card. That one is
+     adapted for DetailActivity in Landscape mode). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

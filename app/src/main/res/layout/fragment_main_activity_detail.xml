@@ -2,12 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="FRAGMENT_ACTIVITY_LAND.XML"/>
     <!-- Card view for Movie Details, including thumbnail, votes, rating, release date, runtime -->
-    <include layout="@layout/detail_card" />
+    <include layout="@layout/main_activity_detail_card" />
     <!-- Card views for Trailers and Reviews -->
     <include layout="@layout/trailers_card" />
     <include layout="@layout/reviews_card" />

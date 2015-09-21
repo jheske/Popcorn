@@ -109,15 +109,21 @@ public class DetailFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * The layout has to be selected according to the calling Activity.
+     * MainActivity and DetailActivity each has its own layout, NOT
+     * necessarily dependent on device size or orientation.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.layout_fragment_detail, container, false);
+    /*    View rootView = inflater.inflate(R.layout.layout_fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
         setupRecyclerView(rootView);
-        return rootView;
+        return rootView; */
+        return null;
     }
 
     @Override
@@ -195,7 +201,7 @@ public class DetailFragment extends Fragment {
                 .setType("text/plain");
     }
 
-    private void setupRecyclerView(View rootView) {
+    protected void setupRecyclerView(View rootView) {
         mTrailerAdapter = new TrailerAdapter(getActivity());
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_trailers);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),

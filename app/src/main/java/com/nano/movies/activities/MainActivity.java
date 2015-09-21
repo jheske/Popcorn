@@ -198,8 +198,8 @@ public class MainActivity extends AppCompatActivity
 
     private void setupViewPager() {
         mMovieDetailFragment =
-                (DetailFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_movie_detail);
+                (MainActivityDetailFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.fragment_main_activity_detail);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mPagerAdapter = new MoviePagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
