@@ -50,6 +50,10 @@ import retrofit.client.Response;
  * This fragment attaches ONLY to MainActivity two-pane mode
  * DetailActivity uses a different fragment, DetailActivityFragment.
  */
+/**
+ * This fragment handles most of the logic for DetailActivity and
+ * DetailFragment (right-hand pane in MainActivity in two-pane).
+ */
 public class DetailFragment extends Fragment {
     protected final String TAG = DetailActivityFragment.class.getSimpleName();
 

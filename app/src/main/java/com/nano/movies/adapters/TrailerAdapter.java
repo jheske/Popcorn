@@ -1,5 +1,6 @@
 package com.nano.movies.adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -92,7 +93,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailer.getSource()));
                     intent.putExtra("VIDEO_ID", trailer.getSource());
                     intent.putExtra("force_fullscreen", true);
-                    mContext.startActivity(intent);
+                    try {
+                        mContext.startActivity(intent);
+                    } catch (ActivityNotFoundException activityNotFound) {
+                        Log.d(TAG,"Can't start ACTION_VIEW intent");
+                    }
                 }
             });
 

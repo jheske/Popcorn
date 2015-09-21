@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This replaces activity-detail-large for large devices in portrait mode -->
 <resources>
     <item name="layout_activity_main" type="layout">@layout/activity_main_two_panes</item>
-    <item name="layout_activity_detail" type="layout">@layout/activity_detail_large_land</item>
+    <!-- change activity_detail_large to activity_detail, which should automatically
+         come from layout-sw600dp-land -->
+    <item name="layout_activity_detail" type="layout">@layout/activity_detail</item>
     <item name="layout_fragment_detail" type="layout">@layout/fragment_movie_detail</item>
     <bool name="has_two_panes">true</bool>
 </resources>

@@ -24,7 +24,7 @@
         <!-- Layout for ratings bar, votecount, -->
         <include
             android:id="@+id/include_ratings"
-            layout="@layout/detail_card_ratings_land"
+            layout="@layout/detail_card_ratings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
