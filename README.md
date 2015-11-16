@@ -1,28 +1,51 @@
 ## Synopsis
 
-This repository contains my Udacity Android Developer Project 1: Popular Movies, Stage 1
+This repository contains my Udacity Android Developer Project 1: Popular Movies.
 
-Udacity's description of the project is as follows:
 
-In this project, you will build an app to help users discover popular and recent movies. You will build a clean UI, sync to a server, and present information to the user.
+## Features
 
-## State of the Project
+This project is designed to meet all of the requirements as per Udacity's rubric for P2.  Features may or may not be completed and include, but are not limited to:
 
-This project is a work in progress.  It is designed to meet all of the requirements as per Udacity's rubric for P1, Stage 1.  In addition, it contains some features in preparation for Project 1: Popular Movies, Stage 2.  These features may or may not be completed and include, but are not limited to:
+Material Design conforms as closely as possible to Google's latest UI/UX standards. 
 
-* Add `trailers.java`, marshalls/unmarshalls movie trailers, implemented but not integrated.
-* Add `reviews.java`, marshalls/unmarshalls user reviews, implemented but not integrated.
-* Include elements in Movie Details layout for displaying trailer videos and user reviews. These features are not yet integrated.
-* Include a Mark as Favorite button in Movie Details layout. This feature is not implemented yet.
-* Include Spinner option for displaying Favorites.  It is not functional yet, so selecting it does nothing.
-* Include RecyclerCursorAdapter.java.  In P1, Stage 2 it will connect the database with the RecyclerView
+Material components include CoordinatorLayout, AppBarLayout, CollapsingToolbarLayout, Toolbar, NestedScrollView, TabLayout, ViewPager, RecyclerView, and CardView.
+
+Uses Retrofit 1.0 to retrieve current movies from themoviedb.org and parse JSON results into POJOs.  POJOs are Parcelable to facilitate passing movie objects between Activities.
+
+Uses a SQLite database and a ContentProvider to store and retrieve movies.
+
+Tabbed layout on home page allows user to view Most Popular, Highest Rated, or user-selected Favorite movies.
+
+A movie detail screen shows runtime, rating, release date, genres, and reviews.  It allows user to view YouTube trailers and has a Share option.
+ 
+Provides a variety of portrait and landscape layouts to support both phones and tablets in a variety of screen resolutions.
+
+## Libraries included in build.gradle
+
+    compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile 'com.android.support:cardview-v7:23.0.0'
+    compile 'com.android.support:support-v4:23.0.0'
+    compile 'com.android.support:design:23.0.0'
+    compile 'com.android.support:gridlayout-v7:23.0.0'
+    compile 'com.squareup.phrase:phrase:1.1.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.facebook.stetho:stetho:1.1.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'info.hoang8f:fbutton:1.0.5'
 
 ## Testing
 
 This project has been tested on:
 
-* Samsung Tab 4 running Android 4.4.2.
+* Samsung Tab 4 running Android 4.4.2
 * Huawei Prism running Android 2.3
+* LG Optimus L90 running Android 4.4.2
+* GenyMotion emulator running Android 5.1
 			
 ## Installation
 

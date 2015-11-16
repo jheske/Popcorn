@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity
      * was taken from the database.
      */
     public void onCachedFavoriteSelected(Movie movie, boolean isUserSelected) {
-//        onRegisterMovieId(FRAGMENT_FAVORITES, movie.getId());
         if (mIsTwoPane) {
             mMovieDetailFragment.displayMovieDetails(movie);
         } else {
@@ -193,7 +192,6 @@ public class MainActivity extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             return mTabTitles[position];
         }
-
     }
 
     private void setupViewPager() {
@@ -215,6 +213,7 @@ public class MainActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 //This is the workaround for the null fragment issue
                 int movieId = getMovieId(position);
+                int lastPosition=-1;
                 //@TODO FIX THIS !!
                 //Retrieve associated fragment and
                 //Get its current movieId so
@@ -223,17 +222,27 @@ public class MainActivity extends AppCompatActivity
                     case MOST_POPULAR:
                     case HIGHEST_RATED:
                         //@TODO find out why the fragment is sometimes null on config changes
-//                        MovieGridFragment movieFragment =
-//                                (MovieGridFragment) mPagerAdapter
-//                                        .getRegisteredFragment(position);
-//                        movieId = movieFragment.getLatestMovieId();
+                        MovieGridFragment movieFragment =
+                                (MovieGridFragment) mPagerAdapter
+                                        .getRegisteredFragment(position);
+                        if (movieFragment != null) {
+                            lastPosition = movieFragment.getLastPosition();
+                            Log.i(TAG, "Movies last position = " + lastPosition);
+                        }
+                        else
+                            Log.i(TAG, "MoviesFragment is NULL");
                         break;
                     case FAVORITES:
                         //@TODO find out why the fragment is sometimes null on config changes
-//                        FavoritesGridFragment favoritesFragment =
-//                                (FavoritesGridFragment) mPagerAdapter.getRegisteredFragment(position);
-//                        movieId = favoritesFragment.getLatestMovieId();
-//                        ((FavoritesGridFragment)fragment).selectCurrentMovie(false);
+                        FavoritesGridFragment favoritesFragment =
+                                (FavoritesGridFragment) mPagerAdapter.getRegisteredFragment(position);
+                        if (favoritesFragment != null) {
+                            lastPosition = favoritesFragment.getLastPosition();
+                            Log.i(TAG, "Favorites last position = " + lastPosition);
+                        }
+                        else
+                            Log.i(TAG, "FavoritesFragment is NULL");
+                        //((FavoritesGridFragment)favoritesFragment).selectCurrentMovie(false);
                         break;
                 }
                 onMovieSelected(position, movieId, false);

@@ -110,7 +110,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
         return rootView;
     }
 
-
     public void selectCurrentMovie(Movie movie,boolean isUserSelected) {
         //Get latest movie info from the database
         //Call back to MainActivity to handle the click event
@@ -191,7 +190,6 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
                 null,
                 null,
                 sortOrder);
-    //    return loader;
     }
 
     /**
@@ -211,7 +209,7 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
         //If the mLastPosition movie has been deleted by DetailFragment,
         //DON'T try to reference it.
         int count = cursor.getCount();
-        Log.d(TAG, "MovieCount = " + count);
+        //Log.d(TAG, "MovieCount = " + count);
         if (count <= 0)
             return;
         if (mLastPosition >= count)
@@ -244,5 +242,9 @@ public class FavoritesGridFragment extends Fragment implements LoaderManager.Loa
      */
     public interface ClickListener {
         void onClick(View view, int position);
+    }
+
+    public int getLastPosition() {
+        return mLastPosition;
     }
 }

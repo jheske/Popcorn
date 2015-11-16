@@ -305,4 +305,8 @@ public class MovieGridFragment extends ErrorHandlerFragment {
     public interface ClickListener {
         void onClick(View view, int position);
     }
+
+    public int getLastPosition() {
+        return mLastPosition;
+    }
 }

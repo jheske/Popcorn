@@ -50,6 +50,7 @@ import retrofit.client.Response;
  * This fragment attaches ONLY to MainActivity two-pane mode
  * DetailActivity uses a different fragment, DetailActivityFragment.
  */
+
 /**
  * This fragment handles most of the logic for DetailActivity and
  * DetailFragment (right-hand pane in MainActivity in two-pane).
@@ -146,7 +147,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void setupFavoritesButton() {
-        if (DatabaseUtils.isFavoriteMovie(getActivity(),mMovie.getId()))
+        if (DatabaseUtils.isFavoriteMovie(getActivity(), mMovie.getId()))
             btnMarkFavorite.setText("- Favorites");
         else
             btnMarkFavorite.setText("+ Favorites");
@@ -160,13 +161,12 @@ public class DetailFragment extends Fragment {
     @SuppressWarnings("unused")
     @OnClick(R.id.btn_mark_fav)
     public void favoritesButtonClick(Button favButton) {
-        if (DatabaseUtils.isFavoriteMovie(getActivity(),mMovie.getId())) {
-            Log.i(TAG, "Removing movie from favorites " + mMovie.getOriginalTitle());
+        if (DatabaseUtils.isFavoriteMovie(getActivity(), mMovie.getId())) {
+            //Log.i(TAG, "Removing movie from favorites " + mMovie.getOriginalTitle());
             DatabaseUtils.deleteMovie(getActivity(), mMovie.getId());
             favButton.setText("+ Favorites");
-        }
-        else {
-            Log.i(TAG, "Adding movie to favorites " + mMovie.getOriginalTitle());
+        } else {
+            //Log.i(TAG, "Adding movie to favorites " + mMovie.getOriginalTitle());
             DatabaseUtils.insertMovie(getActivity(), mMovie);
             favButton.setText("- Favorites");
         }
@@ -237,11 +237,10 @@ public class DetailFragment extends Fragment {
                     public void success(Movie movie, Response response) {
                         mMovie = movie;
                         setShareTrailerIntent();
-                        Log.i(TAG, "Success!! Movie title = " + movie.getOriginalTitle());
-                        Log.i(TAG, "There are "
-                                + movie.getTrailerCount() + " trailers and "
-                                + movie.getReviewCount() + " reviews");
-                        Log.i(TAG, "Now make separate call for movie's Mpaa rating");
+                        //Log.i(TAG, "Success!! Movie title = " + movie.getOriginalTitle());
+                        //Log.i(TAG, "There are "
+                        //        + movie.getTrailerCount() + " trailers and "
+                        //        + movie.getReviewCount() + " reviews");
                         downloadReleases(movieService);
                     }
 
@@ -265,9 +264,9 @@ public class DetailFragment extends Fragment {
                 new Callback<Releases>() {
                     @Override
                     public void success(Releases releases, Response response) {
-                        Log.i(TAG, "There are " + releases.getCount() + " releases");
+                        //Log.i(TAG, "There are " + releases.getCount() + " releases");
                         mMovie.setReleases(releases);
-                        Log.i(TAG, "US rating is " + mMovie.getUSRating());
+                        //Log.i(TAG, "US rating is " + mMovie.getUSRating());
                         displayMovieDetails(mMovie);
                     }
 
@@ -288,24 +287,21 @@ public class DetailFragment extends Fragment {
      */
     protected void displayMovieDetails(Movie movie) {
         Log.d(TAG, "Display movie " + movie.getId() + "  " + movie.getOriginalTitle());
-        Log.d(TAG, "   Genres " + movie.getGenres());
+        //Log.d(TAG, "   Genres " + movie.getGenres());
         //Larger screens won't have title on the detail Layout
-//        if (mTextViewTitle.getVisibility() == View.VISIBLE)
-        if (mTextViewTitle != null) {
+        /*if (mTextViewTitle != null) {
             mTextViewTitle.setText(movie.getOriginalTitle());
             Log.d(TAG,"NO title in layout, show it in backdrop");
         }
         else
-            Log.d(TAG, "Title in layout, don't show it in backdrop");
+            Log.d(TAG, "Title in layout, don't show it in backdrop");*/
 
         mTextViewMpaaRating.setText(movie.getUSRating());
         mTextViewGenres.setText(movie.getGenres());
         displayTrailers(movie.getTrailers());
         displayReviews(movie.getReviews());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        if (movie.getReleaseDate() == null)
-            Log.d(TAG, "NULL RELEASE DATE");
-        else
+        if (movie.getReleaseDate() != null)
             mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
                 .put("runtime", movie.getRuntime().toString())
