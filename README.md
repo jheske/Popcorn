@@ -1,25 +1,25 @@
 ## Synopsis
 
-This repository contains my Udacity Android Developer Project 1: Popular Movies.
+This repository contains Popcorn, a movie listing app I designed and implemented for the Udacity Android Developer Project 2: Popular Movies.
 
 
 ## Features
 
 This project is designed to meet all of the requirements as per Udacity's rubric for P2.  Features may or may not be completed and include, but are not limited to:
 
-Material Design conforms as closely as possible to Google's latest UI/UX standards. 
+Material Design, conforming as closely as possible to Google's latest UI/UX standards. 
 
 Material components include CoordinatorLayout, AppBarLayout, CollapsingToolbarLayout, Toolbar, NestedScrollView, TabLayout, ViewPager, RecyclerView, and CardView.
 
 Uses Retrofit 1.0 to retrieve current movies from themoviedb.org and parse JSON results into POJOs.  POJOs are Parcelable to facilitate passing movie objects between Activities.
 
-Uses a SQLite database and a ContentProvider to store and retrieve movies.
+Uses a SQLite database and a ContentProvider for storing and retrieving movies.
 
 Tabbed layout on home page allows user to view Most Popular, Highest Rated, or user-selected Favorite movies.
 
 A movie detail screen shows runtime, rating, release date, genres, and reviews.  It allows user to view YouTube trailers and has a Share option.
  
-Provides a variety of portrait and landscape layouts to support both phones and tablets in a variety of screen resolutions.
+Provides a variety of portrait and landscape layouts to support both phones and tablets in a variety of screen resolutions.  The tablet version provides a master/detail layout in landscape mode.
 
 ## Libraries included in build.gradle
 
@@ -38,6 +38,12 @@ Provides a variety of portrait and landscape layouts to support both phones and 
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'info.hoang8f:fbutton:1.0.5'
 
+
+## Icon 
+
+http://www.iconarchive.com/show/button-ui-requests-2-icons-by-blackvariant/PopcornTime-icon.html
+
+
 ## Testing
 
 This project has been tested on:
@@ -46,6 +52,7 @@ This project has been tested on:
 * Huawei Prism running Android 2.3
 * LG Optimus L90 running Android 4.4.2
 * GenyMotion emulator running Android 5.1
+
 			
 ## Installation
 
