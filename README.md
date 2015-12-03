@@ -4,7 +4,7 @@
 
 ## Synopsis
 
-This repository contains Popcorn, a movie listing app I designed and implemented for the Udacity Android Developer Project 2: Popular Movies.
+This repository contains Popcorn, a movie listing app I designed and implemented for the Udacity Android Developer Nanodegree Project 2: Popular Movies.
 
 
 ## Features
@@ -24,6 +24,12 @@ Tabbed layout on home page allows user to view Most Popular, Highest Rated, or u
 A movie detail screen shows runtime, rating, release date, genres, and reviews.  It allows user to view YouTube trailers and has a Share option.
  
 Provides a variety of portrait and landscape layouts to support both phones and tablets in a variety of screen resolutions.  The tablet version provides a master/detail layout in landscape mode.
+
+## Screenshots
+
+
+
+
 
 ## Libraries included in build.gradle
 
