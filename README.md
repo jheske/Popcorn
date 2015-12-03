@@ -4,16 +4,18 @@
 
 ## Synopsis
 
-This repository contains Popcorn, a movie listing app I designed and implemented for Udacity Android Developer Nanodegree Project 2: Popular Movies.
+![Popcorn icon](https://github.com/jheske/Popcorn/blob/master/app/src/main/res/mipmap-xhdpi/ic_launcher.png?raw=true)
+
+This repository contains **Popcorn**, a movie listing app I designed and implemented for Udacity Android Developer Nanodegree Project 2: Popular Movies.
 
 
 ## Features
 
 This project is designed to meet all of the requirements as per Udacity's rubric for P2.  Features may or may not be completed and include, but are not limited to:
 
-Material Design, conforming as closely as possible to Google's latest UI/UX standards. 
+Material Design conforms to Google's latest UI/UX standards. 
 
-Material components include CoordinatorLayout, AppBarLayout, CollapsingToolbarLayout, Toolbar, NestedScrollView, TabLayout, ViewPager, RecyclerView, and CardView.
+Features Google's latest Material AppCompat and Design library widgets, including CoordinatorLayout, AppBarLayout, CollapsingToolbarLayout, Toolbar, NestedScrollView, TabLayout, ViewPager, RecyclerView, and CardView.
 
 Uses Retrofit 1.0 to retrieve current movies from themoviedb.org and parse JSON results into POJOs.  POJOs are Parcelable to facilitate passing movie objects between Activities.
 
@@ -34,7 +36,7 @@ Provides a variety of portrait and landscape layouts to support both phones and 
 
 
 
-## Libraries included in build.gradle
+## build.gradle
 
     compile 'com.android.support:appcompat-v7:23.0.0'
     compile 'com.android.support:recyclerview-v7:23.0.0'
@@ -62,7 +64,6 @@ http://www.iconarchive.com/show/button-ui-requests-2-icons-by-blackvariant/Popco
 This project has been tested on:
 
 * Samsung Tab 4 running Android 4.4.2
-* Huawei Prism running Android 2.3
 * LG Optimus L90 running Android 4.4.2
 * GenyMotion emulator running Android 5.1
 
