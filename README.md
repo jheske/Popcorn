@@ -4,7 +4,7 @@
 
 ## Synopsis
 
-This repository contains Popcorn, a movie listing app I designed and implemented for the Udacity Android Developer Nanodegree Project 2: Popular Movies.
+This repository contains Popcorn, a movie listing app I designed and implemented for Udacity Android Developer Nanodegree Project 2: Popular Movies.
 
 
 ## Features
@@ -27,7 +27,10 @@ Provides a variety of portrait and landscape layouts to support both phones and 
 
 ## Screenshots
 
+<img src="landscape-master-detail.png" alt="Popcorn landscape master-detail" width="600">
 
+
+<img src="portrait-most-popular.png" alt="Popcorn home screen portrait" width="300"> <img src="portrait-movie-details.png" alt="Popcorn movie details" width="300">
 
 
 
