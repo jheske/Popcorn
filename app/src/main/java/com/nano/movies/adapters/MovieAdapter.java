@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -37,7 +37,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.img_poster)
+        @BindView(R.id.img_poster)
         public ImageView imgPoster;
 
         public MovieViewHolder(View itemView) {

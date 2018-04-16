@@ -8,16 +8,17 @@
     android:id="@+id/layout_rating_details"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
     android:layout_alignParentTop="true"
-    android:paddingLeft="16dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_mpaa_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:text="@string/text_mpaa_rating"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/textColorSecondary" />
@@ -26,7 +27,7 @@
         android:id="@+id/tv_runtime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/textColorSecondary"
         tools:text="@string/text_runtime" />
@@ -43,19 +44,15 @@
         android:id="@+id/tv_genres"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_rating_bar"
         android:paddingBottom="@dimen/abc_list_item_padding_horizontal_material"
         android:text="@string/txt_genres"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/textColorSecondary"></TextView>
+        android:textColor="@color/textColorSecondary"/>
 
-    <info.hoang8f.widget.FButton
+    <Button
         android:id="@+id/btn_mark_fav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:drawablePadding="0dp"
         android:minHeight="40dp"
         android:minWidth="100dp"
@@ -64,8 +61,5 @@
         android:paddingTop="-2dp"
         android:text="@string/label_add_fav"
         android:textColor="@android:color/white"
-        fbutton:buttonColor="@color/colorAccent"
-        fbutton:cornerRadius="5dp"
-        fbutton:shadowEnabled="true"
-        fbutton:shadowHeight="2dp" />
+        android:color="@color/colorAccent"/>
 </LinearLayout>

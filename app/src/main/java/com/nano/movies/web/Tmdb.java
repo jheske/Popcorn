@@ -37,6 +37,13 @@ import com.nano.movies.web.MovieService;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
+
+/**
+ * Retrofit 2.0 moves RequestInterceptor to OkHttp
+ *
+ * http://stackoverflow.com/questions/33558352/retrofit-2-addqueryparam-replacement
+ */
+
 /**
  * This class serves as a connection between the UI and
  * the themoviedb service api proxies . At present I'm supporting only

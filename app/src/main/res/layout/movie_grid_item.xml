@@ -2,7 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
-    android:layout_width="60dp">
+    android:layout_width="400dp">
     <ImageView
         android:id="@+id/img_poster"
         android:layout_height="match_parent"
@@ -12,5 +12,3 @@
         android:contentDescription="@string/desc_title"/>
 </FrameLayout>
 
-<!--        android:scaleType="fitCenter"
--->

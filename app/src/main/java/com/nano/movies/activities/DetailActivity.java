@@ -23,7 +23,7 @@ import com.squareup.picasso.Picasso;
 
 import com.nano.movies.web.Tmdb;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity
@@ -36,10 +36,10 @@ public class DetailActivity extends AppCompatActivity
 
     //Small screens won't have a backdrop
     @Nullable
-    @Bind(R.id.img_backdrop)
+    @BindView(R.id.img_backdrop)
     ImageView mImageViewBackdrop;
     @Nullable
-    @Bind(R.id.collapsing_toolbar)
+    @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
 
     /**
@@ -157,6 +157,5 @@ public class DetailActivity extends AppCompatActivity
                 .error(R.drawable.placeholder_backdrop_w300)
                 .into(mImageViewBackdrop);
         mCollapsingToolbar.setTitle(originalTitle);
-
     }
 }

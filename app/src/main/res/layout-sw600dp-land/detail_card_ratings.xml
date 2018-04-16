@@ -4,7 +4,8 @@
     android:id="@+id/layout_rating_and_favs"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -17,7 +18,7 @@
             android:id="@+id/tv_mpaa_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/textColorSecondary"
             android:text="@string/text_mpaa_rating"/>
@@ -26,7 +27,7 @@
             android:id="@+id/tv_runtime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/textColorSecondary"
             tools:text="@string/text_runtime"/>
@@ -44,7 +45,6 @@
         android:id="@+id/layout_rating_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_rating_details"
         android:orientation="horizontal">
         <RatingBar
             android:id="@+id/rating_bar_vote_average"
@@ -72,7 +72,7 @@
         android:text="@string/txt_genres">
     </TextView>
 
-    <info.hoang8f.widget.FButton
+    <Button
         android:id="@+id/btn_mark_fav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -83,9 +83,6 @@
         android:paddingRight="10dp"
         android:paddingTop="-2dp"
         android:textColor="@android:color/white"
-        fbutton:buttonColor="@color/colorAccent"
-        fbutton:cornerRadius="5dp"
-        fbutton:shadowEnabled="true"
-        fbutton:shadowHeight="2dp"
+        android:color="@color/colorAccent"
         android:text="@string/label_add_fav" />
 </LinearLayout>

@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -58,28 +58,28 @@ import retrofit.client.Response;
 public class DetailFragment extends Fragment {
     protected final String TAG = DetailActivityFragment.class.getSimpleName();
 
-    @Bind(R.id.img_thumbnail)
+    @BindView(R.id.img_thumbnail)
     protected ImageView mImageViewThumbnail;
-    @Bind(R.id.tv_release_date)
+    @BindView(R.id.tv_release_date)
     protected TextView mTextViewReleaseDate;
-    @Bind(R.id.tv_runtime)
+    @BindView(R.id.tv_runtime)
     protected TextView mTextViewRuntime;
-    @Bind(R.id.tv_overview)
+    @BindView(R.id.tv_overview)
     protected TextView mTextViewOverview;
-    @Bind(R.id.tv_mpaa_rating)
+    @BindView(R.id.tv_mpaa_rating)
     protected TextView mTextViewMpaaRating;
-    @Bind(R.id.rating_bar_vote_average)
+    @BindView(R.id.rating_bar_vote_average)
     protected RatingBar mRatingVoteAverage;
-    @Bind(R.id.tv_reviews)
+    @BindView(R.id.tv_reviews)
     protected TextView mTextViewReviews;
-    @Bind(R.id.tv_trailers_title)
+    @BindView(R.id.tv_trailers_title)
     protected TextView mTextViewTrailersTitle;
-    @Bind(R.id.tv_vote_count)
+    @BindView(R.id.tv_vote_count)
     protected TextView mTextViewVoteCount;
-    @Bind(R.id.tv_genres)
+    @BindView(R.id.tv_genres)
     protected TextView mTextViewGenres;
     @Nullable
-    @Bind(R.id.tv_movie_title)
+    @BindView(R.id.tv_movie_title)
     protected TextView mTextViewTitle;
     @BindString(R.string.msg_no_reviews)
     String msgNoReviews;
@@ -91,7 +91,7 @@ public class DetailFragment extends Fragment {
     String msgReviewsNotAvailable;
     @BindString(R.string.error_implement_method)
     String errorMissingMethod;
-    @Bind(R.id.btn_mark_fav)
+    @BindView(R.id.btn_mark_fav)
     Button btnMarkFavorite;
 
     protected RecyclerView mRecyclerView;

@@ -13,7 +13,7 @@ import com.nano.movies.web.Movie;
 import com.nano.movies.web.Tmdb;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -33,7 +33,7 @@ public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWit
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.img_poster)
+        @BindView(R.id.img_poster)
         public ImageView imgPoster;
 
         public MovieViewHolder(View itemView) {

@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final String TAG = getClass().getSimpleName();
@@ -39,7 +39,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        @Bind(R.id.img_play_button)
+        @BindView(R.id.img_play_button)
         ImageButton mImageBtnPlayTrailer;
         public ImageView mImageTrailer;
 
