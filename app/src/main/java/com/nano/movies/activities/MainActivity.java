@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import com.facebook.stetho.Stetho;
+//import com.facebook.stetho.Stetho;
 import com.nano.movies.R;
 import com.nano.movies.adapters.MovieStatePagerAdapter;
 import com.nano.movies.web.Movie;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupStethoLibrary();
+       // setupStethoLibrary();
         setContentView(R.layout.layout_activity_main);
         setupToolbar();
         mIsTwoPane = checkForDualPane();
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * A very useful library for debugging Android apps
      * using Chrome, even has a database inspector!
-     */
+
     private void setupStethoLibrary() {
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
@@ -268,6 +268,6 @@ public class MainActivity extends AppCompatActivity
                                 Stetho.defaultInspectorModulesProvider(this))
                         .build());
     }
-
+*/
 }
 

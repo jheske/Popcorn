@@ -40,7 +40,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.BindString;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -384,7 +383,9 @@ public class DetailFragment extends Fragment {
     private void loadPosterImage(Movie movie) {
         String movieImageUrl = Tmdb.getMoviePosterUrl(movie.getPosterPath(),
                 Tmdb.IMAGE_POSTER_XSMALL);
-        Picasso.with(getActivity()).load(movieImageUrl)
+        Picasso.get()
+                .load(movieImageUrl)
                 .into(mImageViewThumbnail);
+
     }
 }

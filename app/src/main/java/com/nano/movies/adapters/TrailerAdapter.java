@@ -80,10 +80,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ViewHolder vh = (ViewHolder) holder;
             final String thumbImagePath = Tmdb.getYoutubeThumbnail(trailer.getSource());
 
-            Picasso.with(mContext).load(thumbImagePath)
+            Picasso.get()
+                    .load(thumbImagePath)
                     .placeholder(R.drawable.placeholder_backdrop_w300)
                     .error(R.drawable.placeholder_backdrop_w300)
                     .into(vh.mImageTrailer);
+
             vh.mImageTrailer.setContentDescription(trailer.getName());
 
             vh.mImageBtnPlayTrailer.setOnClickListener(new View.OnClickListener() {

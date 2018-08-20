@@ -105,9 +105,9 @@ public class MovieGridFragment extends ErrorHandlerFragment {
         if (getActivity().getResources()
                 .getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT)
-            mRecyclerView.setLayoutManager(new GridLayoutManager(activityContext, 2));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(activityContext, 1));
         else
-            mRecyclerView.setLayoutManager(new GridLayoutManager(activityContext, 3));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(activityContext, 2));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mMovieAdapter);
         mRecyclerView.addOnItemTouchListener(new MovieRecyclerTouchListener(getActivity(),

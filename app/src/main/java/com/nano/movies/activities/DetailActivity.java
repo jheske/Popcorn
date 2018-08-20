@@ -24,7 +24,6 @@ import com.squareup.picasso.Picasso;
 import com.nano.movies.web.Tmdb;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity
         implements DetailActivityFragment.MovieDetailChangeListener {
@@ -57,7 +56,6 @@ public class DetailActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        ButterKnife.bind(this);
         setupToolbar();
         mIsTwoPane = checkForDualPane();
         setupDetailFragment();
@@ -152,10 +150,14 @@ public class DetailActivity extends AppCompatActivity
         String backdropUrl = Tmdb.getMovieBackdropUrl(backdropPath,
                 Tmdb.IMAGE_POSTER_LARGE);
         Log.d(TAG, "Getting backdrop " + backdropUrl);
-        Picasso.with(this).load(backdropUrl)
+
+        Picasso.get()
+                .load(backdropUrl)
                 .placeholder(R.drawable.placeholder_backdrop_w300)
                 .error(R.drawable.placeholder_backdrop_w300)
                 .into(mImageViewBackdrop);
+
+
         mCollapsingToolbar.setTitle(originalTitle);
     }
 }

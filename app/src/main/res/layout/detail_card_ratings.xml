@@ -50,7 +50,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/textColorSecondary"></TextView>
 
-    <info.hoang8f.widget.FButton
+    <Button
         android:id="@+id/btn_mark_fav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,9 +64,5 @@
         android:paddingRight="10dp"
         android:paddingTop="-2dp"
         android:text="@string/label_add_fav"
-        android:textColor="@android:color/white"
-        fbutton:buttonColor="@color/colorAccent"
-        fbutton:cornerRadius="5dp"
-        fbutton:shadowEnabled="true"
-        fbutton:shadowHeight="2dp" />
+        android:textColor="@android:color/white" />
 </LinearLayout>

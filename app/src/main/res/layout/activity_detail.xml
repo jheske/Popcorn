@@ -25,7 +25,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="fill_vertical">
         <!-- This is used by tablets and phones in portrait and landscape
              so its components will be selected by Android according to device, etc. -->
@@ -33,7 +33,7 @@
             android:id="@+id/fragment_activity_detail"
             android:name="com.nano.movies.activities.DetailActivityFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:layout="@layout/fragment_activity_detail" />
     </ScrollView>
 </LinearLayout>

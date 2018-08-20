@@ -51,8 +51,6 @@ Provides a variety of portrait and landscape layouts to support both phones and 
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.facebook.stetho:stetho:1.1.1'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'info.hoang8f:fbutton:1.0.5'
-
 
 ## Icon 
 

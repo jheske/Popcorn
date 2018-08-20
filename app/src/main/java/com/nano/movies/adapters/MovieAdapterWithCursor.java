@@ -24,12 +24,10 @@ import butterknife.ButterKnife;
  * https://github.com/udacity/Advanced_Android_Development/blob/6.18_Bonus_RecyclerView_Code/app/src/main/java/com/example/android/sunshine/app/ForecastAdapter.java
  */
 public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWithCursor.MovieViewHolder> {
-    private Context mContext;
     private Cursor mCursor;
 
     public MovieAdapterWithCursor(Context context) {
         super();
-        mContext = context;
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -55,10 +53,12 @@ public class MovieAdapterWithCursor extends RecyclerView.Adapter<MovieAdapterWit
         Movie movie = new Movie(mCursor);
         final String movieImageUrl = Tmdb.getMoviePosterUrl(movie.getPosterPath(),
                 Tmdb.IMAGE_POSTER_MED);
-        Picasso.with(mContext).load(movieImageUrl)
+        Picasso.get()
+                .load(movieImageUrl)
                 .placeholder(R.drawable.placeholder_poster_w185)
                 .error(R.drawable.no_poster_w185)
                 .into(holder.imgPoster);
+
         holder.imgPoster.setContentDescription(movie.getTitle());
     }
 

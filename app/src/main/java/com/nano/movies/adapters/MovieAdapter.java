@@ -1,6 +1,6 @@
 /**
  * Created by Jill Heske
- *
+ * <p>
  * Copyright(c) 2015
  */
 package com.nano.movies.adapters;
@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -28,11 +29,9 @@ import butterknife.ButterKnife;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private final List<Movie> mMovies;
-    private Context mContext;
 
     public MovieAdapter(Context context) {
         super();
-        mContext = context;
         mMovies = new ArrayList<>();
     }
 
@@ -42,7 +41,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         public MovieViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -50,6 +49,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.movie_grid_item, viewGroup, false);
+
         return new MovieViewHolder(view);
     }
 
@@ -59,10 +59,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Movie movie = getItemAtPosition(position);
         final String movieImageUrl = Tmdb.getMoviePosterUrl(movie.getPosterPath(),
                 Tmdb.IMAGE_POSTER_MED);
-        Picasso.with(mContext).load(movieImageUrl)
+
+        Picasso.get()
+                .load(movieImageUrl)
                 .placeholder(R.drawable.placeholder_poster_w185)
                 .error(R.drawable.no_poster_w185)
                 .into(holder.imgPoster);
+
         holder.imgPoster.setContentDescription(movie.getTitle());
     }
 

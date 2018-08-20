@@ -33,8 +33,6 @@ import retrofit.mime.TypedInput;
 
 import com.nano.movies.utils.Utils;
 import com.nano.movies.web.ErroHandler.ApiErrorHandler;
-import com.nano.movies.web.MovieService;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 
@@ -117,7 +115,7 @@ public class Tmdb extends Application {
         super.onCreate();
         mIsNetworkAvailable = Utils.isNetworkAvailable(getApplicationContext());
         setupRestAdapter();
-        setupPicasso();
+    //    setupPicasso();
     }
 
     public boolean isNetworkAvailable() {
@@ -206,14 +204,15 @@ public class Tmdb extends Application {
         }
     }
 
-    private void setupPicasso() {
+/*    private void setupPicasso() {
         Picasso.Builder builder = new Picasso.Builder(this);
         builder.downloader(new OkHttpDownloader(this,Integer.MAX_VALUE));
         Picasso built = builder.build();
         built.setIndicatorsEnabled(true);
         built.setLoggingEnabled(false);
         Picasso.setSingletonInstance(built);
-    }
+    }/*/
+
     /**
      * Gson does a terrible job handling dates!!!  It especially hates
      * if date is an empty string "".
